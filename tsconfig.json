@@ -8,7 +8,11 @@
     "noEmit": true,
     "resolveJsonModule": true,
     "skipLibCheck": true,
-    "target": "ESNext"
+    "target": "ESNext",
+    "baseUrl": "./",
+    "paths": {
+      "@/*": ["*"],
+    }
   },
   "extends": "expo/tsconfig.base"
 }
