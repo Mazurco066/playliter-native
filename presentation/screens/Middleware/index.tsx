@@ -6,6 +6,9 @@ import { color } from 'styled-system'
 // Components
 import { Layout, Spinner } from '@ui-kitten/components'
 
+// Store
+import { useAuthStore } from '../../../main/store'
+
 // Styled components
 const Wrapper = styled(Layout)`
   flex: 1;
@@ -16,10 +19,19 @@ const Wrapper = styled(Layout)`
 
 // Middleware page
 const Middleware = ({ navigation }) => {
+  // Hooks
+  const { getUserData, getToken } = useAuthStore()
+
   // Effects
   useEffect(() => {
-    // TODO: Implement auth logic here
-    navigation.replace('Home')
+    const authData = getUserData()
+    const token = getToken()
+    console.log('middleware auth data ->', authData, token)
+    if (authData && token) {
+      navigation.replace('Home')
+    } else {
+      navigation.replace('Auth')
+    }
   })
 
   // TSX

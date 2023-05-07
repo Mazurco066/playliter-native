@@ -3,15 +3,27 @@ import React from 'react'
 import { createNativeStackNavigator } from '@react-navigation/native-stack'
 
 // Stack navigators
+const AuthStack = createNativeStackNavigator()
 const MainStack = createNativeStackNavigator()
 const RootStack = createNativeStackNavigator()
 
 // Screens
 import {
+  AuthScreen,
   BandsScreen,
   MainScreen,
   Middleware
 } from '../../presentation/screens'
+
+// Auth navigator screens
+const AuthNavigator = () => (
+  <AuthStack.Navigator
+    initialRouteName="Login"
+    screenOptions={() => ({ gestureEnabled: false })}
+  >
+    <AuthStack.Screen name="Login" component={AuthScreen} />
+  </AuthStack.Navigator>
+)
 
 // Main navigator screens
 const MainNavigator = () => (
@@ -32,6 +44,7 @@ export default () => {
       screenOptions={{ header: () => null }}
       initialRouteName="Main"
     >
+      <RootStack.Screen name="Auth" component={AuthNavigator} />
       <RootStack.Screen name="Main" component={MainNavigator} />
     </RootStack.Navigator>
   )
