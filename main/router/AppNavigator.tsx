@@ -15,7 +15,10 @@ import {
 
 // Main navigator screens
 const MainNavigator = () => (
-  <MainStack.Navigator initialRouteName="Middleware">
+  <MainStack.Navigator
+    initialRouteName="Middleware"
+    screenOptions={() => ({ gestureEnabled: false })}
+  >
     <MainStack.Screen name="Bands" component={BandsScreen} />
     <MainStack.Screen name="Home" component={MainScreen} />
     <MainStack.Screen name="Middleware" component={Middleware} />
