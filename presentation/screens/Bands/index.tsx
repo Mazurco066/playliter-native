@@ -17,13 +17,13 @@ const Wrapper = styled(Layout)`
 // Page Main JSX
 const BandsScreen = ({ navigation }) => (
   <Wrapper>
-      <Text category='h1'>BANDS</Text>
-      <Button onPress={() => {
-        navigation.navigate('Home')
-      }}>
-        Navigate
-      </Button>
-    </Wrapper>
+    <Text category='h1'>BANDS</Text>
+    <Button onPress={() => {
+      navigation.navigate('Home')
+    }}>
+      Navigate
+    </Button>
+  </Wrapper>
 )
 
 // Exporting page

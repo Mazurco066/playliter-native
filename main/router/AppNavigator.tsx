@@ -9,14 +9,16 @@ const RootStack = createNativeStackNavigator()
 // Screens
 import {
   BandsScreen,
-  MainScreen
+  MainScreen,
+  Middleware
 } from '../../presentation/screens'
 
 // Main navigator screens
 const MainNavigator = () => (
-  <MainStack.Navigator initialRouteName="Home">
+  <MainStack.Navigator initialRouteName="Middleware">
     <MainStack.Screen name="Bands" component={BandsScreen} />
     <MainStack.Screen name="Home" component={MainScreen} />
+    <MainStack.Screen name="Middleware" component={Middleware} />
   </MainStack.Navigator>
 )
 
