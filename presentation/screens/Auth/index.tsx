@@ -7,6 +7,7 @@ import { generateCaption } from '../../utils'
 
 // Components
 import { TouchableWithoutFeedback } from 'react-native'
+import { Space } from '../../components'
 import {
   Button,
   Icon,
@@ -75,11 +76,11 @@ const AuthScreen = () => {
             onChangeText={nextValue => onChange(nextValue)}
             caption={generateCaption(errors.username as FieldError)}
             textStyle={textStyle}
-            style={{ marginBottom: 8 }}
           />
         )}
         defaultValue=""
       />
+      <Space my={1} />
       <Controller
         control={control}
         name="password"
@@ -97,11 +98,11 @@ const AuthScreen = () => {
             onChangeText={nextValue => onChange(nextValue)}
             caption={generateCaption(errors.password as FieldError)}
             textStyle={textStyle}
-            style={{ marginBottom: 16 }}
           />
         )}
         defaultValue=""
       />
+      <Space my={2} />
       <Button onPress={handleSubmit(
         (data) => {
           console.log('[form submit]', data)
