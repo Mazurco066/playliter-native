@@ -12,7 +12,8 @@ export interface IAuthStore {
   },
   hydrateAuthData: (data: UserAccount, token?: string) => void,
   getUserData: () => UserAccount | null,
-  getToken: () => string | null
+  getToken: () => string | null,
+  logoff: () => void
 }
 
 // Auth store
@@ -34,6 +35,7 @@ export const useAuthStore = create(
       ),
       getUserData: () => get().userData ? get().userData.account : null,
       getToken: () => get().userData ?  get().userData.token : null,
+      logoff: () => set(() => ({ userData: null }))
     }),
     {
       name: 'auth-storage', // unique store name
