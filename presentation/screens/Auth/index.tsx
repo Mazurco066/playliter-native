@@ -3,7 +3,11 @@ import React, { useState } from 'react'
 import { Controller, FieldError, useForm } from 'react-hook-form'
 import styled from 'styled-components'
 import { color } from 'styled-system'
+import { useAuthStore } from '../../../main/store'
 import { generateCaption } from '../../utils'
+
+// Main API
+import { api } from '../../../infra'
 
 // Components
 import { TouchableWithoutFeedback } from 'react-native'
@@ -15,6 +19,10 @@ import {
   Layout,
   Text,
 } from '@ui-kitten/components'
+
+// Types
+import { UserAccount } from '../../../domain'
+
 
 // Styled components
 const Wrapper = styled(Layout)`
@@ -37,10 +45,11 @@ const textStyle = {
 }
 
 // Page Main JSX
-const AuthScreen = () => {
+const AuthScreen = ({ navigation }) => {
   // Hooks
   const [secureTextEntry, setSecureTextEntry] = useState<boolean>(true)
   const { control, handleSubmit, formState: { errors } } = useForm()
+  const { hydrateAuthData } = useAuthStore()
 
   // Actions
   const toggleSecureEntry = (): void => {
@@ -104,8 +113,18 @@ const AuthScreen = () => {
       />
       <Space my={2} />
       <Button onPress={handleSubmit(
-        (data) => {
-          console.log('[form submit]', data)
+        async (data) => {
+          const response = await api.auth.login({
+            username: data.username,
+            password: data.password
+          })
+          if ([200, 201].includes(response.status)) {
+            hydrateAuthData(
+              response.data.account as UserAccount,
+              response.data.token
+            )
+            navigation.replace('Main')
+          }
         }
       )}>
         Acessar

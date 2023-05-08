@@ -33,8 +33,8 @@ export const useAuthStore = create(
           }
         })
       ),
-      getUserData: () => get().userData ? get().userData.account : null,
-      getToken: () => get().userData ?  get().userData.token : null,
+      getUserData: () => get().userData?.account,
+      getToken: () => get().userData?.token,
       logoff: () => set(() => ({ userData: null }))
     }),
     {

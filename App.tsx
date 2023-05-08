@@ -3,6 +3,7 @@ import { StatusBar } from 'expo-status-bar'
 
 // Routing
 import { AppNavigator } from './main'
+import { navigationRef } from './main/services/navigationService'
 import { NavigationContainer } from '@react-navigation/native'
 
 // Safe Area
@@ -21,7 +22,7 @@ export default function App() {
       <IconRegistry icons={EvaIconsPack} />
       <StatusBar style="dark" />
         <ApplicationProvider {...eva} theme={{ ...eva.dark, ...theme }}>
-          <NavigationContainer>
+          <NavigationContainer ref={navigationRef}>
             <AppNavigator />
           </NavigationContainer>
         </ApplicationProvider>
