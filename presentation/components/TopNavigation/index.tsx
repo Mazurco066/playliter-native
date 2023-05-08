@@ -31,7 +31,6 @@ const TitleContainer = styled(View)`
 
 const UserAvatar = styled(Avatar)`
   margin-right: 16px;
-  margin-left: 16px;
   ${color}
 `
 
@@ -47,30 +46,13 @@ const TopNavigation = ({ navigation }): React.ReactElement => {
   }
 
   // Auxiliar render functions
-  const MenuIcon = (props: any): IconElement => (
-    <Icon
-      {...props}
-      name='more-vertical'
-    />
-  )
-  
-  const InfoIcon = (props: any): IconElement => (
-    <Icon
-      {...props}
-      name='info'
-    />
-  )
-  
-  const LogoutIcon = (props: any): IconElement => (
-    <Icon
-      {...props}
-      name='log-out'
-    />
+  const getIcon = (iconName: string) => (props: any): IconElement => (
+    <Icon {...props} name={iconName} />
   )
 
   const renderMenuAction = (): React.ReactElement => (
     <TopNavigationAction
-      icon={MenuIcon}
+      icon={getIcon('more-vertical')}
       onPress={toggleMenu}
     />
   )
@@ -82,11 +64,15 @@ const TopNavigation = ({ navigation }): React.ReactElement => {
       onBackdropPress={toggleMenu}
     >
       <MenuItem
-        accessoryLeft={InfoIcon}
+        accessoryLeft={getIcon('person-outline')}
         title='Perfil'
       />
       <MenuItem
-        accessoryLeft={LogoutIcon}
+        accessoryLeft={getIcon('info')}
+        title='Sobre'
+      />
+      <MenuItem
+        accessoryLeft={getIcon('log-out')}
         title='Logout'
         onPress={() => {
           logoff()
@@ -98,7 +84,22 @@ const TopNavigation = ({ navigation }): React.ReactElement => {
 
   const renderTitle = (props: any): React.ReactElement => (
     <TitleContainer>
-      <UserAvatar source={{ uri: account?.avatar }} />
+      {
+        navigation.canGoBack() ? (
+          <TopNavigationAction
+            icon={getIcon('arrow-back')}
+            onPress={() => {
+              if (navigation.canGoBack()) {
+                navigation.goBack()
+              }
+            }}
+        />
+        ) : null
+      }
+      <UserAvatar
+        style={{ marginLeft: navigation.canGoBack() ? 8 : 16 }}
+        source={{ uri: account?.avatar }}
+      />
       <Text {...props}>
         {account?.name}
       </Text>

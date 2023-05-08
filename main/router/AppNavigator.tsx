@@ -30,9 +30,13 @@ const AuthNavigator = () => (
 const MainNavigator = () => (
   <MainStack.Navigator
     initialRouteName="Middleware"
-    screenOptions={({ navigation }) => ({
+    screenOptions={({ navigation, route }) => ({
       gestureEnabled: false,
-      header: () => <TopNavigation navigation={navigation} />
+      header: () => (
+        <TopNavigation
+          navigation={navigation}
+        />
+      )
     })}
   >
     <MainStack.Screen name="Bands" component={BandsScreen} />

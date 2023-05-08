@@ -24,14 +24,16 @@ const Middleware = ({ navigation }) => {
 
   // Effects
   useEffect(() => {
-    const authData = getUserData()
-    const token = getToken()
-    if (authData && token) {
-      navigation.replace('Home')
-    } else {
-      navigation.replace('Auth')
-    }
-  })
+    setTimeout(() => {
+      const acc = getUserData()
+      const token = getToken()
+      if (acc && token) {
+        navigation.replace('Home')
+      } else {
+        navigation.replace('Auth')
+      }
+    }, 1)
+  }, [])
 
   // TSX
   return (
