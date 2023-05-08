@@ -8,6 +8,7 @@ const MainStack = createNativeStackNavigator()
 const RootStack = createNativeStackNavigator()
 
 // Screens
+import { TopNavigation } from '../../presentation/components'
 import {
   AuthScreen,
   BandsScreen,
@@ -19,7 +20,7 @@ import {
 const AuthNavigator = () => (
   <AuthStack.Navigator
     initialRouteName="Login"
-    screenOptions={() => ({ gestureEnabled: false })}
+    screenOptions={({ navigation }) => ({ gestureEnabled: false })}
   >
     <AuthStack.Screen name="Login" component={AuthScreen} />
   </AuthStack.Navigator>
@@ -29,7 +30,10 @@ const AuthNavigator = () => (
 const MainNavigator = () => (
   <MainStack.Navigator
     initialRouteName="Middleware"
-    screenOptions={() => ({ gestureEnabled: false })}
+    screenOptions={({ navigation }) => ({
+      gestureEnabled: false,
+      header: () => <TopNavigation navigation={navigation} />
+    })}
   >
     <MainStack.Screen name="Bands" component={BandsScreen} />
     <MainStack.Screen name="Home" component={MainScreen} />

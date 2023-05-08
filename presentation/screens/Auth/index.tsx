@@ -87,7 +87,7 @@ const AuthScreen = ({ navigation }) => {
             textStyle={textStyle}
           />
         )}
-        defaultValue="mazurco066"
+        defaultValue=""
       />
       <Space my={1} />
       <Controller
@@ -109,7 +109,7 @@ const AuthScreen = ({ navigation }) => {
             textStyle={textStyle}
           />
         )}
-        defaultValue="svchost.exe"
+        defaultValue=""
       />
       <Space my={2} />
       <Button onPress={handleSubmit(

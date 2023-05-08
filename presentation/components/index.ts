@@ -1,3 +1,4 @@
+import TopNavigation from './TopNavigation'
 import Space from './Space'
 
-export { Space }
+export { TopNavigation, Space }

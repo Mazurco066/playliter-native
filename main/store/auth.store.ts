@@ -15,8 +15,8 @@ export interface IAuthStore {
 }
 
 // Auth store
-export const useAuthStore = create(
-  persist<IAuthStore>(
+export const useAuthStore = create<IAuthStore>()(
+  persist(
     (set, get) => ({
       account: null,
       token: null,
@@ -39,7 +39,7 @@ export const useAuthStore = create(
     }),
     {
       name: 'auth-storage', // unique store name
-      storage: createJSONStorage(() => AsyncStorage)  // react-native async storage persistor
+      storage: createJSONStorage(() => AsyncStorage)
     }
   )
 )

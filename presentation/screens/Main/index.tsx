@@ -18,19 +18,18 @@ const Wrapper = styled(Layout)`
 // Page Main JSX
 const MainScreen = ({ navigation }) => {
   // Hooks
-  const { logoff, account } = useAuthStore()
+  const { account } = useAuthStore()
 
   // JSX
   return (
     <Wrapper>
       <Text category='h5'>
-        Bem vindo {account.name}!
+        Bem vindo {account?.name}!
       </Text>
       <Button onPress={() => {
-        logoff()
-        navigation.replace('Auth')
+        navigation.navigate('Bands')
       }}>
-        Logoff
+        Bands
       </Button>
     </Wrapper>
   )
