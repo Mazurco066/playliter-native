@@ -87,7 +87,7 @@ const AuthScreen = ({ navigation }) => {
             textStyle={textStyle}
           />
         )}
-        defaultValue=""
+        defaultValue="mazurco066"
       />
       <Space my={1} />
       <Controller
@@ -109,7 +109,7 @@ const AuthScreen = ({ navigation }) => {
             textStyle={textStyle}
           />
         )}
-        defaultValue=""
+        defaultValue="svchost.exe"
       />
       <Space my={2} />
       <Button onPress={handleSubmit(
@@ -119,10 +119,8 @@ const AuthScreen = ({ navigation }) => {
             password: data.password
           })
           if ([200, 201].includes(response.status)) {
-            hydrateAuthData(
-              response.data.account as UserAccount,
-              response.data.token
-            )
+            const { data: { account, token } } = response.data
+            hydrateAuthData(account as UserAccount, token)
             navigation.replace('Main')
           }
         }

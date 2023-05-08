@@ -2,6 +2,7 @@
 import React from 'react'
 import styled from 'styled-components'
 import { color } from 'styled-system'
+import { useAuthStore } from '../../../main/store'
 
 // Components
 import { Button, Layout, Text } from '@ui-kitten/components'
@@ -17,15 +18,19 @@ const Wrapper = styled(Layout)`
 // Page Main JSX
 const MainScreen = ({ navigation }) => {
   // Hooks
-  
+  const { logoff, account } = useAuthStore()
+
   // JSX
   return (
     <Wrapper>
-      <Text category='h1'>MAIN</Text>
+      <Text category='h5'>
+        Bem vindo {account.name}!
+      </Text>
       <Button onPress={() => {
-        navigation.navigate('Bands')
+        logoff()
+        navigation.replace('Auth')
       }}>
-        Navigate
+        Logoff
       </Button>
     </Wrapper>
   )

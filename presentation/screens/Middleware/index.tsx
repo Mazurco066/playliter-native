@@ -26,7 +26,6 @@ const Middleware = ({ navigation }) => {
   useEffect(() => {
     const authData = getUserData()
     const token = getToken()
-    console.log('[MIDDLEWARE HERE]', authData, token)
     if (authData && token) {
       navigation.replace('Home')
     } else {

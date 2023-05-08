@@ -6,13 +6,11 @@ import { UserAccount } from '../../domain'
 
 // Auth store type
 export interface IAuthStore {
-  userData?: {
-    token?: string,
-    account: UserAccount
-  },
-  hydrateAuthData: (data: UserAccount, token?: string) => void,
-  getUserData: () => UserAccount | null,
-  getToken: () => string | null,
+  account?: UserAccount
+  token?: string
+  hydrateAuthData: (data: UserAccount, token?: string) => void
+  getUserData: () => UserAccount | null
+  getToken: () => string | null
   logoff: () => void
 }
 
@@ -20,22 +18,24 @@ export interface IAuthStore {
 export const useAuthStore = create(
   persist<IAuthStore>(
     (set, get) => ({
-      bears: null,
+      account: null,
+      token: null,
       hydrateAuthData: (data: UserAccount, token?: string) => set(
         (state) => ({
-          userData: {
-            account: data,
-            token: token
-              ? token
-              : state.userData && state.userData.token
-                ? state.userData.token
-                : null
-          }
-        })
+          account: data,
+          token: token
+            ? token
+            : state.token
+                ? state.token
+                : null  
+          })
       ),
-      getUserData: () => get().userData?.account,
-      getToken: () => get().userData?.token,
-      logoff: () => set(() => ({ userData: null }))
+      getUserData: () => get().account,
+      getToken: () => get().token,
+      logoff: () => set(() => ({
+        account: null,
+        token: null
+      }))
     }),
     {
       name: 'auth-storage', // unique store name
