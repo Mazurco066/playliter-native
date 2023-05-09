@@ -8,6 +8,7 @@ import { useAuthStore } from '../../../main/store'
 import { View } from 'react-native'
 import {
   Avatar,
+  Divider,
   Icon,
   IconElement,
   MenuItem,
@@ -19,18 +20,25 @@ import {
 
 // Styled components
 const StyledTopNavigation = styled(EvaTopNavigation)`
+  padding-top: 16px;
   ${color}
 `
 
 const TitleContainer = styled(View)`
   flex-direction: row;
   align-items: center;
-  position: relative;
+  ${color}
+`
+
+const InfoContainer = styled(View)`
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  flex: 1;
   ${color}
 `
 
 const UserAvatar = styled(Avatar)`
-  margin-right: 16px;
   ${color}
 `
 
@@ -52,7 +60,11 @@ const TopNavigation = ({ navigation }): React.ReactElement => {
 
   const renderMenuAction = (): React.ReactElement => (
     <TopNavigationAction
-      icon={getIcon('more-vertical')}
+      icon={(props: any) => (
+        <UserAvatar
+          source={{ uri: account?.avatar }}
+        />
+      )}
       onPress={toggleMenu}
     />
   )
@@ -84,34 +96,45 @@ const TopNavigation = ({ navigation }): React.ReactElement => {
 
   const renderTitle = (props: any): React.ReactElement => (
     <TitleContainer>
-      {
-        navigation.canGoBack() ? (
-          <TopNavigationAction
-            icon={getIcon('arrow-back')}
-            onPress={() => {
-              if (navigation.canGoBack()) {
-                navigation.goBack()
-              }
-            }}
-        />
-        ) : null
-      }
-      <UserAvatar
-        style={{ marginLeft: navigation.canGoBack() ? 8 : 16 }}
-        source={{ uri: account?.avatar }}
+      <TopNavigationAction
+        icon={getIcon('arrow-back')}
+        onPress={() => {
+          if (navigation.canGoBack()) {
+            navigation.goBack()
+          }
+        }}
       />
-      <Text {...props}>
-        {account?.name}
-      </Text>
+      <InfoContainer>
+        <Text 
+          {...props}
+          style={{ textAlign: 'center' }}
+        >
+          {account?.name}
+        </Text>
+        <Text
+          {...props}
+          status="primary"
+          category="s1"
+          style={{
+            textAlign: 'center',
+            textTransform: 'uppercase'
+          }}
+        >
+          Playliter
+        </Text>
+      </InfoContainer>
     </TitleContainer>
   )
 
   // Main component TSX
   return (
-    <StyledTopNavigation
-      title={renderTitle}
-      accessoryRight={renderOverflowMenuAction}
-    />
+    <>
+      <StyledTopNavigation
+        title={renderTitle}
+        accessoryRight={renderOverflowMenuAction}
+      />
+      <Divider />
+    </>
   )
 }
 
