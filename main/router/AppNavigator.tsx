@@ -8,7 +8,7 @@ const MainStack = createNativeStackNavigator()
 const RootStack = createNativeStackNavigator()
 
 // Screens
-import { TopNavigation } from '../../presentation/components'
+import { TopNavigation } from '../../presentation/layouts'
 import {
   AuthScreen,
   BandsScreen,
