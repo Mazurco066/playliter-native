@@ -1,6 +1,7 @@
 // Dependencies
 import React, { useState } from 'react'
 import { Controller, FieldError, useForm } from 'react-hook-form'
+import { useMutation } from '@tanstack/react-query'
 import styled from 'styled-components'
 import { color } from 'styled-system'
 import { useAuthStore } from '../../../main/store'
@@ -47,9 +48,19 @@ const textStyle = {
 // Page Main JSX
 const AuthScreen = ({ navigation }) => {
   // Hooks
-  const [secureTextEntry, setSecureTextEntry] = useState<boolean>(true)
+  const [ secureTextEntry, setSecureTextEntry ] = useState<boolean>(true)
   const { control, handleSubmit, formState: { errors } } = useForm()
   const { hydrateAuthData } = useAuthStore()
+
+  // Mutations
+  const { isLoading, mutateAsync } = useMutation(
+    (data: { username: string, password: string }) => {
+      return api.auth.login({
+        username: data.username,
+        password: data.password
+      })
+    }
+  )
 
   // Actions
   const toggleSecureEntry = (): void => {
@@ -112,19 +123,22 @@ const AuthScreen = ({ navigation }) => {
         defaultValue=""
       />
       <Space my={2} />
-      <Button onPress={handleSubmit(
-        async (data) => {
-          const response = await api.auth.login({
-            username: data.username,
-            password: data.password
-          })
-          if ([200, 201].includes(response.status)) {
-            const { data: { account, token } } = response.data
-            hydrateAuthData(account as UserAccount, token)
-            navigation.replace('Main')
+      <Button
+        disabled={isLoading}
+        onPress={handleSubmit(
+          async (data) => {
+            const response = await mutateAsync({
+              username: data.username,
+              password: data.password
+            })
+            if ([200, 201].includes(response.status)) {
+              const { data: { account, token } } = response.data
+              hydrateAuthData(account as UserAccount, token)
+              navigation.replace('Main')
+            }
           }
-        }
-      )}>
+        )}
+      >
         Acessar
       </Button>
     </Wrapper>

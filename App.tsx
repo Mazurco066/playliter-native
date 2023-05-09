@@ -1,5 +1,6 @@
 // Dependencies
 import { StatusBar } from 'expo-status-bar'
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
 
 // Routing
 import { AppNavigator } from './main'
@@ -15,17 +16,22 @@ import { ApplicationProvider, IconRegistry } from '@ui-kitten/components'
 import { EvaIconsPack } from '@ui-kitten/eva-icons'
 import { default as theme } from './theme.json'
 
+// Create a client for tanstack client
+const queryClient: QueryClient = new QueryClient()
+
 // Global app wrapper
 export default function App() {
   return (
-    <SafeAreaView style={{ flex: 1 }}>
-      <IconRegistry icons={EvaIconsPack} />
-      <StatusBar style="dark" />
-        <ApplicationProvider {...eva} theme={{ ...eva.dark, ...theme }}>
-          <NavigationContainer ref={navigationRef}>
-            <AppNavigator />
-          </NavigationContainer>
-        </ApplicationProvider>
-    </SafeAreaView>
+    <QueryClientProvider client={queryClient}>
+      <SafeAreaView style={{ flex: 1 }}>
+        <IconRegistry icons={EvaIconsPack} />
+        <StatusBar style="dark" />
+          <ApplicationProvider {...eva} theme={{ ...eva.dark, ...theme }}>
+            <NavigationContainer ref={navigationRef}>
+              <AppNavigator />
+            </NavigationContainer>
+          </ApplicationProvider>
+      </SafeAreaView>
+    </QueryClientProvider>
   )
 }
