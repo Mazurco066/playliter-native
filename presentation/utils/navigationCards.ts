@@ -1,30 +1,27 @@
-// Components
-
 // Card list
 export const navigationCards = [
   {
     label: 'Home',
     route: 'Home',
+    icon: 'home-outline',
     params: {}
   },
   {
     label: 'Bandas',
     route: 'Bands',
+    icon: 'people-outline',
     params: {}
   },
   {
     label: 'Músicas',
-    route: 'Bands',
+    route: 'Songs',
+    icon: 'headphones-outline',
     params: {}
   },
   {
     label: 'Meu Perfil',
-    route: 'Bands',
-    params: {}
-  },
-  {
-    label: 'Logout',
-    route: 'Bands',
+    route: 'Profile',
+    icon: 'person-outline',
     params: {}
   }
 ]

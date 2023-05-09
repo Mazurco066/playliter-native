@@ -13,14 +13,19 @@ import {
   AuthScreen,
   BandsScreen,
   MainScreen,
-  Middleware
+  Middleware,
+  ProfileScreen,
+  SongsScreen
 } from '../../presentation/screens'
 
 // Auth navigator screens
 const AuthNavigator = () => (
   <AuthStack.Navigator
     initialRouteName="Login"
-    screenOptions={({ navigation }) => ({ gestureEnabled: false })}
+    screenOptions={() => ({
+      gestureEnabled: false,
+      animation: 'slide_from_left'
+    })}
   >
     <AuthStack.Screen name="Login" component={AuthScreen} />
   </AuthStack.Navigator>
@@ -36,12 +41,15 @@ const MainNavigator = () => (
         <TopNavigation
           navigation={navigation}
         />
-      )
+      ),
+      animation: 'none'
     })}
   >
     <MainStack.Screen name="Bands" component={BandsScreen} />
     <MainStack.Screen name="Home" component={MainScreen} />
     <MainStack.Screen name="Middleware" component={Middleware} />
+    <MainStack.Screen name="Profile" component={ProfileScreen} />
+    <MainStack.Screen name="Songs" component={SongsScreen} />
   </MainStack.Navigator>
 )
 
@@ -49,8 +57,8 @@ const MainNavigator = () => (
 export default () => {
   return (
     <RootStack.Navigator
-      screenOptions={{ header: () => null }}
-      initialRouteName="Main"
+    initialRouteName="Main"
+    screenOptions={{ header: () => null }}
     >
       <RootStack.Screen name="Auth" component={AuthNavigator} />
       <RootStack.Screen name="Main" component={MainNavigator} />

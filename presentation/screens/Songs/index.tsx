@@ -7,17 +7,12 @@ import { BaseContent } from '../../layouts'
 
 // Styled components
 
-// Main page
-const MainScreen = ({ navigation }) => {
-  // Hooks
-
-  // TSX
-  return (
-    <BaseContent>
-      <Text>Main content</Text>
-    </BaseContent>
-  )
-}
+// Page Main JSX
+const SongsScreen = ({ navigation }) => (
+  <BaseContent>
+    <Text>Songs</Text>
+  </BaseContent>
+)
 
 // Exporting page
-export default MainScreen
+export default SongsScreen

@@ -20,10 +20,17 @@ const CardNavigation = ({ ...rest }) => {
     <View {...rest}>
       <FlatList
         data={navigationCards}
-        renderItem={({ item: { label, route = '', params = {} } }) => (
+        renderItem={({ item: {
+          icon,
+          label,
+          route = '',
+          params = {}
+        } }) => (
           <Card
+            icon={icon}
             label={label}
-            onPress={() => navigate('Bands', params)}
+            route={route}
+            onPress={() => navigate(route, params)}
           />
         )}
         horizontal

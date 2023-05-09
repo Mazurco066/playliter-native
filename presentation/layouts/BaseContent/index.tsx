@@ -5,8 +5,8 @@ import { color } from 'styled-system'
 
 // Components
 import CardNavigation from '../CardNavigation'
-import { Animated, View, ScrollView } from 'react-native'
-import { Layout } from '@ui-kitten/components'
+import { Animated, ScrollView } from 'react-native'
+import { Layout, useTheme } from '@ui-kitten/components'
 import { Space } from '../../components'
 
 // Styled components
@@ -25,8 +25,8 @@ const ContentWrapper = styled(Layout)`
 
 const Content = styled(ScrollView)`
   flex: 1;
-  margin-top: 16px;
-  margin-bottom: 16px;
+  margin: 16px;
+  ${color}
 `
 
 const AnimatedView = styled(Animated.View)`
@@ -38,12 +38,15 @@ const AnimatedView = styled(Animated.View)`
 // Main page
 const BaseContent = ({ children }): React.ReactElement => {
   // Hooks
+  const theme = useTheme()
   const animatedValue = useRef(new Animated.Value(1)).current
 
   // JSX
   return (
     <Wrapper>
-      <ContentWrapper>
+      <ContentWrapper
+        style={{ backgroundColor: theme['color-basic-800'] }}
+      >
         <Content>
           {children}
         </Content>
