@@ -24,7 +24,8 @@ const AuthNavigator = () => (
     initialRouteName="Login"
     screenOptions={() => ({
       gestureEnabled: false,
-      animation: 'slide_from_left'
+      animation: 'slide_from_left',
+      header: () => null
     })}
   >
     <AuthStack.Screen name="Login" component={AuthScreen} />

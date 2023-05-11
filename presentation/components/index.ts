@@ -1,3 +1,7 @@
+import CustomKeyboardAvoidingView from './CustomKeyboardAvoidingView'
 import Space from './Space'
 
-export { Space }
+export {
+  CustomKeyboardAvoidingView,
+  Space
+}

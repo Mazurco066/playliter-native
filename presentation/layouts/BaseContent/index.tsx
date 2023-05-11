@@ -45,7 +45,7 @@ const BaseContent = ({ children }): React.ReactElement => {
   return (
     <Wrapper>
       <ContentWrapper
-        style={{ backgroundColor: theme['color-basic-800'] }}
+        style={{ backgroundColor: theme['color-basic-900'] }}
       >
         <Content>
           {children}

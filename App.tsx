@@ -16,6 +16,9 @@ import { ApplicationProvider, IconRegistry } from '@ui-kitten/components'
 import { EvaIconsPack } from '@ui-kitten/eva-icons'
 import { default as theme } from './theme.json'
 
+// App Toast Messages
+import FlashMessage from 'react-native-flash-message'
+
 // Create a client for tanstack client
 const queryClient: QueryClient = new QueryClient()
 
@@ -30,6 +33,10 @@ export default function App() {
             <NavigationContainer ref={navigationRef}>
               <AppNavigator />
             </NavigationContainer>
+            <FlashMessage
+              icon="auto"
+              position="bottom"
+            />
           </ApplicationProvider>
       </SafeAreaView>
     </QueryClientProvider>

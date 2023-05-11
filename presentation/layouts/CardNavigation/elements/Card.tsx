@@ -53,7 +53,7 @@ const Card = ({
         status={route === name ? 'primary' : null}
         activeOpacity={0.8}
         style={{
-          backgroundColor: theme['color-basic-900']
+          backgroundColor: theme['color-basic-700']
         }}
       >
         <ContentWrapper>

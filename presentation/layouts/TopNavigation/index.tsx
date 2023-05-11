@@ -1,7 +1,7 @@
 // Dependencies
 import React from 'react'
 import styled from 'styled-components'
-import { color } from 'styled-system'
+import { borderRadius, color } from 'styled-system'
 import { useAuthStore } from '../../../main/store'
 
 // Components
@@ -16,6 +16,7 @@ import {
   Text,
   TopNavigation as EvaTopNavigation,
   TopNavigationAction,
+  useTheme
 } from '@ui-kitten/components'
 
 // Styled components
@@ -45,6 +46,7 @@ const UserAvatar = styled(Avatar)`
 // Top navigation component
 const TopNavigation = ({ navigation }): React.ReactElement => {
   // Hooks
+  const theme = useTheme()
   const [ menuVisible, setMenuVisible ] = React.useState(false)
   const { account, logoff } = useAuthStore()
 
@@ -55,12 +57,16 @@ const TopNavigation = ({ navigation }): React.ReactElement => {
 
   // Auxiliar render functions
   const getIcon = (iconName: string) => (props: any): IconElement => (
-    <Icon {...props} name={iconName} />
+    <Icon
+      {...props}
+      name={iconName}
+      fill="#ffffff"
+    />
   )
 
   const renderMenuAction = (): React.ReactElement => (
     <TopNavigationAction
-      icon={(props: any) => (
+      icon={(_: any) => (
         <UserAvatar
           source={{ uri: account?.avatar }}
         />
@@ -78,10 +84,16 @@ const TopNavigation = ({ navigation }): React.ReactElement => {
       <MenuItem
         accessoryLeft={getIcon('person-outline')}
         title='Perfil'
+        style={{
+          backgroundColor: theme['color-basic-700']
+        }}
       />
       <MenuItem
         accessoryLeft={getIcon('info')}
         title='Sobre'
+        style={{
+          backgroundColor: theme['color-basic-700']
+        }}
       />
       <MenuItem
         accessoryLeft={getIcon('log-out')}
@@ -89,6 +101,9 @@ const TopNavigation = ({ navigation }): React.ReactElement => {
         onPress={() => {
           logoff()
           navigation.replace('Auth')
+        }}
+        style={{
+          backgroundColor: theme['color-basic-700']
         }}
       />
     </OverflowMenu>
@@ -132,8 +147,11 @@ const TopNavigation = ({ navigation }): React.ReactElement => {
       <StyledTopNavigation
         title={renderTitle}
         accessoryRight={renderOverflowMenuAction}
+        style={{ backgroundColor: theme['color-basic-900'] }}
       />
-      <Divider />
+      <Divider
+        style={{ backgroundColor: theme['color-basic-700'] }}
+      />
     </>
   )
 }
