@@ -1,7 +1,7 @@
 // Dependencies
 import React from 'react'
 import styled from 'styled-components'
-import { borderRadius, color } from 'styled-system'
+import { color } from 'styled-system'
 import { useAuthStore } from '../../../main/store'
 
 // Components

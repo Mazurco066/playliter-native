@@ -11,7 +11,7 @@ import { Card } from './elements'
 import { Space } from '../../components'
 
 // Main component
-const CardNavigation = ({ ...rest }) => {
+const CardNavigation = ({ ...rest }): React.ReactElement => {
   // Hooks
   const { navigate } = useNavigation<NativeStackNavigationProp<MainStackParamList>>()
 

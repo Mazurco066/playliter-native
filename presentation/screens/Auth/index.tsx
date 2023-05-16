@@ -78,7 +78,7 @@ const textStyle = {
 }
 
 // Page Main TSX
-const AuthScreen = ({ navigation }) => {
+const AuthScreen = ({ navigation }): React.ReactElement => {
   // Hooks
   const theme = useTheme()
   const [secureTextEntry, setSecureTextEntry] = useState<boolean>(true)
