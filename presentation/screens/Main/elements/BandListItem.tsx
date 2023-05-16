@@ -9,10 +9,8 @@ import { getBandRole } from '../../../utils'
 import { IBand } from '../../../../domain'
 
 // Components
-import { LinearGradient } from 'expo-linear-gradient'
 import { TouchableOpacity, View } from 'react-native'
 import { Avatar, Layout, Text, useTheme } from '@ui-kitten/components'
-import { Space } from '../../../components'
 
 // Styles components
 const Wrapper = styled(TouchableOpacity)`
