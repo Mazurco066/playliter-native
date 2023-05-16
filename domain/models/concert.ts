@@ -11,6 +11,7 @@ export interface IConcert {
     updatedAt: string
     title: string,
     description: string
+    logo: string
   }
   songs: {
     id: string
