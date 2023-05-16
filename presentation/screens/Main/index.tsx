@@ -5,7 +5,7 @@ import { useQuery } from '@tanstack/react-query'
 import { useAuthStore } from '../../../main/store'
 
 // Types
-import { IConcert } from '../../../domain'
+import { IBand, IConcert } from '../../../domain'
 
 // Main API
 import api from '../../../infra/api'
@@ -14,7 +14,7 @@ import api from '../../../infra/api'
 import { Text, Spinner } from '@ui-kitten/components'
 import { FlatList, ListRenderItemInfo, View } from 'react-native'
 import { BaseContent } from '../../layouts'
-import { ConcertListItem } from './elements'
+import { BandListItem, ConcertListItem } from './elements'
 import { Space } from '../../components'
 
 // Styled components
@@ -109,9 +109,30 @@ const MainScreen = ({ navigation }): React.ReactElement => {
           {
             bands?.data?.data.length > 0 ? (
               <>
+                <FlatList
+                  ItemSeparatorComponent={() => <Space my={1} />}
+                  ListHeaderComponent={() => <Space my={2} />}
+                  ListFooterComponent={() => <Space my={2} />}
+                  keyExtractor={(_, idx) => idx.toString()}
+                  showsHorizontalScrollIndicator={false}
+                  scrollEnabled={false}
+                  data={bands?.data?.data || []}
+                  renderItem={({ item }: ListRenderItemInfo<IBand>) => (
+                    <BandListItem
+                      onPress={() => {
+                        console.log('on band press: ' + item.id)
+                      }}
+                      item={item}
+                    />
+                  )}
+                />
               </>
             ) : (
               <>
+                <Space my={1} />
+                <Text category="s1">
+                  Você não participa de nenhuma banda no momento.
+                </Text>
               </>
             )
           }

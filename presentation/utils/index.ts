@@ -1,4 +1,5 @@
 export * from './asyncRequestHandler'
 export * from './formatISODate'
 export * from './generateCaption'
+export * from './getBandRole'
 export * from './navigationCards'

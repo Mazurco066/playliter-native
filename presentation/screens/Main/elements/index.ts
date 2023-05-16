@@ -1,3 +1,7 @@
+import BandListItem from './BandListItem'
 import ConcertListItem from './ConcertListItem'
 
-export { ConcertListItem }
+export {
+  BandListItem,
+  ConcertListItem
+}
