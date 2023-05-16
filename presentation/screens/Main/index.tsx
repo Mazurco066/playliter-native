@@ -1,7 +1,8 @@
 // Dependencies
 import React from 'react'
+import styled from 'styled-components'
 import { useQuery } from '@tanstack/react-query'
-import { useAuthStore } from '../../../main'
+import { useAuthStore } from '../../../main/store'
 
 // Types
 import { IConcert } from '../../../domain'
@@ -10,13 +11,19 @@ import { IConcert } from '../../../domain'
 import api from '../../../infra/api'
 
 // Components
-import { Text } from '@ui-kitten/components'
-import { FlatList, ListRenderItemInfo } from 'react-native'
+import { Text, Spinner } from '@ui-kitten/components'
+import { FlatList, ListRenderItemInfo, View } from 'react-native'
 import { BaseContent } from '../../layouts'
 import { ConcertListItem } from './elements'
 import { Space } from '../../components'
 
 // Styled components
+const LoadingContainer = styled(View)`
+  justify-content: center;
+  align-items: center;
+  margin-top: 16px;
+  margin-bottom: 16px;
+`
 
 // Main page
 const MainScreen = ({ navigation }): React.ReactElement => {
@@ -49,25 +56,68 @@ const MainScreen = ({ navigation }): React.ReactElement => {
         Bem vindo {account?.name}!
       </Text>
       <Space my={1} />
-      <Text category="s1">
-        Você tem {futureConcerts?.data?.data.length} apresentações agendadas.
-      </Text>
+      {
+        isFutureConcertsLoading ? (
+          <LoadingContainer>
+            <Spinner size="large" />
+          </LoadingContainer>
+        ) : (
+          <>
+            {
+              futureConcerts?.data?.data.length > 0 ? (
+                <>
+                  <Text category="s1">
+                    Você tem {futureConcerts?.data?.data.length} apresentações agendadas.
+                  </Text>
+                  <Space my={2} />
+                  <FlatList
+                    horizontal
+                    ItemSeparatorComponent={() => <Space mx={1} />}
+                    keyExtractor={(_, idx) => idx.toString()}
+                    showsHorizontalScrollIndicator={false}
+                    data={futureConcerts?.data?.data || []}
+                    renderItem={({ item }: ListRenderItemInfo<IConcert>) => (
+                      <ConcertListItem
+                        onPress={() => {
+                          console.log('on concert press: ' + item.id)
+                        }}
+                        item={item}
+                      />
+                    )}
+                  />
+                </>
+              ) : (
+                <Text category="s1">
+                  Você não possui apresentações futuras agendadas.
+                </Text>
+              )
+            }
+          </>
+        )
+      }
       <Space my={2} />
-      <FlatList
-        horizontal
-        ItemSeparatorComponent={() => <Space mx={1} />}
-        keyExtractor={(_, idx) => idx.toString()}
-        showsHorizontalScrollIndicator={false}
-        data={futureConcerts?.data?.data || []}
-        renderItem={({ item }: ListRenderItemInfo<IConcert>) => (
-          <ConcertListItem
-            onPress={() => {
-              console.log('on concert press: ' + item.id)
-            }}
-            item={item}
-          />
-        )}
-      />
+      <Text category="h5">
+        Minhas bandas
+      </Text>
+      {
+        isBandsLoading ? (
+          <LoadingContainer>
+            <Spinner size="large" />
+          </LoadingContainer>
+        ) : (
+          <>
+          {
+            bands?.data?.data.length > 0 ? (
+              <>
+              </>
+            ) : (
+              <>
+              </>
+            )
+          }
+          </>
+        )
+      }
     </BaseContent>
   )
 }

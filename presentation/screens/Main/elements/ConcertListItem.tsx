@@ -5,7 +5,7 @@ import { color } from 'styled-system'
 
 // Components
 import { TouchableOpacity } from 'react-native'
-import { Layout, Text } from '@ui-kitten/components'
+import { Layout, Text, useTheme } from '@ui-kitten/components'
 import { IConcert } from '../../../../domain'
 
 // Styles components
@@ -34,10 +34,15 @@ const ConcertListItem = ({
   item,
   onPress = () => {}
 }: IConcertListItem): React.ReactElement => {
+  // Hooks
+  const theme = useTheme()
+
   // TSX
   return (
     <Wrapper onPress={onPress}>
-      <ItemLayout>
+      <ItemLayout style={{
+        backgroundColor: theme['color-basic-700']
+      }}>
         <Text>
           Concert here: {item.title}
         </Text>
