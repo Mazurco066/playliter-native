@@ -36,7 +36,14 @@ const ItemGradient = styled(LinearGradient)`
   width: 100%;
   padding: 4px;
   padding-top: 8px;
-  padding-bottom: 8px;  
+  padding-bottom: 18px;
+  margin-bottom: 16px;
+  position: relative;
+`
+
+const BandLogo = styled(Avatar)`
+  position: absolute;
+  bottom: -20px;
 `
 
 const ItemData = styled(View)`
@@ -79,7 +86,7 @@ const ConcertListItem = ({
             {formatISODate(item.date)}
           </Text>
           <Space my={1} />
-          <Avatar 
+          <BandLogo 
             source={{ uri: item.band.logo }}
           />
         </ItemGradient>
