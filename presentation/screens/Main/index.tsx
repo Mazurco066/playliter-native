@@ -11,7 +11,7 @@ import { IBand, IConcert } from '../../../domain'
 import api from '../../../infra/api'
 
 // Components
-import { Text, Spinner } from '@ui-kitten/components'
+import { Spinner, Text } from '@ui-kitten/components'
 import { FlatList, ListRenderItemInfo, View } from 'react-native'
 import { BaseContent } from '../../layouts'
 import { BandListItem, ConcertListItem } from './elements'
