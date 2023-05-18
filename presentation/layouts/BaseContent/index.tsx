@@ -2,6 +2,7 @@
 import React, { useRef } from 'react'
 import styled from 'styled-components'
 import { color } from 'styled-system'
+import { isCloseToBottom } from '../../utils'
 
 // Components
 import CardNavigation from '../CardNavigation'
@@ -35,8 +36,17 @@ const AnimatedView = styled(Animated.View)`
   ${color}
 `
 
+// Component params
+interface IBaseContent {
+  children: React.ReactElement | React.ReactElement[],
+  onEndReached?: () => void
+}
+
 // Main page
-const BaseContent = ({ children }): React.ReactElement => {
+const BaseContent = ({
+  children,
+  onEndReached = () => {}
+}: IBaseContent): React.ReactElement => {
   // Hooks
   const theme = useTheme()
   const animatedValue = useRef(new Animated.Value(1)).current
@@ -47,7 +57,14 @@ const BaseContent = ({ children }): React.ReactElement => {
       <ContentWrapper
         style={{ backgroundColor: theme['color-basic-900'] }}
       >
-        <Content>
+        <Content
+          onScroll={({ nativeEvent }) => {
+            if (isCloseToBottom(nativeEvent)) {
+              onEndReached()
+            }
+          }}
+          scrollEventThrottle={400}
+        >
           {children}
         </Content>
         <AnimatedView style={{ opacity: animatedValue }}>
