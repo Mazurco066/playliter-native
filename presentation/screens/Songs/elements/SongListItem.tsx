@@ -51,6 +51,10 @@ const ItemData = styled(View)`
   ${color}
 `
 
+const SongTextInfo = styled(Text)`
+  max-width: 90%;
+`
+
 // Component properties
 interface IConcertListItem {
   item: ISong,
@@ -81,32 +85,35 @@ const SongListItem = ({
           />
         </ItemGradient>
         <ItemData>
-          <Text
+          <SongTextInfo
             category="label"
+            numberOfLines={2}
             style={{
               fontSize: 15
             }}
           >
             {item.title}
-          </Text>
-          <Text
+          </SongTextInfo>
+          <SongTextInfo
             category="label"
+            numberOfLines={2}
             style={{
               fontSize: 14,
               color: theme['color-secondary-500']
             }}
           >
             {item.writter}
-          </Text>
-          <Text
+          </SongTextInfo>
+          <SongTextInfo
             category="c1"
+            numberOfLines={2}
             style={{
               color: theme['color-basic-200'],
               marginTop: 2
             }}
           >
             Publicada por {item.band.title}
-          </Text>
+          </SongTextInfo>
         </ItemData>
       </ItemLayout>
     </Wrapper>

@@ -39,6 +39,10 @@ const ItemData = styled(View)`
   ${color}
 `
 
+const BandItemText = styled(Text)`
+  max-width: 90%;
+`
+
 // Component properties
 interface IConcertListItem {
   item: IBand,
@@ -67,14 +71,15 @@ const BandListItem = ({
           size="large"
         />
         <ItemData>
-          <Text
+          <BandItemText
             category="label"
+            numberOfLines={2}
             style={{
               fontSize: 15
             }}
           >
             {item.title}
-          </Text>
+          </BandItemText>
           <Text
             category="label"
             style={{

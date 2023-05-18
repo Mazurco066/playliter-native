@@ -10,7 +10,7 @@ import { ISong } from '../../../domain'
 import api from '../../../infra/api'
 
 // Components
-import { Icon, Input, Spinner, Text } from '@ui-kitten/components'
+import { Icon, Input, Spinner, Text, useTheme } from '@ui-kitten/components'
 import { FlatList, ListRenderItemInfo, TouchableWithoutFeedback, View } from 'react-native'
 import { BaseContent } from '../../layouts'
 import { SongListItem } from './elements'
@@ -30,6 +30,7 @@ const PAGE_SIZE = 30
 // Main component
 const SongsScreen = ({ navigation }) => {
   // Hooks
+  const theme = useTheme()
   const [ filterSearch, setFilterSearch ] = useState<string>('')
   const {
     status,
@@ -50,17 +51,27 @@ const SongsScreen = ({ navigation }) => {
       )
       return response.data
     }, {
-      getPreviousPageParam: (firstPage) => firstPage.previousId ?? undefined,
-      getNextPageParam: (lastPage) => lastPage.nextId ?? undefined
+      getNextPageParam: (lastPage) => {
+        if (lastPage.data.data.length < PAGE_SIZE) return undefined
+        return lastPage.data.offset + PAGE_SIZE
+      }
     }
   )
 
   // Auxiliar Render functions
   const renderSearchButton = (props: any): React.ReactElement => (
-    <TouchableWithoutFeedback onPress={() => refetch()}>
+    <TouchableWithoutFeedback onPress={() => {
+      if (!isFetchingNextPage && status !== 'loading') {
+        refetch()
+      }
+    }}>
       <Icon
         {...props}
-        name={status === 'loading' ? 'slash-outline' : 'search-outline'}
+        name={
+          (status === 'loading' || isFetchingNextPage)
+            ? 'slash-outline'
+            : 'search-outline'
+        }
       />
     </TouchableWithoutFeedback>
   )
@@ -68,7 +79,11 @@ const SongsScreen = ({ navigation }) => {
   //TSX
   return (
     <BaseContent
-      onEndReached={() => fetchNextPage()}
+      onEndReached={async () => {
+        if (!isFetchingNextPage && hasNextPage) {
+          fetchNextPage()
+        }
+      }}
     >
       <Text category="h5">
         Repertório público
@@ -80,12 +95,17 @@ const SongsScreen = ({ navigation }) => {
       <Space my={1} />
       <Input 
         placeholder="Pesquisar..."
-        keyboardType="ascii-capable"
+        keyboardType="default"
         accessoryRight={renderSearchButton}
         value={filterSearch}
         onChangeText={nextValue => setFilterSearch(nextValue)}
+        disabled={(status === 'loading' || isFetchingNextPage)}
+        style={{
+          backgroundColor: theme['color-basic-700'],
+          borderRadius: 8
+        }}
       />
-      <Space my={1} />
+      <Space my={2} />
       {
         status === 'loading' ? (
           <LoadingContainer>
@@ -93,27 +113,50 @@ const SongsScreen = ({ navigation }) => {
           </LoadingContainer>
         ) : status === 'error' ? (
           <Text category="s1">
-
+            Ocorreu um erro ao carregar as músicas públicas. Tente novamente mais tarde.
           </Text>
         ) : (
-          <FlatList
-            ItemSeparatorComponent={() => <Space my={1} />}
-            ListHeaderComponent={() => <Space my={2} />}
-            ListFooterComponent={() => <Space my={2} />}
-            keyExtractor={(_, idx) => idx.toString()}
-            showsHorizontalScrollIndicator={false}
-            scrollEnabled={false}
-            data={data?.pages.reduce((ac, cv) => ac.concat(cv.data?.data), [])}
-            initialNumToRender={PAGE_SIZE}
-            renderItem={({ item }: ListRenderItemInfo<ISong>) => (
-              <SongListItem
-                onPress={() => {
-                  console.log('on public song press: ' + item.id)
-                }}
-                item={item}
-              />
-            )}
-          />
+          <>
+          {
+            data?.pages.reduce((ac, cv) => ac.concat(cv.data?.data), []).length > 0 ? (
+              <>
+                <FlatList
+                  ItemSeparatorComponent={() => <Space my={1} />}
+                  ListHeaderComponent={() => <Space my={2} />}
+                  ListFooterComponent={() => <Space my={2} />}
+                  keyExtractor={(_, idx) => idx.toString()}
+                  showsHorizontalScrollIndicator={false}
+                  scrollEnabled={false}
+                  windowSize={5}
+                  data={data?.pages.reduce((ac, cv) => ac.concat(cv.data?.data), [])}
+                  initialNumToRender={PAGE_SIZE}
+                  renderItem={({ item }: ListRenderItemInfo<ISong>) => (
+                    <SongListItem
+                      onPress={() => {
+                        console.log('on public song press: ' + item.id)
+                      }}
+                      item={item}
+                    />
+                  )}
+                />
+                {
+                  isFetchingNextPage && hasNextPage ? (
+                    <LoadingContainer>
+                      <Spinner size="large" />
+                    </LoadingContainer>
+                  ) : null
+                }
+              </>
+            ) : (
+              <Text
+                category='s1'
+              >
+                Não há músicas registradas para o filtro atual
+              </Text>
+            )
+          }
+          
+          </>
         )
       }
     </BaseContent>
