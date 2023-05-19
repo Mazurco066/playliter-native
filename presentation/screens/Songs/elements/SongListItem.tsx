@@ -1,5 +1,5 @@
 // Dependencies
-import React, { memo } from 'react'
+import React from 'react'
 import styled from 'styled-components'
 import { color } from 'styled-system'
 
@@ -14,6 +14,7 @@ import { Avatar, Layout, Text, useTheme } from '@ui-kitten/components'
 // Styles components
 const Wrapper = styled(TouchableOpacity)`
   width: 100%;
+  height: 72px;
   border-radius: 8px;
   overflow: hidden;
 `
@@ -52,18 +53,21 @@ const ItemData = styled(View)`
 `
 
 const SongTextInfo = styled(Text)`
-  max-width: 90%;
+  max-width: 93%;
+  overflow: hidden;
 `
 
 // Component properties
 interface IConcertListItem {
   item: ISong,
+  isLoading?: boolean,
   onPress?: () => void
 }
 
 // Component
 const SongListItem = ({
   item,
+  isLoading = false,
   onPress = () => {}
 }: IConcertListItem): React.ReactElement => {
   // Hooks
@@ -71,7 +75,10 @@ const SongListItem = ({
 
   // TSX
   return (
-    <Wrapper onPress={onPress}>
+    <Wrapper
+      onPress={onPress}
+      style={{ opacity: isLoading ? 0.7 : 1 }}
+    >
       <ItemLayout
         style={{
           backgroundColor: theme['color-basic-700']
@@ -87,7 +94,8 @@ const SongListItem = ({
         <ItemData>
           <SongTextInfo
             category="label"
-            numberOfLines={2}
+            numberOfLines={1}
+            ellipsizeMode="tail"
             style={{
               fontSize: 15
             }}
@@ -96,7 +104,8 @@ const SongListItem = ({
           </SongTextInfo>
           <SongTextInfo
             category="label"
-            numberOfLines={2}
+            numberOfLines={1}
+            ellipsizeMode="tail"
             style={{
               fontSize: 14,
               color: theme['color-secondary-500']
@@ -106,7 +115,8 @@ const SongListItem = ({
           </SongTextInfo>
           <SongTextInfo
             category="c1"
-            numberOfLines={2}
+            numberOfLines={1}
+            ellipsizeMode="tail"
             style={{
               color: theme['color-basic-200'],
               marginTop: 2
@@ -120,4 +130,4 @@ const SongListItem = ({
   )
 }
 
-export default memo(SongListItem)
+export default SongListItem

@@ -59,7 +59,7 @@ const BandsScreen = ({ navigation }) => {
                     ItemSeparatorComponent={() => <Space my={1} />}
                     ListHeaderComponent={() => <Space my={2} />}
                     ListFooterComponent={() => <Space my={2} />}
-                    keyExtractor={(_, idx) => idx.toString()}
+                    keyExtractor={(item) => item.id}
                     showsHorizontalScrollIndicator={false}
                     scrollEnabled={false}
                     data={bands?.data?.data || []}

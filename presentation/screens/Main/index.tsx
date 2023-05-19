@@ -73,7 +73,7 @@ const MainScreen = ({ navigation }): React.ReactElement => {
                   <FlatList
                     horizontal
                     ItemSeparatorComponent={() => <Space mx={1} />}
-                    keyExtractor={(_, idx) => idx.toString()}
+                    keyExtractor={(item) => item.id}
                     showsHorizontalScrollIndicator={false}
                     data={futureConcerts?.data?.data || []}
                     renderItem={({ item }: ListRenderItemInfo<IConcert>) => (
@@ -113,7 +113,7 @@ const MainScreen = ({ navigation }): React.ReactElement => {
                   ItemSeparatorComponent={() => <Space my={1} />}
                   ListHeaderComponent={() => <Space my={2} />}
                   ListFooterComponent={() => <Space my={2} />}
-                  keyExtractor={(_, idx) => idx.toString()}
+                  keyExtractor={(item) => item.id}
                   showsHorizontalScrollIndicator={false}
                   scrollEnabled={false}
                   data={bands?.data?.data || []}
