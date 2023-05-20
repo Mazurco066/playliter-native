@@ -17,6 +17,7 @@ const Wrapper = styled(TouchableOpacity)`
   height: 72px;
   border-radius: 8px;
   overflow: hidden;
+  margin-bottom: 8px;
 `
 
 const ItemLayout = styled(Layout)`
@@ -53,7 +54,7 @@ const ItemData = styled(View)`
 `
 
 const SongTextInfo = styled(Text)`
-  max-width: 93%;
+  max-width: 90%;
   overflow: hidden;
 `
 

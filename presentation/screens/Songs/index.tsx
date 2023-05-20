@@ -1,5 +1,5 @@
 // Dependencies
-import React, { useState, useCallback, useMemo } from 'react'
+import React, { useState, useCallback } from 'react'
 import styled from 'styled-components'
 import { useInfiniteQuery } from '@tanstack/react-query'
 
@@ -11,7 +11,8 @@ import api from '../../../infra/api'
 
 // Components
 import { Button, Icon, Input, Spinner, Text, useTheme } from '@ui-kitten/components'
-import { FlatList, ListRenderItemInfo, View, VirtualizedList } from 'react-native'
+import { FlashList, ListRenderItemInfo } from '@shopify/flash-list'
+import {  View } from 'react-native'
 import { BaseContent } from '../../layouts'
 import { SongListItem } from './elements'
 import { Space } from '../../components'
@@ -55,7 +56,6 @@ const SongsScreen = ({ navigation }) => {
 
   // Api request function
   const fetchPublicSongs = async ({ pageParam = 0 }) => {
-    console.log('Fetching data...', pageParam)
     const response = await api.songs.getPublicSongs(
       {
         limit: PAGE_SIZE,
@@ -85,6 +85,9 @@ const SongsScreen = ({ navigation }) => {
     }
   )
 
+  // All pages data
+  const allPagesData = data?.pages.flatMap((value) => value.data.data) || []
+
   // Auxiliar Render functions
   const renderSearchButton = useCallback((props: any): React.ReactElement => (
     <Icon
@@ -108,71 +111,22 @@ const SongsScreen = ({ navigation }) => {
     />
   ), [isLoading, isFetchingNextPage, isRefetching])
 
+  // Render list view item function
   const renderListItem = useCallback(({ item }: ListRenderItemInfo<ISong>) => (
     <SongListItem
+      item={item}
+      isLoading={isFetchingNextPage || isRefetching}
       onPress={() => {
         console.log('on public song press: ' + item.id)
       }}
-      item={item}
     />
-  ), [])
-
-  const getListItemLayout = useCallback((_: any[], index: number) => ({
-    length: 72,
-    offset: 72 * index,
-    index,
-  }), [])
-
-  const renderFlatList = useMemo(() => {
-    // Unifying pages data
-    const allPagesData = data?.pages.flatMap((value) => value.data.data)
-
-    // First loading component
-    if (isLoading) return (
-      <LoadingContainer>
-        <Spinner size="large" />
-      </LoadingContainer>
-    )
-
-    // No content component
-    if (allPagesData?.length <= 0) return (
-      <>
-        <Space my={1} />
-        <Text category='s1'>
-          Não há músicas registradas para o filtro atual
-        </Text>
-      </>
-    )
-
-    // Memorized flatlist
-    return (
-      <FlatList
-        keyExtractor={(item) => item.id}
-        scrollEnabled={false}
-        windowSize={5}
-        data={allPagesData}
-        initialNumToRender={PAGE_SIZE}
-        removeClippedSubviews
-        renderItem={renderListItem}
-        getItemLayout={getListItemLayout}
-        ItemSeparatorComponent={() => <Space my={1} />}
-        ListHeaderComponent={() => <Space my={2} />}
-        ListFooterComponent={() => isFetchingNextPage
-          ? (
-            <LoadingContainer>
-              <Spinner size="large" />
-            </LoadingContainer>
-          ) : <Space my={2} />
-        }
-      />
-    )
-  }, [data, isFetchingNextPage, isLoading])
+  ), [isFetchingNextPage, isRefetching])
 
   //TSX
   return (
     <BaseContent
-      onEndReached={async () => {
-        if (!isFetchingNextPage && hasNextPage) {
+      onEndReached={() => {
+        if (!isFetchingNextPage &&!isLoading && !isRefetching && hasNextPage) {
           fetchNextPage()
         }
       }}
@@ -228,7 +182,20 @@ const SongsScreen = ({ navigation }) => {
         </ButtonContainer>
       </SearchContainer>
       <Space my={1} />
-      {renderFlatList}
+      <FlashList
+        estimatedItemSize={80}
+        scrollEnabled={false}
+        data={allPagesData}
+        renderItem={renderListItem}
+        ListHeaderComponent={() => <Space my={2} />}
+        ListFooterComponent={() => isFetchingNextPage
+          ? (
+            <LoadingContainer>
+              <Spinner size="large" />
+            </LoadingContainer>
+          ) : <Space my={2} />
+        }
+      />
     </BaseContent>
   )
 }

@@ -10,4 +10,4 @@ export const getPublicSongs = async (
   { limit, offset }: IPaging = { limit: 0, offset: 0 },
   filter: string = ''
 ) =>
-  asyncRequestHandler(httpClient.get(`/songs/get/public_songs?limit=${limit}&offset=${offset}&filter=${filter}`))
+  asyncRequestHandler(httpClient.get(`/songs/get/public_songs?limit=${limit}&offset=${offset}&filter=${encodeURI(filter)}`))
