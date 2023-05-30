@@ -1,7 +1,10 @@
 // Dependencies
 import React from 'react'
 import styled from 'styled-components'
+import { useNavigation } from '@react-navigation/native'
+import { NativeStackNavigationProp } from '@react-navigation/native-stack'
 import { useQuery } from '@tanstack/react-query'
+import { MainStackParamList } from '../../../main/router'
 
 // Types
 import { IBand } from '../../../domain'
@@ -25,7 +28,7 @@ const LoadingContainer = styled(View)`
 `
 
 // Page Main JSX
-const BandsScreen = ({ navigation }) => {
+const BandsScreen = () => {
   // HTTP Requests
   const {
     data: bands,
@@ -34,6 +37,9 @@ const BandsScreen = ({ navigation }) => {
     ['bands'],
     () => api.bands.getBands()
   )
+
+  // Hooks
+  const { navigate } = useNavigation<NativeStackNavigationProp<MainStackParamList>>()
 
   // TSX
   return (
@@ -65,9 +71,7 @@ const BandsScreen = ({ navigation }) => {
                     data={bands?.data?.data || []}
                     renderItem={({ item }: ListRenderItemInfo<IBand>) => (
                       <BandListItem
-                        onPress={() => {
-                          console.log('on specific band press: ' + item.id)
-                        }}
+                        onPress={() => navigate('Band', { item })}
                         item={item}
                       />
                     )}

@@ -11,10 +11,13 @@ const RootStack = createNativeStackNavigator()
 import { TopNavigation } from '../../presentation/layouts'
 import {
   AuthScreen,
+  BandScreen,
   BandsScreen,
+  ConcertScreen,
   MainScreen,
   Middleware,
   ProfileScreen,
+  SongScreen,
   SongsScreen
 } from '../../presentation/screens'
 
@@ -46,10 +49,13 @@ const MainNavigator = () => (
       animation: 'none'
     })}
   >
+    <MainStack.Screen name="Band" component={BandScreen} />
     <MainStack.Screen name="Bands" component={BandsScreen} />
+    <MainStack.Screen name="Concert" component={ConcertScreen} />
     <MainStack.Screen name="Home" component={MainScreen} />
     <MainStack.Screen name="Middleware" component={Middleware} />
     <MainStack.Screen name="Profile" component={ProfileScreen} />
+    <MainStack.Screen name="Song" component={SongScreen} />
     <MainStack.Screen name="Songs" component={SongsScreen} />
   </MainStack.Navigator>
 )

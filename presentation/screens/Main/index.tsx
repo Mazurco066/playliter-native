@@ -2,7 +2,10 @@
 import React from 'react'
 import styled from 'styled-components'
 import { useQuery } from '@tanstack/react-query'
+import { useNavigation } from '@react-navigation/native'
+import { NativeStackNavigationProp } from '@react-navigation/native-stack'
 import { useAuthStore } from '../../../main/store'
+import { MainStackParamList } from '../../../main/router'
 
 // Types
 import { IBand, IConcert } from '../../../domain'
@@ -26,9 +29,10 @@ const LoadingContainer = styled(View)`
 `
 
 // Main page
-const MainScreen = ({ navigation }): React.ReactElement => {
+const MainScreen = (): React.ReactElement => {
   // Hooks
   const { account } = useAuthStore()
+  const { navigate } = useNavigation<NativeStackNavigationProp<MainStackParamList>>()
 
   // HTTP Requests
   const {
@@ -78,9 +82,7 @@ const MainScreen = ({ navigation }): React.ReactElement => {
                     data={futureConcerts?.data?.data || []}
                     renderItem={({ item }: ListRenderItemInfo<IConcert>) => (
                       <ConcertListItem
-                        onPress={() => {
-                          console.log('on concert press: ' + item.id)
-                        }}
+                        onPress={() => navigate('Concert', { item })}
                         item={item}
                       />
                     )}
@@ -119,9 +121,7 @@ const MainScreen = ({ navigation }): React.ReactElement => {
                   data={bands?.data?.data || []}
                   renderItem={({ item }: ListRenderItemInfo<IBand>) => (
                     <BandListItem
-                      onPress={() => {
-                        console.log('on band press: ' + item.id)
-                      }}
+                      onPress={() => navigate('Band', { item })}
                       item={item}
                     />
                   )}

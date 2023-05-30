@@ -1,10 +1,13 @@
 // Dependencies
 import React, { useState, useCallback } from 'react'
 import styled from 'styled-components'
+import { useNavigation } from '@react-navigation/native'
+import { NativeStackNavigationProp } from '@react-navigation/native-stack'
 import { useInfiniteQuery } from '@tanstack/react-query'
 
 // Types
 import { ISong } from '../../../domain'
+import { MainStackParamList } from '../../../main/router'
 
 // Main API
 import api from '../../../infra/api'
@@ -49,10 +52,11 @@ const SearchButton = styled(Button)`
 const PAGE_SIZE = 32
 
 // Main component
-const SongsScreen = ({ navigation }) => {
+const SongsScreen = (): React.ReactElement => {
   // Hooks
   const theme = useTheme()
   const [ filterSearch, setFilterSearch ] = useState<string>('')
+  const { navigate } = useNavigation<NativeStackNavigationProp<MainStackParamList>>()
 
   // Api request function
   const fetchPublicSongs = async ({ pageParam = 0 }) => {
@@ -116,9 +120,7 @@ const SongsScreen = ({ navigation }) => {
     <SongListItem
       item={item}
       isLoading={isFetchingNextPage || isRefetching}
-      onPress={() => {
-        console.log('on public song press: ' + item.id)
-      }}
+      onPress={() => navigate('Song', { item })}
     />
   ), [isFetchingNextPage, isRefetching])
 
