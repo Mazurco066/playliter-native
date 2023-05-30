@@ -39,7 +39,9 @@ const BandScreen = ({ route }): React.ReactElement => {
 
   // TSX
   return (
-    <BaseContent>
+    <BaseContent
+      hideCardsNavigation
+    >
       <Text>Band - {band.title}</Text>
     </BaseContent>
   )

@@ -39,7 +39,9 @@ const SongScreen = ({ route }): React.ReactElement => {
 
   // TSX
   return (
-    <BaseContent>
+    <BaseContent
+      hideCardsNavigation
+    >
       <Text>Song - {song.title}</Text>
     </BaseContent>
   )

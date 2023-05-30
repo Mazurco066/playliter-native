@@ -20,6 +20,7 @@ const Wrapper = styled(Layout)`
 
 const ContentWrapper = styled(Layout)`
   flex: 1;
+  width: 100%;
   flex-direction: column;
   ${color}
 `
@@ -38,13 +39,15 @@ const AnimatedView = styled(Animated.View)`
 
 // Component params
 interface IBaseContent {
-  children: React.ReactElement | React.ReactElement[],
+  children: React.ReactElement | React.ReactElement[]
+  hideCardsNavigation?: boolean
   onEndReached?: () => void
 }
 
 // Main page
 const BaseContent = ({
   children,
+  hideCardsNavigation = false,
   onEndReached = () => {}
 }: IBaseContent): React.ReactElement => {
   // Hooks
@@ -67,9 +70,11 @@ const BaseContent = ({
         >
           {children}
         </Content>
-        <AnimatedView style={{ opacity: animatedValue }}>
-          <CardNavigation pointerEvents={null} />
-        </AnimatedView>
+        {hideCardsNavigation ? null : (
+          <AnimatedView style={{ opacity: animatedValue }}>
+            <CardNavigation pointerEvents={null} />
+          </AnimatedView>
+        )}
         <Space my={2} />
       </ContentWrapper>
     </Wrapper>

@@ -8,7 +8,9 @@ import api from '../../../infra/api'
 
 // Components
 import { Text } from '@ui-kitten/components'
+import { View } from 'react-native'
 import { BaseContent } from '../../layouts'
+import { ConcertHeaderContainer } from './elements'
 
 // Styled components
 
@@ -39,8 +41,12 @@ const ConcertScreen = ({ route }): React.ReactElement => {
 
   // TSX
   return (
-    <BaseContent>
-      <Text>Concert - {concert.title}</Text>
+    <BaseContent
+      hideCardsNavigation
+    >
+      <ConcertHeaderContainer
+        concert={concert}
+      />
     </BaseContent>
   )
 } 
