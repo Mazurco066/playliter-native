@@ -26,7 +26,7 @@ const BandScreen = ({ route }): React.ReactElement => {
     refetch: refetchItem
   } = useQuery(
     [`get-band-${band.id}`],
-    () => api.songs.getSong(band.id)
+    () => api.bands.getBand(band.id)
   )
 
   // Effects
