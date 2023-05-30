@@ -7,3 +7,6 @@ import { asyncRequestHandler } from '../../presentation/utils'
 // Endpoints
 export const getPendingConcerts = async () =>
   asyncRequestHandler(httpClient.get('/shows/get/pending_shows'))
+
+export const getConcert = async (id: string) =>
+  asyncRequestHandler(httpClient.get(`/shows/${id}`))

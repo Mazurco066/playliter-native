@@ -11,3 +11,6 @@ export const getPublicSongs = async (
   filter: string = ''
 ) =>
   asyncRequestHandler(httpClient.get(`/songs/get/public_songs?limit=${limit}&offset=${offset}&filter=${encodeURI(filter)}`))
+
+export const getSong = async (id: string) =>
+  asyncRequestHandler(httpClient.get(`/songs/${id}`))

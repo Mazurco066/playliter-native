@@ -1,5 +1,10 @@
 // Dependencies
-import React from 'react'
+import React, { useState, useEffect } from 'react'
+import { useQuery } from '@tanstack/react-query'
+import { IConcert } from '../../../domain'
+
+// Main API
+import api from '../../../infra/api'
 
 // Components
 import { Text } from '@ui-kitten/components'
@@ -12,10 +17,30 @@ const ConcertScreen = ({ route }): React.ReactElement => {
   // Destruct params
   const { item } = route.params
 
+  // Hooks
+  const [ concert, setConcert ] = useState<IConcert>(item)
+
+  // Http requests
+  const {
+    data: updatedItem,
+    refetch: refetchItem
+  } = useQuery(
+    [`get-concert-${concert.id}`],
+    () => api.concerts.getConcert(concert.id)
+  )
+
+  // Effects
+  useEffect(() => {
+    if (updatedItem && updatedItem.data) {
+      const { data } = updatedItem.data
+      if (data) setConcert(data as IConcert)
+    }
+  }, [updatedItem])
+
   // TSX
   return (
     <BaseContent>
-      <Text>Concert - {item.title}</Text>
+      <Text>Concert - {concert.title}</Text>
     </BaseContent>
   )
 } 
