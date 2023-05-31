@@ -120,7 +120,7 @@ const SongsScreen = (): React.ReactElement => {
     <SongListItem
       item={item}
       isLoading={isFetchingNextPage || isRefetching}
-      onPress={() => navigate('Song', { item })}
+      onPress={() => navigate('Song', { item, itemId: item.id })}
     />
   ), [isFetchingNextPage, isRefetching])
 

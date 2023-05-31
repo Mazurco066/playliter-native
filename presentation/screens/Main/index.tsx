@@ -82,7 +82,7 @@ const MainScreen = (): React.ReactElement => {
                     data={futureConcerts?.data?.data || []}
                     renderItem={({ item }: ListRenderItemInfo<IConcert>) => (
                       <ConcertListItem
-                        onPress={() => navigate('Concert', { item })}
+                        onPress={() => navigate('Concert', { item, itemId: item.id })}
                         item={item}
                       />
                     )}
@@ -121,7 +121,7 @@ const MainScreen = (): React.ReactElement => {
                   data={bands?.data?.data || []}
                   renderItem={({ item }: ListRenderItemInfo<IBand>) => (
                     <BandListItem
-                      onPress={() => navigate('Band', { item })}
+                      onPress={() => navigate('Band', { item, itemId: item.id })}
                       item={item}
                     />
                   )}

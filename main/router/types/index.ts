@@ -3,8 +3,8 @@ import { IBand, IConcert, ISong } from '../../../domain'
 
 // Defined route params
 export type MainStackParamList = {
-  [key: string]: {} | undefined,
-  Band: { item: IBand },
-  Concert: { item: IConcert },
-  Song: { item: ISong }
+  [key: string]: any
+  Band: { item?: IBand, itemId: string }
+  Concert: { item?: IConcert, itemId: string }
+  Song: { item?: ISong, itemId: string }
 }

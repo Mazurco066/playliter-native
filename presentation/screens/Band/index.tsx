@@ -1,4 +1,5 @@
 // Dependencies
+import styled from 'styled-components'
 import React, { useState, useEffect }  from 'react'
 import { useQuery } from '@tanstack/react-query'
 import { IBand } from '../../../domain'
@@ -7,15 +8,22 @@ import { IBand } from '../../../domain'
 import api from '../../../infra/api'
 
 // Components
-import { Text } from '@ui-kitten/components'
+import { Spinner, Text } from '@ui-kitten/components'
+import { View } from 'react-native'
 import { BaseContent } from '../../layouts'
 
 // Styled components
+const LoadingContainer = styled(View)`
+  justify-content: center;
+  align-items: center;
+  margin-top: 16px;
+  margin-bottom: 16px;
+`
 
 // Page Main component
 const BandScreen = ({ route }): React.ReactElement => {
   // Destruct params
-  const { item } = route.params
+  const { item, itemId } = route.params
 
   // Hooks
   const [ band, setBand ] = useState<IBand>(item)
@@ -23,10 +31,11 @@ const BandScreen = ({ route }): React.ReactElement => {
   // Http requests
   const {
     data: updatedItem,
+    isLoading: isFetching,
     refetch: refetchItem
   } = useQuery(
-    [`get-band-${band.id}`],
-    () => api.bands.getBand(band.id)
+    [`get-band-${itemId}`],
+    () => api.bands.getBand(itemId)
   )
 
   // Effects
@@ -39,10 +48,18 @@ const BandScreen = ({ route }): React.ReactElement => {
 
   // TSX
   return (
-    <BaseContent
-      hideCardsNavigation
-    >
-      <Text>Band - {band.title}</Text>
+    <BaseContent hideCardsNavigation>
+      {
+        band ? (
+          <>
+            <Text>Band - {band.title}</Text>
+          </>
+        ) : isFetching ? (
+          <LoadingContainer>
+            <Spinner size="large" />
+          </LoadingContainer>
+        ) : null
+      }
     </BaseContent>
   )
 } 

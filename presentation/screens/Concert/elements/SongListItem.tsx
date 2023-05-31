@@ -4,24 +4,24 @@ import styled from 'styled-components'
 import { color } from 'styled-system'
 
 // Types
-import { ISong } from '../../../../domain'
+import { IConcertSongDto } from '../../../../domain'
 
 // Components
-import { LinearGradient } from 'expo-linear-gradient'
 import { TouchableOpacity, View } from 'react-native'
-import { Avatar, Layout, Text, useTheme } from '@ui-kitten/components'
+import { Button, Icon, IconElement, Layout, Text, useTheme } from '@ui-kitten/components'
 
 // Styles components
 const Wrapper = styled(TouchableOpacity)`
   width: 100%;
-  height: 72px;
+  height: 64px;
   border-radius: 8px;
   overflow: hidden;
-  margin-bottom: 8px;
 `
 
 const ItemLayout = styled(Layout)`
+  height: 100%;
   flex-grow: 1;
+  display: flex;
   flex-direction: row;
   align-items: center;
   justify-content: flex-start;
@@ -29,47 +29,73 @@ const ItemLayout = styled(Layout)`
   ${color}
 `
 
-const ItemGradient = styled(LinearGradient)`
+const ItemOrder = styled(View)`
   flex: 0 0 auto;
-  width: 35px;
+  min-width: 24px;
   height: 100%;
-  position: relative;
-  flex-direction: row;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding-left: 20px;
+`
+
+const ItemOrderNumber = styled(Text)`
+  width: 100%;
+  text-align: center;
+  font-size: 20px;
+  font-weight: bold;
+`
+
+const ItemAction = styled(View)`
+  flex: 0 0 auto;
+  min-width: 24px;
+  height: 100%;
+  display: flex;
+  justify-content: center;
   align-items: center;
 `
 
-const BandLogo = styled(Avatar)`
-  position: absolute;
-  border-color: #ffffff;
-  border-width: 1px;
-  right: -20px;
-`
-
 const ItemData = styled(View)`
-  flex-grow: 1;
+  flex: 1;
   align-items: flex-start;
   justify-content: center;
-  padding: 8px 12px 8px 20px;
+  padding: 8px;
   ${color}
 `
 
 const SongTextInfo = styled(Text)`
-  max-width: 90%;
+  max-width: 100%;
   overflow: hidden;
 `
 
 // Component properties
 interface IConcertListItem {
-  item: ISong,
-  isLoading?: boolean,
+  item: IConcertSongDto
+  number?: number
+  isLoading?: boolean
   onPress?: () => void
+  onRemovePress?: () => void
 }
+
+// Get icon aux function
+const getIcon = (
+  iconName: string,
+  fill: string = '#ffffff'
+) => (props: any): IconElement => (
+  <Icon
+    {...props}
+    name={iconName}
+    fill={fill}
+  />
+)
 
 // Component
 const SongListItem = ({
   item,
+  number = 0,
   isLoading = false,
-  onPress = () => {}
+  onPress = () => {},
+  onRemovePress = () => {}
 }: IConcertListItem): React.ReactElement => {
   // Hooks
   const theme = useTheme()
@@ -85,13 +111,14 @@ const SongListItem = ({
           backgroundColor: theme['color-basic-700']
         }}
       >
-        <ItemGradient
-          colors={[theme['color-primary-500'], theme['color-secondary-500']]}
-        >
-          <BandLogo 
-            source={{ uri: item.band.logo }}
-          />
-        </ItemGradient>
+        <ItemOrder>
+          <ItemOrderNumber
+            category='label'
+            style={{ color: theme['color-secondary-500'] }}
+          >
+            {number}
+          </ItemOrderNumber>
+        </ItemOrder>
         <ItemData>
           <SongTextInfo
             category="label"
@@ -109,23 +136,22 @@ const SongListItem = ({
             ellipsizeMode="tail"
             style={{
               fontSize: 14,
-              color: theme['color-secondary-500']
+              fontWeight: 'normal'
             }}
           >
             {item.writter}
           </SongTextInfo>
-          <SongTextInfo
-            category="c1"
-            numberOfLines={1}
-            ellipsizeMode="tail"
-            style={{
-              color: theme['color-basic-200'],
-              marginTop: 2
-            }}
-          >
-            Publicada por {item.band.title}
-          </SongTextInfo>
         </ItemData>
+        <ItemAction>
+          <Button
+            size="small"
+            appearance="ghost"
+            accessoryLeft={getIcon('close-outline', theme['color-danger-500'])}
+            style={{ height: '100%' }}
+            disabled={isLoading}
+            onPress={onRemovePress}
+          />
+        </ItemAction>
       </ItemLayout>
     </Wrapper>
   )

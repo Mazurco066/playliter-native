@@ -1,4 +1,5 @@
 // Dependencies
+import styled from 'styled-components'
 import React, { useState, useEffect }  from 'react'
 import { useQuery } from '@tanstack/react-query'
 import { ISong } from '../../../domain'
@@ -7,26 +8,34 @@ import { ISong } from '../../../domain'
 import api from '../../../infra/api'
 
 // Components
-import { Text } from '@ui-kitten/components'
+import { Spinner, Text } from '@ui-kitten/components'
+import { View } from 'react-native'
 import { BaseContent } from '../../layouts'
 
 // Styled components
+const LoadingContainer = styled(View)`
+  justify-content: center;
+  align-items: center;
+  margin-top: 16px;
+  margin-bottom: 16px;
+`
 
 // Page Main component
 const SongScreen = ({ route }): React.ReactElement => {
   // Destruct params
-  const { item } = route.params
+  const { item, itemId } = route.params
 
   // Hooks
-  const [ song, setSong ] = useState<ISong>(item)
+  const [ song, setSong ] = useState<ISong | null>(item ?? null)
 
   // Http requests
   const {
     data: updatedItem,
+    isLoading: isFetching,
     refetch: refetchItem
   } = useQuery(
-    [`get-song-${song.id}`],
-    () => api.songs.getSong(song.id)
+    [`get-song-${itemId}`],
+    () => api.songs.getSong(itemId)
   )
 
   // Effects
@@ -39,10 +48,18 @@ const SongScreen = ({ route }): React.ReactElement => {
 
   // TSX
   return (
-    <BaseContent
-      hideCardsNavigation
-    >
-      <Text>Song - {song.title}</Text>
+    <BaseContent hideCardsNavigation>
+      {
+        song ? (
+          <>
+            <Text>Song - {song.title}</Text>
+          </>
+        ) : isFetching ? (
+          <LoadingContainer>
+            <Spinner size="large" />
+          </LoadingContainer>
+        ) : null
+      }
     </BaseContent>
   )
 } 

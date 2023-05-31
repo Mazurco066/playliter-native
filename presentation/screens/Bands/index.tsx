@@ -71,7 +71,7 @@ const BandsScreen = () => {
                     data={bands?.data?.data || []}
                     renderItem={({ item }: ListRenderItemInfo<IBand>) => (
                       <BandListItem
-                        onPress={() => navigate('Band', { item })}
+                        onPress={() => navigate('Band', { item, itemId: item.id })}
                         item={item}
                       />
                     )}
