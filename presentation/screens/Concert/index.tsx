@@ -11,9 +11,9 @@ import { MainStackParamList } from '../../../main/router'
 import api from '../../../infra/api'
 
 // Components
-import { Spinner, Text, useTheme } from '@ui-kitten/components'
+import { Spinner, Text } from '@ui-kitten/components'
 import { FlatList, ListRenderItemInfo, View } from 'react-native'
-import { BaseContent } from '../../layouts'
+import { BaseContent, ConfirmDialog } from '../../layouts'
 import { Space } from '../../components'
 import { ConcertHeaderContainer, SongListItem } from './elements'
 
@@ -25,15 +25,19 @@ const LoadingContainer = styled(View)`
   margin-bottom: 16px;
 `
 
+// Page interfaces
+type ConfirmActions = { name: 'delete_concert' | 'remove_song', id?: string }
+
 // Page Main component
 const ConcertScreen = ({ route }): React.ReactElement => {
   // Destruct params
   const { item, itemId } = route.params
 
   // Hooks
-  const theme = useTheme()
   const { navigate } = useNavigation<NativeStackNavigationProp<MainStackParamList>>()
   const [ concert, setConcert ] = useState<IConcert | null>(item ?? null)
+  const [ isConfirmDialogOpen, setConfirmDialogState ] = useState<boolean>(false)
+  const [ action, setAction ] = useState<ConfirmActions>({ name: 'delete_concert' })
 
   // Http requests
   const {
@@ -53,6 +57,11 @@ const ConcertScreen = ({ route }): React.ReactElement => {
     }
   }, [updatedItem])
 
+  // Actions
+  const confirmDialogActions = async (action: ConfirmActions) => {
+    console.log('confirmed action: ' + action.name + ' with id: ' + action.id)
+  }
+
   // TSX
   return (
     <BaseContent hideCardsNavigation>
@@ -61,7 +70,10 @@ const ConcertScreen = ({ route }): React.ReactElement => {
           <>
             <ConcertHeaderContainer
               concert={concert}
-              onDeletePress={() => console.log('delete click')}
+              onDeletePress={() => {
+                setAction({ name: 'delete_concert', id: concert.id })
+                setConfirmDialogState(true)
+              }}
               onEditPress={() => console.log('edit click')}
               onNotesPress={() => console.log('notes click')}
               onReorderPress={() => console.log('reorder click')}
@@ -86,7 +98,10 @@ const ConcertScreen = ({ route }): React.ReactElement => {
                       item={item}
                       number={index + 1}
                       onPress={() => navigate('Song', { itemId: item.id })}
-                      onRemovePress={() => console.log('remove from concert press ' + item.id)}
+                      onRemovePress={() => {
+                        setAction({ name: 'remove_song', id: item.id })
+                        setConfirmDialogState(true)
+                      }}
                     />
                   )}
                 />    
@@ -106,7 +121,12 @@ const ConcertScreen = ({ route }): React.ReactElement => {
           </LoadingContainer>
         ) : null
       }
-      
+      <ConfirmDialog
+        action={action}
+        isVisible={isConfirmDialogOpen}
+        onClose={() => setConfirmDialogState(false)}
+        onConfirmAction={confirmDialogActions}
+      />
     </BaseContent>
   )
 } 
