@@ -2,13 +2,14 @@
 import React from 'react'
 import styled from 'styled-components'
 import { color } from 'styled-system'
+import { getIcon } from '../../../utils'
 
 // Types
 import { IConcertSongDto } from '../../../../domain'
 
 // Components
 import { TouchableOpacity, View } from 'react-native'
-import { Button, Icon, IconElement, Layout, Text, useTheme } from '@ui-kitten/components'
+import { Button, Layout, Text, useTheme } from '@ui-kitten/components'
 
 // Styles components
 const Wrapper = styled(TouchableOpacity)`
@@ -76,18 +77,6 @@ interface IConcertListItem {
   onPress?: () => void
   onRemovePress?: () => void
 }
-
-// Get icon aux function
-const getIcon = (
-  iconName: string,
-  fill: string = '#ffffff'
-) => (props: any): IconElement => (
-  <Icon
-    {...props}
-    name={iconName}
-    fill={fill}
-  />
-)
 
 // Component
 const SongListItem = ({

@@ -11,7 +11,7 @@ import { MainStackParamList } from '../../../main/router'
 import api from '../../../infra/api'
 
 // Components
-import { Spinner, Text } from '@ui-kitten/components'
+import { Spinner, Text, useTheme } from '@ui-kitten/components'
 import { FlatList, ListRenderItemInfo, View } from 'react-native'
 import { BaseContent } from '../../layouts'
 import { Space } from '../../components'
@@ -31,6 +31,7 @@ const ConcertScreen = ({ route }): React.ReactElement => {
   const { item, itemId } = route.params
 
   // Hooks
+  const theme = useTheme()
   const { navigate } = useNavigation<NativeStackNavigationProp<MainStackParamList>>()
   const [ concert, setConcert ] = useState<IConcert | null>(item ?? null)
 

@@ -2,15 +2,13 @@
 import React, { useState } from 'react'
 import styled from 'styled-components'
 import { color } from 'styled-system'
-import { formatISODate } from '../../../utils'
+import { getIcon, formatISODate } from '../../../utils'
 import { IConcert } from '../../../../domain'
 
 // Components
 import {
   Avatar,
   Button,
-  Icon,
-  IconElement,
   IndexPath,
   MenuItem,
   OverflowMenu,
@@ -77,18 +75,6 @@ interface IConcertHeaderContainer {
   onReorderPress?: () => void
   onSequentialPress?: () => void
 }
-
-// Get icon aux function
-const getIcon = (
-  iconName: string,
-  fill: string = '#ffffff'
-) => (props: any): IconElement => (
-  <Icon
-    {...props}
-    name={iconName}
-    fill={fill}
-  />
-)
 
 // Page component
 const ConcertHeaderContainer = ({
