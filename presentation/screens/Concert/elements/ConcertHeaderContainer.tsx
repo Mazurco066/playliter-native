@@ -68,7 +68,8 @@ const ButtonContainer = styled(View)`
 
 // Component params
 interface IConcertHeaderContainer {
-  concert: IConcert,
+  concert: IConcert
+  isLoading?: boolean
   onDeletePress?: () => void
   onEditPress?: () => void
   onNotesPress?: () => void
@@ -79,6 +80,7 @@ interface IConcertHeaderContainer {
 // Page component
 const ConcertHeaderContainer = ({
   concert,
+  isLoading = false,
   onDeletePress = () => {},
   onEditPress = () => {},
   onNotesPress = () => {},
@@ -118,6 +120,7 @@ const ConcertHeaderContainer = ({
             <MenuItem
               title='Editar'
               accessoryLeft={getIcon('edit-2-outline')}
+              disabled={isLoading}
               onPress={onEditPress}
               style={{
                 backgroundColor: theme['color-basic-700']
@@ -126,6 +129,7 @@ const ConcertHeaderContainer = ({
             <MenuItem
               title='Reordenar músicas'
               accessoryLeft={getIcon('flip-outline')}
+              disabled={isLoading}
               onPress={onReorderPress}
               style={{
                 backgroundColor: theme['color-basic-700']
@@ -134,6 +138,7 @@ const ConcertHeaderContainer = ({
             <MenuItem
               title='Excluir'
               accessoryLeft={getIcon('trash-2-outline')}
+              disabled={isLoading}
               onPress={onDeletePress}
               style={{
                 backgroundColor: theme['color-basic-700']
@@ -188,6 +193,7 @@ const ConcertHeaderContainer = ({
             appearance="ghost"
             size="medium"
             onPress={onNotesPress}
+            disabled={isLoading}
             style={{
               flex: 0,
               borderRadius: 8,
@@ -199,6 +205,7 @@ const ConcertHeaderContainer = ({
             status="primary"
             size="medium"
             onPress={onSequentialPress}
+            disabled={isLoading}
             style={{
               flex: 1,
               borderRadius: 8

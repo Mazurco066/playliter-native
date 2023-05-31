@@ -1,7 +1,7 @@
 // Dependencies
 import styled from 'styled-components'
 import React, { useState, useEffect } from 'react'
-import { useQuery } from '@tanstack/react-query'
+import { useQuery, useMutation } from '@tanstack/react-query'
 import { useNavigation } from '@react-navigation/native'
 import { NativeStackNavigationProp } from '@react-navigation/native-stack'
 import { IConcert, IConcertSongDto } from '../../../domain'
@@ -13,6 +13,7 @@ import api from '../../../infra/api'
 // Components
 import { Spinner, Text } from '@ui-kitten/components'
 import { FlatList, ListRenderItemInfo, View } from 'react-native'
+import { showMessage } from 'react-native-flash-message'
 import { BaseContent, ConfirmDialog } from '../../layouts'
 import { Space } from '../../components'
 import { ConcertHeaderContainer, SongListItem } from './elements'
@@ -34,7 +35,7 @@ const ConcertScreen = ({ route }): React.ReactElement => {
   const { item, itemId } = route.params
 
   // Hooks
-  const { navigate } = useNavigation<NativeStackNavigationProp<MainStackParamList>>()
+  const { goBack, navigate } = useNavigation<NativeStackNavigationProp<MainStackParamList>>()
   const [ concert, setConcert ] = useState<IConcert | null>(item ?? null)
   const [ isConfirmDialogOpen, setConfirmDialogState ] = useState<boolean>(false)
   const [ action, setAction ] = useState<ConfirmActions>({ name: 'delete_concert' })
@@ -49,6 +50,24 @@ const ConcertScreen = ({ route }): React.ReactElement => {
     () => api.concerts.getConcert(itemId)
   )
 
+  const {
+    isLoading: isDeletingConcert,
+    mutateAsync: deleteConcert
+  } = useMutation(
+    (id: string) => api.concerts.deleteConcert(id)
+  )
+
+  const {
+    isLoading: isUnlinkingSong,
+    mutateAsync: unlinkSong
+  } = useMutation(
+    (data: { id: string, songId: string }) =>
+      api.concerts.unlinkSong(data.id, data.songId)
+  )
+
+  // General api loading
+  const isApiLoading = isUnlinkingSong || isDeletingConcert
+
   // Effects
   useEffect(() => {
     if (updatedItem && updatedItem.data) {
@@ -59,7 +78,57 @@ const ConcertScreen = ({ route }): React.ReactElement => {
 
   // Actions
   const confirmDialogActions = async (action: ConfirmActions) => {
-    console.log('confirmed action: ' + action.name + ' with id: ' + action.id)
+    switch (action.name) {
+      case 'delete_concert':
+        const deleteResponse = await deleteConcert(action.id)
+        if ([200, 201].includes(deleteResponse.status)) {
+          showMessage({
+            message: `A apresentação foi removida com sucesso!`,
+            type: 'success',
+            duration: 2000
+          })
+          goBack()
+        } else if ([401, 403].includes(deleteResponse.status)) {
+          showMessage({
+            message: `Você não tem permissão para remover essa apresentação!`,
+            type: 'warning',
+            duration: 2000
+          })
+        } else {
+          showMessage({
+            message: `Ocorreu um erro ao remover a apresentação! Tente novamente mais tarde.`,
+            type: 'danger',
+            duration: 2000
+          })
+        }
+        break
+      case 'remove_song':
+        const unlinkResponse = await unlinkSong({
+          id: concert.id,
+          songId: action.id
+        })
+        if ([200, 201].includes(unlinkResponse.status)) {
+          showMessage({
+            message: `A música selecionada foi removida da apresentação!`,
+            type: 'success',
+            duration: 2000
+          })
+          refetchItem()
+        } else if ([401, 403].includes(deleteResponse.status)) {
+          showMessage({
+            message: `Você não tem permissão para remover essa apresentação!`,
+            type: 'warning',
+            duration: 2000
+          })
+        } else {
+          showMessage({
+            message: `Ocorreu um erro ao remover a música da apresentação! Tente novamente mais tarde.`,
+            type: 'danger',
+            duration: 2000
+          })
+        }
+        break
+    }
   }
 
   // TSX
@@ -70,6 +139,7 @@ const ConcertScreen = ({ route }): React.ReactElement => {
           <>
             <ConcertHeaderContainer
               concert={concert}
+              isLoading={isApiLoading}
               onDeletePress={() => {
                 setAction({ name: 'delete_concert', id: concert.id })
                 setConfirmDialogState(true)
@@ -97,6 +167,7 @@ const ConcertScreen = ({ route }): React.ReactElement => {
                     <SongListItem
                       item={item}
                       number={index + 1}
+                      isLoading={isApiLoading}
                       onPress={() => navigate('Song', { itemId: item.id })}
                       onRemovePress={() => {
                         setAction({ name: 'remove_song', id: item.id })

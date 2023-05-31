@@ -10,3 +10,9 @@ export const getPendingConcerts = async () =>
 
 export const getConcert = async (id: string) =>
   asyncRequestHandler(httpClient.get(`/shows/${id}`))
+
+export const deleteConcert = async (id: string) =>
+  asyncRequestHandler(httpClient.delete(`/shows/${id}`))
+
+export const unlinkSong = async (id: string, songId: string) =>
+  asyncRequestHandler(httpClient.patch(`/shows/${id}/unlink_song`, { songId }))
