@@ -114,7 +114,7 @@ const ConcertScreen = ({ route }): React.ReactElement => {
             duration: 2000
           })
           refetchItem()
-        } else if ([401, 403].includes(deleteResponse.status)) {
+        } else if ([401, 403].includes(unlinkResponse.status)) {
           showMessage({
             message: `Você não tem permissão para remover essa apresentação!`,
             type: 'warning',
@@ -146,7 +146,7 @@ const ConcertScreen = ({ route }): React.ReactElement => {
               }}
               onEditPress={() => console.log('edit click')}
               onNotesPress={() => console.log('notes click')}
-              onReorderPress={() => console.log('reorder click')}
+              onReorderPress={() => navigate('ReorderConcert', { item: concert })}
               onSequentialPress={() => console.log('sequential click')}
             />
             <Space my={1} />

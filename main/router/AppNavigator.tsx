@@ -17,6 +17,7 @@ import {
   MainScreen,
   Middleware,
   ProfileScreen,
+  ReorderConcert,
   SongScreen,
   SongsScreen
 } from '../../presentation/screens'
@@ -52,6 +53,7 @@ const MainNavigator = () => (
     <MainStack.Screen name="Band" component={BandScreen} />
     <MainStack.Screen name="Bands" component={BandsScreen} />
     <MainStack.Screen name="Concert" component={ConcertScreen} />
+    <MainStack.Screen name="ReorderConcert" component={ReorderConcert} />
     <MainStack.Screen name="Home" component={MainScreen} />
     <MainStack.Screen name="Middleware" component={Middleware} />
     <MainStack.Screen name="Profile" component={ProfileScreen} />

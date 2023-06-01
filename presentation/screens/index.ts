@@ -9,6 +9,9 @@ import ProfileScreen from './Profile'
 import SongScreen from './Song'
 import SongsScreen from './Songs'
 
+// Subscreens
+export * from './Concert/subscreens'
+
 // Unifying exports
 export {
   AuthScreen,

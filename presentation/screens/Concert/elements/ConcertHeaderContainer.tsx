@@ -183,7 +183,10 @@ const ConcertHeaderContainer = ({
         />
         <Text
           category="s1"
-          style={{ marginBottom: 16 }}
+          style={{
+            marginBottom: 16,
+            textAlign: 'center'
+          }}
         >
           {concert.description}
         </Text>

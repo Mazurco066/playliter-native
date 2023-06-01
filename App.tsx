@@ -7,8 +7,9 @@ import { AppNavigator } from './main'
 import { navigationRef } from './main/services/navigationService'
 import { NavigationContainer } from '@react-navigation/native'
 
-// Safe Area
+// Package provides
 import { SafeAreaView } from 'react-native-safe-area-context'
+import { GestureHandlerRootView } from 'react-native-gesture-handler'
 
 // Design package
 import * as eva from '@eva-design/eva'
@@ -26,19 +27,21 @@ const queryClient: QueryClient = new QueryClient()
 export default function App() {
   return (
     <QueryClientProvider client={queryClient}>
-      <SafeAreaView style={{ flex: 1 }}>
-        <IconRegistry icons={EvaIconsPack} />
-        <StatusBar style="dark" />
-          <ApplicationProvider {...eva} theme={{ ...eva.dark, ...theme }}>
-            <NavigationContainer ref={navigationRef}>
-              <AppNavigator />
-            </NavigationContainer>
-            <FlashMessage
-              icon="auto"
-              position="bottom"
-            />
-          </ApplicationProvider>
-      </SafeAreaView>
+      <GestureHandlerRootView style={{ flex: 1 }}>
+        <SafeAreaView style={{ flex: 1 }}>
+          <IconRegistry icons={EvaIconsPack} />
+          <StatusBar style="dark" />
+            <ApplicationProvider {...eva} theme={{ ...eva.dark, ...theme }}>
+              <NavigationContainer ref={navigationRef}>
+                <AppNavigator />
+              </NavigationContainer>
+              <FlashMessage
+                icon="auto"
+                position="bottom"
+              />
+            </ApplicationProvider>
+        </SafeAreaView>
+      </GestureHandlerRootView>
     </QueryClientProvider>
   )
 }
