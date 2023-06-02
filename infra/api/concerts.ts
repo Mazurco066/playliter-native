@@ -17,5 +17,8 @@ export const reorderConcert = async (id: string, songs: string[]) =>
 export const deleteConcert = async (id: string) =>
   asyncRequestHandler(httpClient.delete(`/shows/${id}`))
 
+export const linkSong = async (id: string, songId: string) =>
+  asyncRequestHandler(httpClient.patch(`/shows/${id}/link_song`, { songId }))
+
 export const unlinkSong = async (id: string, songId: string) =>
   asyncRequestHandler(httpClient.patch(`/shows/${id}/unlink_song`, { songId }))

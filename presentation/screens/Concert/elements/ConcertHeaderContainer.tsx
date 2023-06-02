@@ -70,6 +70,7 @@ const ButtonContainer = styled(View)`
 interface IConcertHeaderContainer {
   concert: IConcert
   isLoading?: boolean
+  onAddPress?: () => void
   onDeletePress?: () => void
   onEditPress?: () => void
   onNotesPress?: () => void
@@ -81,6 +82,7 @@ interface IConcertHeaderContainer {
 const ConcertHeaderContainer = ({
   concert,
   isLoading = false,
+  onAddPress = () => {},
   onDeletePress = () => {},
   onEditPress = () => {},
   onNotesPress = () => {},
@@ -117,6 +119,15 @@ const ConcertHeaderContainer = ({
             onSelect={onItemSelect}
             onBackdropPress={() => setVisible(false)}
           >
+            <MenuItem
+              title='Adicionar músicas públicas'
+              accessoryLeft={getIcon('plus-outline')}
+              disabled={isLoading}
+              onPress={onAddPress}
+              style={{
+                backgroundColor: theme['color-basic-700']
+              }}
+            />
             <MenuItem
               title='Editar'
               accessoryLeft={getIcon('edit-2-outline')}

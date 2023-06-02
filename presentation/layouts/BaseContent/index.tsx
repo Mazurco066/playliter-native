@@ -6,12 +6,13 @@ import { isCloseToBottom } from '../../utils'
 
 // Components
 import CardNavigation from '../CardNavigation'
-import { Animated, ScrollView } from 'react-native'
-import { Layout, useTheme } from '@ui-kitten/components'
+import { Animated, ScrollView, TouchableOpacity } from 'react-native'
+import { Icon, Layout, useTheme } from '@ui-kitten/components'
 import { Space } from '../../components'
 
 // Styled components
 const Wrapper = styled(Layout)`
+  position: relative;
   flex: 1;
   justify-content: center;
   align-items: center;
@@ -37,17 +38,38 @@ const AnimatedView = styled(Animated.View)`
   ${color}
 `
 
+const FloatingButton = styled(TouchableOpacity)`
+  position: absolute;
+  right: 24px;
+  bottom: 24px;
+  width: 48px;
+  height: 48px;
+  border-radius: 24px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 9;
+`
+
 // Component params
 interface IBaseContent {
   children: React.ReactElement | React.ReactElement[]
+  floatingIcon?: string
   hideCardsNavigation?: boolean
+  isFloatingButtonDisabled?: boolean
+  showFloatingButton?: boolean
+  onFloatingButtonPress?: () => void
   onEndReached?: () => void
 }
 
 // Main page
 const BaseContent = ({
   children,
+  floatingIcon = 'plus-outline',
   hideCardsNavigation = false,
+  isFloatingButtonDisabled = false,
+  showFloatingButton = false,
+  onFloatingButtonPress = () => {},
   onEndReached = () => {}
 }: IBaseContent): React.ReactElement => {
   // Hooks
@@ -77,6 +99,26 @@ const BaseContent = ({
         )}
         <Space my={2} />
       </ContentWrapper>
+      {
+        showFloatingButton ? (
+          <FloatingButton
+            onPress={onFloatingButtonPress}
+            disabled={isFloatingButtonDisabled}
+            style={{
+              backgroundColor: theme['color-primary-500']
+            }}
+          >
+            <Icon
+              name={floatingIcon}
+              fill="#ffffff"
+              style={{
+                width: 24,
+                height: 24
+              }}
+            />
+          </FloatingButton>
+        ) : null
+      }
     </Wrapper>
   )
 }

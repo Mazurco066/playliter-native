@@ -131,15 +131,35 @@ const ConcertScreen = ({ route }): React.ReactElement => {
     }
   }
 
+  // Render list item function
+  const renderItem = ({ item, index }: ListRenderItemInfo<IConcertSongDto>) => (
+    <SongListItem
+      item={item}
+      number={index + 1}
+      isLoading={isApiLoading}
+      onPress={() => navigate('Song', { itemId: item.id })}
+      onRemovePress={() => {
+        setAction({ name: 'remove_song', id: item.id })
+        setConfirmDialogState(true)
+      }}
+    />
+  )
+
   // TSX
   return (
-    <BaseContent hideCardsNavigation>
+    <BaseContent
+      hideCardsNavigation
+      showFloatingButton
+      isFloatingButtonDisabled={isApiLoading}
+      onFloatingButtonPress={() => navigate('AddConcertSongs', { item: concert })}
+    >
       {
         concert ? (
           <>
             <ConcertHeaderContainer
               concert={concert}
               isLoading={isApiLoading}
+              onAddPress={() => navigate('AddPublicConcertSongs', { item: concert })}
               onDeletePress={() => {
                 setAction({ name: 'delete_concert', id: concert.id })
                 setConfirmDialogState(true)
@@ -158,23 +178,12 @@ const ConcertScreen = ({ route }): React.ReactElement => {
                 <FlatList
                   ItemSeparatorComponent={() => <Space my={1} />}
                   ListHeaderComponent={() => <Space my={2} />}
-                  ListFooterComponent={() => <Space my={2} />}
+                  ListFooterComponent={() => <Space my={4} />}
                   keyExtractor={(item) => item.id}
                   showsHorizontalScrollIndicator={false}
                   scrollEnabled={false}
                   data={concert.songs || []}
-                  renderItem={({ item, index }: ListRenderItemInfo<IConcertSongDto>) => (
-                    <SongListItem
-                      item={item}
-                      number={index + 1}
-                      isLoading={isApiLoading}
-                      onPress={() => navigate('Song', { itemId: item.id })}
-                      onRemovePress={() => {
-                        setAction({ name: 'remove_song', id: item.id })
-                        setConfirmDialogState(true)
-                      }}
-                    />
-                  )}
+                  renderItem={renderItem}
                 />    
               ) : (
                 <Text

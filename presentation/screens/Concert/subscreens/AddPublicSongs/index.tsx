@@ -53,7 +53,7 @@ const SearchButton = styled(Button)`
 const PAGE_SIZE = 50
 
 // Main component
-const AddConcertSongs = ({ route }): React.ReactElement => {
+const AddPublicConcertSongs = ({ route }): React.ReactElement => {
   // Destruct params
   const { item } = route.params
 
@@ -64,8 +64,7 @@ const AddConcertSongs = ({ route }): React.ReactElement => {
 
   // Api request function
   const fetchPublicSongs = async ({ pageParam = 0 }) => {
-    const response = await api.songs.getBandSongs(
-      item.band.id,
+    const response = await api.songs.getPublicSongs(
       {
         limit: PAGE_SIZE,
         offset: pageParam
@@ -93,7 +92,7 @@ const AddConcertSongs = ({ route }): React.ReactElement => {
     hasNextPage,
     refetch
   } = useInfiniteQuery(
-    [`add_concert_songs_${item.id}`],
+    [`add_concert_public_songs_${item.id}`],
     fetchPublicSongs, {
       getNextPageParam: (lastPage) => {
         if (lastPage.data.data.length < PAGE_SIZE) return undefined
@@ -183,7 +182,7 @@ const AddConcertSongs = ({ route }): React.ReactElement => {
       </Text>
       <Space my={1} />
       <Text category="s1">
-        Pequise por músicas salvas nessa banda:
+        Pequise por músicas públicas no aplicativo:
       </Text>
       <Space my={1} />
       <SearchContainer>
@@ -248,4 +247,4 @@ const AddConcertSongs = ({ route }): React.ReactElement => {
 }
 
 // Exporting page
-export default AddConcertSongs
+export default AddPublicConcertSongs
