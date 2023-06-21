@@ -19,6 +19,7 @@ import { FlatList, ListRenderItemInfo, View } from 'react-native'
 import { BaseContent } from '../../layouts'
 import { BandListItem, ConcertListItem } from './elements'
 import { Space } from '../../components'
+import { useRefreshOnFocus } from '../../hooks'
 
 // Styled components
 const LoadingContainer = styled(View)`
@@ -37,14 +38,16 @@ const MainScreen = (): React.ReactElement => {
   // HTTP Requests
   const {
     data: futureConcerts,
-    isLoading: isFutureConcertsLoading
+    isLoading: isFutureConcertsLoading,
+    refetch: refetchFutureConcerts
   } = useQuery(
     ['shows_home'],
     () => api.concerts.getPendingConcerts()
   )
   const {
     data: bands,
-    isLoading: isBandsLoading
+    isLoading: isBandsLoading,
+    refetch: refetchBands
   } = useQuery(
     ['bands_home'],
     () => api.bands.getBands({
@@ -52,6 +55,10 @@ const MainScreen = (): React.ReactElement => {
       offset: 0
     })
   )
+
+  // Refetch
+  useRefreshOnFocus(refetchFutureConcerts)
+  useRefreshOnFocus(refetchBands)
 
   // TSX
   return (

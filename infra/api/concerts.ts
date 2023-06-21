@@ -22,3 +22,12 @@ export const linkSong = async (id: string, songId: string) =>
 
 export const unlinkSong = async (id: string, songId: string) =>
   asyncRequestHandler(httpClient.patch(`/shows/${id}/unlink_song`, { songId }))
+
+export const addConcertObservation = async (concertId: string, title: string, data: string) =>
+  asyncRequestHandler(httpClient.post(`/shows/${concertId}/add_observation`, { title, data }))
+
+export const updateConcertObservation = async (concertId: string, id: string, title: string, data: string) =>
+  asyncRequestHandler(httpClient.put(`/shows/${concertId}/${id}/update_observation`, { title, data }))
+
+export const removeConcertObservation = async (concertId: string, id: string) =>
+  asyncRequestHandler(httpClient.post(`/shows/${concertId}/${id}/remove_observation`, {}))

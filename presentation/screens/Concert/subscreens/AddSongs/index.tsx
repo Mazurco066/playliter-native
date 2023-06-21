@@ -63,7 +63,7 @@ const AddConcertSongs = ({ route }): React.ReactElement => {
   const { navigate } = useNavigation<NativeStackNavigationProp<MainStackParamList>>()
 
   // Api request function
-  const fetchPublicSongs = async ({ pageParam = 0 }) => {
+  const fetchBandSongs = async ({ pageParam = 0 }) => {
     const response = await api.songs.getBandSongs(
       item.band.id,
       {
@@ -94,7 +94,7 @@ const AddConcertSongs = ({ route }): React.ReactElement => {
     refetch
   } = useInfiniteQuery(
     [`add_concert_songs_${item.id}`],
-    fetchPublicSongs, {
+    fetchBandSongs, {
       getNextPageParam: (lastPage) => {
         if (lastPage.data.data.length < PAGE_SIZE) return undefined
         return lastPage.data.offset + PAGE_SIZE

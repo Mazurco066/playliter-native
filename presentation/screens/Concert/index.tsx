@@ -6,6 +6,7 @@ import { useNavigation } from '@react-navigation/native'
 import { NativeStackNavigationProp } from '@react-navigation/native-stack'
 import { IConcert, IConcertSongDto } from '../../../domain'
 import { MainStackParamList } from '../../../main/router'
+import { useConcertStore } from '../../../main/store'
 
 // Main API
 import api from '../../../infra/api'
@@ -15,8 +16,9 @@ import { Spinner, Text } from '@ui-kitten/components'
 import { FlatList, ListRenderItemInfo, View } from 'react-native'
 import { showMessage } from 'react-native-flash-message'
 import { BaseContent, ConfirmDialog } from '../../layouts'
-import { Space } from '../../components'
 import { ConcertHeaderContainer, SongListItem } from './elements'
+import { Space } from '../../components'
+import { useRefreshOnFocus } from '../../hooks'
 
 // Styled components
 const LoadingContainer = styled(View)`
@@ -35,8 +37,9 @@ const ConcertScreen = ({ route }): React.ReactElement => {
   const { item, itemId } = route.params
 
   // Hooks
+  const { concert, setConcert } = useConcertStore()
   const { goBack, navigate } = useNavigation<NativeStackNavigationProp<MainStackParamList>>()
-  const [ concert, setConcert ] = useState<IConcert | null>(item ?? null)
+  // const [ concert, setConcert ] = useState<IConcert | null>(item ?? null)
   const [ isConfirmDialogOpen, setConfirmDialogState ] = useState<boolean>(false)
   const [ action, setAction ] = useState<ConfirmActions>({ name: 'delete_concert' })
 
@@ -65,10 +68,17 @@ const ConcertScreen = ({ route }): React.ReactElement => {
       api.concerts.unlinkSong(data.id, data.songId)
   )
 
+  // Refetch on focus
+  useRefreshOnFocus(refetchItem)
+
   // General api loading
   const isApiLoading = isUnlinkingSong || isDeletingConcert
 
   // Effects
+  useEffect(() => {
+    setConcert(item ?? null)
+  }, [])
+
   useEffect(() => {
     if (updatedItem && updatedItem.data) {
       const { data } = updatedItem.data
@@ -165,7 +175,7 @@ const ConcertScreen = ({ route }): React.ReactElement => {
                 setConfirmDialogState(true)
               }}
               onEditPress={() => console.log('edit click')}
-              onNotesPress={() => console.log('notes click')}
+              onNotesPress={() => navigate('ConcertNotes', { item: concert })}
               onReorderPress={() => navigate('ReorderConcert', { item: concert })}
               onSequentialPress={() => console.log('sequential click')}
             />

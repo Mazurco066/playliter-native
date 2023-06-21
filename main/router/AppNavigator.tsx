@@ -10,16 +10,19 @@ const RootStack = createNativeStackNavigator()
 // Screens
 import { TopNavigation } from '../../presentation/layouts'
 import {
-  AddConcertSongs,
   AddPublicConcertSongs,
+  AddConcertSongs,
   AuthScreen,
   BandScreen,
   BandsScreen,
+  ConcertNotes,
   ConcertScreen,
   MainScreen,
   Middleware,
   ProfileScreen,
   ReorderConcert,
+  SaveConcert,
+  SaveNote,
   SongScreen,
   SongsScreen
 } from '../../presentation/screens'
@@ -52,17 +55,73 @@ const MainNavigator = () => (
       animation: 'none'
     })}
   >
-    <MainStack.Screen name="Band" component={BandScreen} />
-    <MainStack.Screen name="Bands" component={BandsScreen} />
-    <MainStack.Screen name="Concert" component={ConcertScreen} />
-    <MainStack.Screen name="AddConcertSongs" component={AddConcertSongs} />
-    <MainStack.Screen name="AddPublicConcertSongs" component={AddPublicConcertSongs} />
-    <MainStack.Screen name="ReorderConcert" component={ReorderConcert} />
-    <MainStack.Screen name="Home" component={MainScreen} />
-    <MainStack.Screen name="Middleware" component={Middleware} />
-    <MainStack.Screen name="Profile" component={ProfileScreen} />
-    <MainStack.Screen name="Song" component={SongScreen} />
-    <MainStack.Screen name="Songs" component={SongsScreen} />
+    {/* Band screen and subscreens */}
+    <MainStack.Screen
+      name="Band"
+      component={BandScreen}
+    />
+    {/* Concert screen and subscreens */}
+    <MainStack.Screen
+      name="Concert"
+      component={ConcertScreen}
+      options={{ animation: 'slide_from_right' }}
+    />
+    <MainStack.Screen
+      name="AddConcertSongs"
+      component={AddConcertSongs}
+      options={{ animation: 'slide_from_right' }}
+    />
+    <MainStack.Screen
+      name="AddPublicConcertSongs"
+      component={AddPublicConcertSongs}
+      options={{ animation: 'slide_from_right' }}
+    />
+    <MainStack.Screen
+      name="ConcertNotes"
+      component={ConcertNotes}
+      options={{ animation: 'slide_from_right' }}
+    />
+    <MainStack.Screen
+      name="ReorderConcert"
+      component={ReorderConcert}
+      options={{ animation: 'slide_from_right' }}
+    />
+    <MainStack.Screen
+      name="SaveConcert"
+      component={SaveConcert}
+      options={{ animation: 'slide_from_right' }}
+    />
+    <MainStack.Screen
+      name="SaveNote"
+      component={SaveNote}
+      options={{ animation: 'slide_from_right' }}
+    />
+    {/* Song screen and subscreens */}
+    <MainStack.Screen
+      name="Song"
+      component={SongScreen}
+    />
+    {/* Standalone screens */}
+    <MainStack.Screen
+      name="Bands"
+      component={BandsScreen}
+    />
+    <MainStack.Screen
+      name="Home"
+      component={MainScreen}
+    />
+    <MainStack.Screen
+      name="Middleware"
+      component={Middleware}
+    />
+    <MainStack.Screen
+      name="Profile"
+      component={ProfileScreen}
+    />
+    <MainStack.Screen
+      name="Songs"
+      component={SongsScreen}
+    />
   </MainStack.Navigator>
 )
 
@@ -70,8 +129,8 @@ const MainNavigator = () => (
 export default () => {
   return (
     <RootStack.Navigator
-    initialRouteName="Main"
-    screenOptions={{ header: () => null }}
+      initialRouteName="Main"
+      screenOptions={{ header: () => null }}
     >
       <RootStack.Screen name="Auth" component={AuthNavigator} />
       <RootStack.Screen name="Main" component={MainNavigator} />

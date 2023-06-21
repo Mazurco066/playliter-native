@@ -19,6 +19,7 @@ import {  View } from 'react-native'
 import { BaseContent } from '../../layouts'
 import { SongListItem } from './elements'
 import { Space } from '../../components'
+import { useRefreshOnFocus } from '../../hooks'
 
 // Styled components
 const LoadingContainer = styled(View)`
@@ -88,6 +89,9 @@ const SongsScreen = (): React.ReactElement => {
       }
     }
   )
+
+  // Refetch on focus
+  useRefreshOnFocus(refetch)
 
   // All pages data
   const allPagesData = data?.pages.flatMap((value) => value.data.data) || []

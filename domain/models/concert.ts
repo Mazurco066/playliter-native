@@ -24,14 +24,10 @@ export interface IConcert {
     body: string
     isPublic: boolean
   }[],
-  observations: {
-    id: string
-    title: string
-    data: string
-  }[]
+  observations: IObservationType[]
 }
 
-export interface ObservationType {
+export interface IObservationType {
   id: string
   title: string
   data: string

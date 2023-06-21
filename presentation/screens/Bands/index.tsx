@@ -18,6 +18,8 @@ import { FlatList, ListRenderItemInfo, View } from 'react-native'
 import { BaseContent } from '../../layouts'
 import { BandListItem } from './elements'
 import { Space } from '../../components'
+import { useRefreshOnFocus } from '../../hooks'
+
 
 // Styled components
 const LoadingContainer = styled(View)`
@@ -32,11 +34,15 @@ const BandsScreen = () => {
   // HTTP Requests
   const {
     data: bands,
-    isLoading: isBandsLoading
+    isLoading: isBandsLoading,
+    refetch
   } = useQuery(
     ['bands'],
     () => api.bands.getBands()
   )
+
+  // Refetch on focus
+  useRefreshOnFocus(refetch)
 
   // Hooks
   const { navigate } = useNavigation<NativeStackNavigationProp<MainStackParamList>>()
