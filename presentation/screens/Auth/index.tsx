@@ -155,7 +155,7 @@ const AuthScreen = ({ navigation }): React.ReactElement => {
             }}
           >
             <Logo
-              source={require('../../../assets/logo.png')}
+              source={require('../../../assets/logo_white.png')}
             />
             <Form
               style={{ backgroundColor: theme['color-basic-700'] }}

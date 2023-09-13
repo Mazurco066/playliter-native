@@ -10,4 +10,4 @@ interface LoginPayload {
 
 // Endpoints
 export const login = async (payload: LoginPayload) =>
-  asyncRequestHandler(httpClient.post('/auth/authenticate', { ...payload }))
+  asyncRequestHandler(httpClient.post('/v1/auth/authenticate', { ...payload }))

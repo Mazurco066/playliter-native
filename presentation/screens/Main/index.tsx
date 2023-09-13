@@ -51,7 +51,7 @@ const MainScreen = (): React.ReactElement => {
   } = useQuery(
     ['bands_home'],
     () => api.bands.getBands({
-      limit: 3,
+      limit: 5,
       offset: 0
     })
   )

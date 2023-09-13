@@ -59,6 +59,7 @@ const MainNavigator = () => (
     <MainStack.Screen
       name="Band"
       component={BandScreen}
+      options={{ animation: 'slide_from_right' }}
     />
     {/* Concert screen and subscreens */}
     <MainStack.Screen
