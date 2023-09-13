@@ -1,13 +1,17 @@
 // Dependencies
-import React, { useCallback } from 'react'
+import React, { useCallback, useEffect } from 'react'
 import { useNavigation } from '@react-navigation/native'
 import { NativeStackNavigationProp } from '@react-navigation/native-stack'
 import styled from 'styled-components'
 import { color } from 'styled-system'
 import { useConcertStore } from '../../../../../main/store'
 
+// Http client
+import api from '../../../../../infra/api'
+import { useQuery } from '@tanstack/react-query'
+
 // Types
-import { IObservationType } from '../../../../../domain'
+import { IConcert, IObservationType } from '../../../../../domain'
 import { MainStackParamList } from '../../../../../main/router'
 
 // Components
@@ -18,6 +22,7 @@ import { NoteListItem } from './elements'
 import { BaseContent } from '../../../../layouts'
 import { getIcon } from '../../../../utils'
 import { Space } from '../../../../components'
+import { useRefreshOnFocus } from '../../../../hooks'
 
 // Styled components
 const Container = styled(LinearGradient)`
@@ -57,11 +62,32 @@ const ActionContainer = styled(View)`
 `
 
 // Notes subscreen
-const ConcertNotes = (): React.ReactElement => {
+const ConcertNotes = ({ route }): React.ReactElement => {
+  // Http requests
+  const { item: { id: concertId } } = route.params
+  const {
+    data: updatedItem,
+    refetch: refetchItem
+  } = useQuery(
+    [`get-concert-${concertId}`],
+    () => api.concerts.getConcert(concertId)
+  )
+
+  // Refetch on focus
+  useRefreshOnFocus(refetchItem)
+
   // Hooks
-  const { concert } = useConcertStore()
+  const { concert, setConcert } = useConcertStore()
   const { navigate } = useNavigation<NativeStackNavigationProp<MainStackParamList>>()
   const theme = useTheme()
+
+  // Effects
+  useEffect(() => {
+    if (updatedItem && updatedItem.data) {
+      const { data } = updatedItem.data
+      if (data) setConcert(data as IConcert)
+    }
+  }, [updatedItem])
 
   // Render item
   const renderItem = useCallback(({ item }: ListRenderItemInfo<IObservationType>) => (

@@ -22,14 +22,6 @@ const SaveNote = ({ route }): React.ReactElement => {
   const { concertId, item } = route.params
 
   // Http requests
-  const { isLoading: isSavingNote, mutateAsync: saveNoteRequest } = useMutation(
-    (data: { id?: string, title: string, data: string }) => {
-      const { id, title, data: content } = data
-      return id
-        ? api.concerts.updateConcertObservation(concertId, id, title, content)
-        : api.concerts.addConcertObservation(concertId, title, content)
-    }
-  )
   const { isLoading: isRemovingNote, mutateAsync: removeNoteRequest } = useMutation(
     (id: string) => api.concerts.removeConcertObservation(concertId, id)
   )
@@ -41,7 +33,7 @@ const SaveNote = ({ route }): React.ReactElement => {
   const [ isConfirmDialogOpen, setConfirmDialogState ] = useState<boolean>(false)
 
   // Loading state
-  const isLoading = isSavingNote || isRemovingNote
+  const isLoading = isRemovingNote
 
   // Actions
   const removeNote = async () => {
@@ -57,13 +49,13 @@ const SaveNote = ({ route }): React.ReactElement => {
       goBack()
     } else if ([401, 403].includes(response.status)) {
       showMessage({
-        message: `Você não tem permissão para remover essa apresentação!`,
+        message: `Você não tem permissão para remover essa anotação!`,
         type: 'warning',
         duration: 2000
       })
     } else {
       showMessage({
-        message: `Ocorreu um erro ao remover a apresentação! Tente novamente mais tarde.`,
+        message: `Ocorreu um erro ao remover a anotação! Tente novamente mais tarde.`,
         type: 'danger',
         duration: 2000
       })
@@ -89,7 +81,6 @@ const SaveNote = ({ route }): React.ReactElement => {
             item={item}
             onCancel={() => setEditableState(false)}
             onGoBack={() => goBack()}
-            onSave={() => {}}
             isLoading={isLoading}
           />
         )

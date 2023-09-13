@@ -7,7 +7,7 @@ import { color } from 'styled-system'
 import { IObservationType } from '../../../../../../domain'
 
 // Components
-import { Button, Divider, Text, useTheme } from '@ui-kitten/components'
+import { Button, Text, useTheme } from '@ui-kitten/components'
 import { LinearGradient } from 'expo-linear-gradient'
 import { View } from 'react-native'
 import { Space } from '../../../../../components'
@@ -43,7 +43,7 @@ const ButtonContainer = styled(View)`
 
 const DataContainer = styled(View)`
   width: 100%;
-  padding: 16px 8px;
+  padding: 16px;
 `
 
 // Component props

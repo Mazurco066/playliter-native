@@ -39,7 +39,6 @@ const ConcertScreen = ({ route }): React.ReactElement => {
   // Hooks
   const { concert, setConcert } = useConcertStore()
   const { goBack, navigate } = useNavigation<NativeStackNavigationProp<MainStackParamList>>()
-  // const [ concert, setConcert ] = useState<IConcert | null>(item ?? null)
   const [ isConfirmDialogOpen, setConfirmDialogState ] = useState<boolean>(false)
   const [ action, setAction ] = useState<ConfirmActions>({ name: 'delete_concert' })
 
