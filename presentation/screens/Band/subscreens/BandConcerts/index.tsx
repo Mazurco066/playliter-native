@@ -49,7 +49,7 @@ const SearchButton = styled(Button)`
 `
 
 // Paging default values
-const PAGE_SIZE = 50
+const PAGE_SIZE = 15
 
 // Main component
 const BandConcerts = ({ route }): React.ReactElement => {

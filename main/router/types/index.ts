@@ -1,5 +1,5 @@
 // Data types
-import { IBand, IConcert, IObservationType, ISong } from '../../../domain'
+import { IBand, IConcert, IObservationType, ISong, ISongCategory } from '../../../domain'
 
 // Defined route params
 export type MainStackParamList = {
@@ -13,6 +13,7 @@ export type MainStackParamList = {
   ReorderConcert: { item: IConcert }
   AddConcertSongs: { item: IConcert }
   ConcertNotes: { item: IConcert }
+  SaveCategory: { bandId: string, item?: ISongCategory }
   SaveConcert: { item: IConcert }
   SaveNote: { concertId: string, item?: IObservationType }
 }

@@ -24,6 +24,7 @@ import {
   Middleware,
   ProfileScreen,
   ReorderConcert,
+  SaveCategory,
   SaveConcert,
   SaveNote,
   SongScreen,
@@ -77,6 +78,11 @@ const MainNavigator = () => (
     <MainStack.Screen
       name="BandCategories"
       component={BandCategories}
+      options={{ animation: 'slide_from_right' }}
+    />
+    <MainStack.Screen
+      name="SaveCategory"
+      component={SaveCategory}
       options={{ animation: 'slide_from_right' }}
     />
     {/* Concert screen and subscreens */}

@@ -2,7 +2,10 @@
 import React, { useCallback } from 'react'
 import styled from 'styled-components'
 import { useQuery } from '@tanstack/react-query'
+import { useNavigation } from '@react-navigation/native'
+import { NativeStackNavigationProp } from '@react-navigation/native-stack'
 import { useRefreshOnFocus } from '../../../../hooks'
+import { MainStackParamList } from '../../../../../main/router'
 
 // Types
 import { ISongCategory } from '../../../../../domain'
@@ -31,6 +34,7 @@ const BandCategories = ({ route }): React.ReactElement => {
   const { itemId } = route.params
 
   // Hooks
+  const { navigate } = useNavigation<NativeStackNavigationProp<MainStackParamList>>()
 
   // Http requests
   const {
@@ -51,8 +55,8 @@ const BandCategories = ({ route }): React.ReactElement => {
     <CategoryListItem
       item={item}
       isLoading={isFetching || isRefetching}
-      onPress={() => {}}
-      onIconPress={() => {}}
+      onPress={() => navigate("SaveCategory", { bandId: itemId, item })}
+      onIconPress={() => navigate("SaveCategory", { bandId: itemId, item })}
     />
   ), [isFetching, isRefetching])
 
@@ -77,7 +81,7 @@ const BandCategories = ({ route }): React.ReactElement => {
     <BaseContent
       hideCardsNavigation
       showFloatingButton
-      onFloatingButtonPress={() => console.log('[pressed here]')}
+      onFloatingButtonPress={() => navigate("SaveCategory", { bandId: itemId })}
     >
       <Text category="h5">
         Categorias registradas
