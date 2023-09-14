@@ -21,7 +21,7 @@ export const getPublicSongs = async (
 
 export const getBandSongCategories = async (
   bandId: string,
-    { limit, offset }: IPaging = { limit: 0, offset: 0 },
+  { limit, offset }: IPaging = { limit: 0, offset: 0 },
 ) =>
   asyncRequestHandler(httpClient.get(`/v2/categories/get/${bandId}?limit=${limit}&offset=${offset}`))
 

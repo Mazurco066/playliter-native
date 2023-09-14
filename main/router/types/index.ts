@@ -5,6 +5,7 @@ import { IBand, IConcert, IObservationType, ISong } from '../../../domain'
 export type MainStackParamList = {
   [key: string]: any
   Band: { item?: IBand, itemId: string }
+  BandCategories: { item?: IBand, itemId: string }
   BandConcerts: { item?: IBand, itemId: string }
   BandSongs: { item?: IBand, itemId: string }
   Concert: { item?: IConcert, itemId: string }

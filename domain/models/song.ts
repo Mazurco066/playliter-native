@@ -8,13 +8,7 @@ export interface ISong {
   embeddedUrl?: string
   body: string
   isPublic: boolean
-  category: {
-    id: string
-    createdAt: string
-    updatedAt: string
-    title: string
-    description: string
-  },
+  category: ISongCategory,
   band: {
     id: string
     createdAt: string
@@ -24,4 +18,12 @@ export interface ISong {
     description: string
     title: string
   }
+}
+
+export interface ISongCategory {
+  id: string
+  createdAt: string
+  updatedAt: string
+  title: string
+  description: string
 }

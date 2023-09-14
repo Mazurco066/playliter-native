@@ -42,7 +42,7 @@ const BandScreen = ({ route }): React.ReactElement => {
   // Hooks
   const theme = useTheme()
   const { band, setBand } = useBandStore()
-  const { goBack, navigate } = useNavigation<NativeStackNavigationProp<MainStackParamList>>()
+  const { navigate } = useNavigation<NativeStackNavigationProp<MainStackParamList>>()
 
   // Http requests
   const {
@@ -127,7 +127,7 @@ const BandScreen = ({ route }): React.ReactElement => {
                 isLoading={isFetchingCategories}
                 amount={categoryAmount}
                 title="Categorias registradas"
-                onPress={() => {}}
+                onPress={() => navigate('BandCategories', { item: band, itemId: band.id })}
               />
               <BandFeature
                 isLoading={isFetchingConcerts}
