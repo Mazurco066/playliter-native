@@ -13,8 +13,10 @@ import {
   AddPublicConcertSongs,
   AddConcertSongs,
   AuthScreen,
+  BandConcerts,
   BandScreen,
   BandsScreen,
+  BandSongs,
   ConcertNotes,
   ConcertScreen,
   MainScreen,
@@ -59,6 +61,16 @@ const MainNavigator = () => (
     <MainStack.Screen
       name="Band"
       component={BandScreen}
+      options={{ animation: 'slide_from_right' }}
+    />
+    <MainStack.Screen
+      name="BandSongs"
+      component={BandSongs}
+      options={{ animation: 'slide_from_right' }}
+    />
+    <MainStack.Screen
+      name="BandConcerts"
+      component={BandConcerts}
       options={{ animation: 'slide_from_right' }}
     />
     {/* Concert screen and subscreens */}

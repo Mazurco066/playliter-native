@@ -2,7 +2,10 @@
 import styled from 'styled-components'
 import React, { useEffect }  from 'react'
 import { useQuery } from '@tanstack/react-query'
+import { useNavigation } from '@react-navigation/native'
+import { NativeStackNavigationProp } from '@react-navigation/native-stack'
 import { IBand } from '../../../domain'
+import { MainStackParamList } from '../../../main/router'
 import { useBandStore } from '../../../main/store'
 import { useRefreshOnFocus } from '../../hooks'
 
@@ -39,6 +42,7 @@ const BandScreen = ({ route }): React.ReactElement => {
   // Hooks
   const theme = useTheme()
   const { band, setBand } = useBandStore()
+  const { goBack, navigate } = useNavigation<NativeStackNavigationProp<MainStackParamList>>()
 
   // Http requests
   const {
@@ -117,7 +121,7 @@ const BandScreen = ({ route }): React.ReactElement => {
                 isLoading={isFetchingSongs}
                 amount={songAmount}
                 title="Músicas publicadas"
-                onPress={() => {}}
+                onPress={() => navigate('BandSongs', { item: band, itemId: band.id })}
               />
               <BandFeature
                 isLoading={isFetchingCategories}
@@ -129,7 +133,7 @@ const BandScreen = ({ route }): React.ReactElement => {
                 isLoading={isFetchingConcerts}
                 amount={concertAmount}
                 title="Apresentações realizadas"
-                onPress={() => {}}
+                onPress={() => navigate('BandConcerts', { item: band, itemId: band.id })}
               />
             </BandFeatureContainer>
           </>
