@@ -114,7 +114,11 @@ const BandScreen = ({ route }): React.ReactElement => {
 
   // TSX
   return (
-    <BaseContent hideCardsNavigation>
+    <BaseContent
+      hideCardsNavigation
+      showFloatingButton
+      floatingIcon="person-add-outline"
+    >
       {
         band ? (
           <>
@@ -151,7 +155,7 @@ const BandScreen = ({ route }): React.ReactElement => {
             <FlatList
               ItemSeparatorComponent={() => <Space my={1} />}
               ListHeaderComponent={() => <Space my={2} />}
-              ListFooterComponent={() => <Space my={2} />}
+              ListFooterComponent={() => <Space my={4} />}
               keyExtractor={(item) => item.id}
               showsHorizontalScrollIndicator={false}
               scrollEnabled={false}

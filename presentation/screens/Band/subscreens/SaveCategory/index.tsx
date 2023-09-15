@@ -176,11 +176,10 @@ const SaveCategory = ({ route }): React.ReactElement => {
                   <LoadingContainer>
                     <Spinner size="large" />
                   </LoadingContainer>
-                ) : <Space my={4} />
+                ) : <Space my={2} />
               }
             />
           </>
-          
         ) : (
           <EditCategory
             item={item}
