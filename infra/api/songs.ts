@@ -13,6 +13,13 @@ export const getBandSongs = async (
 ) =>
   asyncRequestHandler(httpClient.get(`/v1/songs/list/${bandId}?limit=${limit}&offset=${offset}&filter=${encodeURI(filter)}`))
 
+export const getBandSongsByCategory = async (
+  bandId: string,
+  categoryId: string,
+  { limit, offset }: IPaging = { limit: 0, offset: 0 }
+) =>
+    asyncRequestHandler(httpClient.get(`/v2/songs/list/${bandId}/${categoryId}?limit=${limit}&offset=${offset}`))
+
 export const getPublicSongs = async (
   { limit, offset }: IPaging = { limit: 0, offset: 0 },
   filter: string = ''

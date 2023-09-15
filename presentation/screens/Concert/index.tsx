@@ -1,6 +1,6 @@
 // Dependencies
 import styled from 'styled-components'
-import React, { useState, useEffect } from 'react'
+import React, { useCallback, useState, useEffect } from 'react'
 import { useQuery, useMutation } from '@tanstack/react-query'
 import { useNavigation } from '@react-navigation/native'
 import { NativeStackNavigationProp } from '@react-navigation/native-stack'
@@ -75,7 +75,7 @@ const ConcertScreen = ({ route }): React.ReactElement => {
 
   // Effects
   useEffect(() => {
-    setConcert(item ?? null)
+    setConcert(item ? { ...item, songs: [] } : null)
   }, [])
 
   useEffect(() => {
@@ -154,6 +154,28 @@ const ConcertScreen = ({ route }): React.ReactElement => {
     />
   )
 
+  const renderEmptyListComponent = useCallback(
+    () => (
+      isFetching ? null : (
+        <Text category="s1">
+          Não há músicas adicionadas nessa apresentação no momento. 
+        </Text>
+      )
+    ),
+    [isFetching]
+  )
+
+  const renderListFooter = useCallback(
+    () => (
+      isFetching ? (
+        <LoadingContainer>
+          <Spinner size="large" />
+        </LoadingContainer>
+      ) : <Space my={4} />
+    ),
+    [isFetching]
+  )
+
   // TSX
   return (
     <BaseContent
@@ -182,27 +204,17 @@ const ConcertScreen = ({ route }): React.ReactElement => {
             <Text category="h5">
               Músicas selecionadas
             </Text>
-            {
-              concert.songs.length > 0 ? (
-                <FlatList
-                  ItemSeparatorComponent={() => <Space my={1} />}
-                  ListHeaderComponent={() => <Space my={2} />}
-                  ListFooterComponent={() => <Space my={4} />}
-                  keyExtractor={(item) => item.id}
-                  showsHorizontalScrollIndicator={false}
-                  scrollEnabled={false}
-                  data={concert.songs || []}
-                  renderItem={renderItem}
-                />    
-              ) : (
-                <Text
-                  category="s1"
-                  style={{ marginTop: 8 }}
-                >
-                  Não há músicas adicionadas nessa apresentação no momento.
-                </Text>
-              )
-            }
+            <FlatList
+              ItemSeparatorComponent={() => <Space my={1} />}
+              ListHeaderComponent={() => <Space my={2} />}
+              ListFooterComponent={renderListFooter}
+              ListEmptyComponent={renderEmptyListComponent}
+              keyExtractor={(item) => item.id}
+              showsHorizontalScrollIndicator={false}
+              scrollEnabled={false}
+              data={concert.songs || []}
+              renderItem={renderItem}
+            />
           </>
         ) : isFetching ? (
           <LoadingContainer>

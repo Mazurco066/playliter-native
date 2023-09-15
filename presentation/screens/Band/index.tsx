@@ -1,10 +1,10 @@
 // Dependencies
 import styled from 'styled-components'
-import React, { useEffect }  from 'react'
+import React, { useCallback, useEffect }  from 'react'
 import { useQuery } from '@tanstack/react-query'
 import { useNavigation } from '@react-navigation/native'
 import { NativeStackNavigationProp } from '@react-navigation/native-stack'
-import { IBand } from '../../../domain'
+import { IBand, UserAccount } from '../../../domain'
 import { MainStackParamList } from '../../../main/router'
 import { useBandStore } from '../../../main/store'
 import { useRefreshOnFocus } from '../../hooks'
@@ -13,10 +13,10 @@ import { useRefreshOnFocus } from '../../hooks'
 import api from '../../../infra/api'
 
 // Components
+import { Spinner, Text, useTheme } from '@ui-kitten/components'
+import { FlatList, ListRenderItemInfo, View } from 'react-native'
 import { Space } from '../../components'
-import { BandFeature, BandHeaderContainer } from './elements'
-import { Spinner, useTheme } from '@ui-kitten/components'
-import { View } from 'react-native'
+import { BandFeature, BandHeaderContainer, IntegrantItem } from './elements'
 import { BaseContent } from '../../layouts'
 
 // Styled components
@@ -99,10 +99,18 @@ const BandScreen = ({ route }): React.ReactElement => {
     }
   }, [updatedItem])
 
-  // Numbers
+  // Numbers and data
   const categoryAmount = bandCategories?.data?.data?.total || 0
   const concertAmount = bandConcerts?.data?.data?.total || 0
   const songAmount = bandSongs?.data?.data?.total || 0
+  const integrants = band?.members || []
+
+  // Render functions
+  const renderListItem = useCallback(({ item }: ListRenderItemInfo<UserAccount>) => (
+    <IntegrantItem
+      item={item}
+    />
+  ), [])
 
   // TSX
   return (
@@ -136,6 +144,20 @@ const BandScreen = ({ route }): React.ReactElement => {
                 onPress={() => navigate('BandConcerts', { item: band, itemId: band.id })}
               />
             </BandFeatureContainer>
+            <Space my={2} />
+            <Text category="h5">
+              Participantes
+            </Text>
+            <FlatList
+              ItemSeparatorComponent={() => <Space my={1} />}
+              ListHeaderComponent={() => <Space my={2} />}
+              ListFooterComponent={() => <Space my={2} />}
+              keyExtractor={(item) => item.id}
+              showsHorizontalScrollIndicator={false}
+              scrollEnabled={false}
+              data={integrants}
+              renderItem={renderListItem}
+            />
           </>
         ) : isFetching ? (
           <LoadingContainer>
