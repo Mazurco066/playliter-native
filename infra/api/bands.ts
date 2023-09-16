@@ -11,3 +11,6 @@ export const getBands = async ({ limit, offset }: IPaging = { limit: 0, offset: 
 
 export const getBand = async (id: string) =>
   asyncRequestHandler(httpClient.get(`/v1/bands/get/${id}`))
+
+export const inviteIntegrant = async (bandId: string, id: string) =>
+  asyncRequestHandler(httpClient.post(`/v1/bands/add_member/${bandId}`, { accountId: id }))

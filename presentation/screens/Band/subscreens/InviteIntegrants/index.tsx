@@ -1,7 +1,7 @@
 // Dependencies
 import React, { useCallback, useState } from 'react'
 import styled from 'styled-components'
-import { useQuery } from '@tanstack/react-query'
+import { useMutation, useQuery } from '@tanstack/react-query'
 import { useRefreshOnFocus } from '../../../../hooks'
 import { useBandStore } from '../../../../../main/store'
 
@@ -14,6 +14,7 @@ import api from '../../../../../infra/api'
 // Components
 import { Icon, Input, Spinner, Text } from '@ui-kitten/components'
 import { FlatList, ListRenderItemInfo, View } from 'react-native'
+import { showMessage } from 'react-native-flash-message'
 import { IntegrantItem } from './elements'
 import { Space } from '../../../../components'
 import { BaseContent } from '../../../../layouts'
@@ -59,6 +60,11 @@ const InviteIntegrants = ({ route }): React.ReactElement => {
     () => api.accounts.getRegisteredAccounts()
   )
 
+  const { isLoading, mutateAsync: inviteIntegrant } = useMutation(
+    (data: { id: string, bandId: string }) =>
+      api.bands.inviteIntegrant(data.bandId, data.id)
+  )
+
   // Refetch on focus
   useRefreshOnFocus(refetchIntegrants)
 
@@ -66,9 +72,10 @@ const InviteIntegrants = ({ route }): React.ReactElement => {
   const renderListItem = useCallback(({ item }: ListRenderItemInfo<UserAccount>) => (
     <IntegrantItem
       item={item}
-      isLoading={isFetching || isRefetching}
+      isLoading={isFetching || isRefetching || isLoading}
+      onPress={() => submitInvitation(item.id)}
     />
-  ), [isFetching, isRefetching])
+  ), [isFetching, isRefetching, isLoading])
 
   const renderListFooter = useCallback(() => isFetching
     ? (
@@ -86,6 +93,36 @@ const InviteIntegrants = ({ route }): React.ReactElement => {
     )
   ), [isFetching])
 
+  // Actions
+  const submitInvitation = async (itemId: string) => {
+    const response = await inviteIntegrant({ id: itemId, bandId: band.id })
+    if ([200, 201].includes(response.status)) {
+      showMessage({
+        message: `O músico selecionado foi convidado a se juntar a banda!`,
+        type: 'success',
+        duration: 2000
+      })
+    } else if ([400].includes(response.status)) {
+      showMessage({
+        message: `Esse músico já foi convidado a participar da banda. Aguarde a resposta dele(a)!`,
+        type: 'warning',
+        duration: 2000
+      })
+    } else if ([401, 403].includes(response.status)) {
+      showMessage({
+        message: `Você não tem permissão para convidar músicos para banda!`,
+        type: 'warning',
+        duration: 2000
+      })
+    } else {
+      showMessage({
+        message: `Ocorreu um erro ao convidar o músico selecionado! Tente novamente mais tarde.`,
+        type: 'danger',
+        duration: 2000
+      })
+    }
+  }
+
   // Computed props
   const integrantsData: UserAccount[] = bandIntegrants?.data?.data || []
   const unafiliadedData: UserAccount[] = integrantsData.filter((i: UserAccount) => getBandRole(i.id, band) === 'Sem afiliação')
@@ -99,9 +136,12 @@ const InviteIntegrants = ({ route }): React.ReactElement => {
       </Text>
       <Space my={1} />
       {filteredData?.length >= 1 ? (
-        <Text category="s1">
-          Clique no músico para convida-lo(a) para sua banda.
-        </Text>
+        <>
+          <Text category="s1">
+            Clique no músico para convida-lo(a) para sua banda.
+          </Text>
+          <Space my={1} />
+        </>
       ) : null}
       {unafiliadedData?.length >= 1 ? (
         <Input
