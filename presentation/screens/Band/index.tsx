@@ -109,8 +109,9 @@ const BandScreen = ({ route }): React.ReactElement => {
   const renderListItem = useCallback(({ item }: ListRenderItemInfo<UserAccount>) => (
     <IntegrantItem
       item={item}
+      isLoading={isFetching}
     />
-  ), [])
+  ), [isFetching])
 
   // TSX
   return (
@@ -118,6 +119,7 @@ const BandScreen = ({ route }): React.ReactElement => {
       hideCardsNavigation
       showFloatingButton
       floatingIcon="person-add-outline"
+      onFloatingButtonPress={() => navigate("InviteIntegrants", { item: band, itemId: band.id })}
     >
       {
         band ? (

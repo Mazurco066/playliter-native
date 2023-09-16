@@ -10,6 +10,6 @@ export const getBandRole = (accountId: string, band: IBand): string => {
       ? 'Administrador'
       : isMember
         ? 'Membro'
-        : 'SEm afiliação'
+        : 'Sem afiliação'
   return role
 }

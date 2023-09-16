@@ -20,6 +20,7 @@ import {
   BandSongs,
   ConcertNotes,
   ConcertScreen,
+  InviteIntegrants,
   MainScreen,
   Middleware,
   ProfileScreen,
@@ -83,6 +84,11 @@ const MainNavigator = () => (
     <MainStack.Screen
       name="SaveCategory"
       component={SaveCategory}
+      options={{ animation: 'slide_from_right' }}
+    />
+    <MainStack.Screen
+      name="InviteIntegrants"
+      component={InviteIntegrants}
       options={{ animation: 'slide_from_right' }}
     />
     {/* Concert screen and subscreens */}

@@ -13,6 +13,7 @@ export type MainStackParamList = {
   ReorderConcert: { item: IConcert }
   AddConcertSongs: { item: IConcert }
   ConcertNotes: { item: IConcert }
+  InviteIntegrants: { item?: IBand, itemId: string }
   SaveCategory: { bandId: string, item?: ISongCategory }
   SaveConcert: { item: IConcert }
   SaveNote: { concertId: string, item?: IObservationType }
