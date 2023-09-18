@@ -1,9 +1,9 @@
 // Dependencies
-import React from 'react'
+import React, { useState } from 'react'
 import styled from 'styled-components'
 import { color } from 'styled-system'
 import { useBandStore } from '../../../../main/store'
-import { getBandRole } from '../../../utils'
+import { getBandRole, getIcon } from '../../../utils'
 
 // Types
 import { UserAccount } from '../../../../domain'
@@ -11,7 +11,16 @@ import { UserAccount } from '../../../../domain'
 // Components
 import { LinearGradient } from 'expo-linear-gradient'
 import { TouchableOpacity, View } from 'react-native'
-import { Avatar, Layout, Text, useTheme } from '@ui-kitten/components'
+import {
+  Avatar,
+  Button,
+  IndexPath,
+  Layout,
+  OverflowMenu,
+  MenuItem,
+  Text,
+  useTheme
+} from '@ui-kitten/components'
 
 // Styles components
 const Wrapper = styled(TouchableOpacity)`
@@ -59,20 +68,48 @@ const SongTextInfo = styled(Text)`
   overflow: hidden;
 `
 
+const ActionContainer = styled(View)`
+  flex: 0 0 auto;
+  flex-direction: row;
+  align-items: center;
+  justify-content: flex-end;
+`
+
 // Component props
 interface IIntegrantItem {
   item: UserAccount,
-  isLoading?: boolean
+  isLoading?: boolean,
+  onDemotePress?: () => void,
+  onPromotePress?: () => void,
+  onRemovePress?: () => void,
 }
 
 // Component
 const IntegrantItem = ({
   item,
-  isLoading = false
+  isLoading = false,
+  onDemotePress = () => {},
+  onPromotePress = () => {},
+  onRemovePress = () => {}
 }: IIntegrantItem): React.ReactElement => {
   // Hooks
   const theme = useTheme()
   const { band } = useBandStore()
+  const [ visible, setVisible ] = useState<boolean>(false)
+
+  //Actions
+  const onItemSelect = (_: IndexPath): void => {
+    setVisible(false)
+  }
+
+  const renderToggleButton = (): React.ReactElement => (
+    <Button
+      size="small"
+      appearance="ghost"
+      accessoryLeft={getIcon('more-vertical-outline')}
+      onPress={() => setVisible(true)}
+    />
+  )
 
   // TSX
   return (
@@ -115,6 +152,51 @@ const IntegrantItem = ({
             {getBandRole(item.id, band)}
           </SongTextInfo>
         </ItemData>
+        {
+          band.owner.id !== item.id ? (
+            <ActionContainer>
+              <OverflowMenu
+                anchor={renderToggleButton}
+                visible={visible}
+                onSelect={onItemSelect}
+                onBackdropPress={() => setVisible(false)}
+              >
+                {
+                  band.admins.find((admin: UserAccount) => admin.id === item.id) ? (
+                    <MenuItem
+                      title='Remover admin'
+                      accessoryLeft={getIcon('arrowhead-down-outline')}
+                      disabled={isLoading}
+                      onPress={onDemotePress}
+                      style={{
+                        backgroundColor: theme['color-basic-700']
+                      }}
+                    />
+                  ) : (
+                    <MenuItem
+                      title='Tornar admin'
+                      accessoryLeft={getIcon('arrowhead-up-outline')}
+                      disabled={isLoading}
+                      onPress={onPromotePress}
+                      style={{
+                        backgroundColor: theme['color-basic-700']
+                      }}
+                    />
+                  )
+                }
+                <MenuItem
+                  title='Remover'
+                  accessoryLeft={getIcon('person-remove-outline')}
+                  disabled={isLoading}
+                  onPress={onRemovePress}
+                  style={{
+                    backgroundColor: theme['color-basic-700']
+                  }}
+                />
+              </OverflowMenu>
+            </ActionContainer>
+          ) : null
+        }
       </ItemLayout>
     </Wrapper>
   )

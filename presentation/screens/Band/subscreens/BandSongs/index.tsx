@@ -129,6 +129,15 @@ const BandSongs = ({ route }): React.ReactElement => {
     />
   ), [isFetchingNextPage, isRefetching])
 
+  // Render list empty component
+  const renderListEmptyComponent = useCallback(() => (
+    isLoading ? null : (
+      <Text category="s1">
+        Não há músicas registradas nessa banda
+      </Text>
+    )
+  ), [isLoading])
+
   //TSX
   return (
     <BaseContent
@@ -197,6 +206,7 @@ const BandSongs = ({ route }): React.ReactElement => {
         scrollEnabled={false}
         data={allPagesData}
         renderItem={renderListItem}
+        ListEmptyComponent={renderListEmptyComponent}
         ListHeaderComponent={() => <Space my={2} />}
         ListFooterComponent={() => isFetchingNextPage
           ? (

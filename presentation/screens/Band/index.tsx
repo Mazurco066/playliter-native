@@ -1,7 +1,7 @@
 // Dependencies
 import styled from 'styled-components'
-import React, { useCallback, useEffect }  from 'react'
-import { useQuery } from '@tanstack/react-query'
+import React, { useCallback, useEffect, useState }  from 'react'
+import { useMutation, useQuery } from '@tanstack/react-query'
 import { useNavigation } from '@react-navigation/native'
 import { NativeStackNavigationProp } from '@react-navigation/native-stack'
 import { IBand, UserAccount } from '../../../domain'
@@ -13,11 +13,12 @@ import { useRefreshOnFocus } from '../../hooks'
 import api from '../../../infra/api'
 
 // Components
-import { Spinner, Text, useTheme } from '@ui-kitten/components'
+import { Spinner, Text } from '@ui-kitten/components'
 import { FlatList, ListRenderItemInfo, View } from 'react-native'
+import { showMessage } from 'react-native-flash-message'
 import { Space } from '../../components'
 import { BandFeature, BandHeaderContainer, IntegrantItem } from './elements'
-import { BaseContent } from '../../layouts'
+import { BaseContent,ConfirmDialog } from '../../layouts'
 
 // Styled components
 const LoadingContainer = styled(View)`
@@ -34,15 +35,19 @@ const BandFeatureContainer = styled(View)`
   justify-content: space-between;
 `
 
+// Page interfaces
+type ConfirmActions = { name: 'delete_band' | 'remove_integrant', id?: string }
+
 // Page Main component
 const BandScreen = ({ route }): React.ReactElement => {
   // Destruct params
   const { item, itemId } = route.params
 
   // Hooks
-  const theme = useTheme()
   const { band, setBand } = useBandStore()
-  const { navigate } = useNavigation<NativeStackNavigationProp<MainStackParamList>>()
+  const { goBack, navigate } = useNavigation<NativeStackNavigationProp<MainStackParamList>>()
+  const [ isConfirmDialogOpen, setConfirmDialogState ] = useState<boolean>(false)
+  const [ action, setAction ] = useState<ConfirmActions>({ name: 'delete_band' })
 
   // Http requests
   const {
@@ -81,6 +86,22 @@ const BandScreen = ({ route }): React.ReactElement => {
     () => api.songs.getBandSongCategories(itemId, { limit: 1, offset: 0 })
   )
 
+  const { isLoading: isPromoteLoading, mutateAsync: promoteIntegrant } = useMutation(
+    (data: { id: string, bandId: string }) => api.bands.promoteIntegrant(data.bandId, data.id)
+  )
+
+  const { isLoading: isDemoteLoading, mutateAsync: demoteIntegrant } = useMutation(
+    (data: { id: string, bandId: string }) => api.bands.demoteIntegrant(data.bandId, data.id)
+  )
+
+  const { isLoading: isRemoveIntegrantLoading, mutateAsync: removeIntegrant } = useMutation(
+    (data: { id: string, bandId: string }) => api.bands.removeIntegrant(data.bandId, data.id)
+  )
+
+  const { isLoading: isRemoveBandLoading, mutateAsync: removeBand } = useMutation(
+    (id: string) => api.bands.deleteBand(id)
+  )
+
   // Refetch on focus
   useRefreshOnFocus(refetchItem)
   useRefreshOnFocus(refetchConcerts)
@@ -109,9 +130,126 @@ const BandScreen = ({ route }): React.ReactElement => {
   const renderListItem = useCallback(({ item }: ListRenderItemInfo<UserAccount>) => (
     <IntegrantItem
       item={item}
-      isLoading={isFetching}
+      onDemotePress={() => demoteIntegrantAction(item.id)}
+      onPromotePress={() => promoteIntegrantAction(item.id)}
+      onRemovePress={() => {
+        setAction({ name: 'remove_integrant', id: item.id })
+        setConfirmDialogState(true)
+      }}
+      isLoading={isFetching || isPromoteLoading || isDemoteLoading || isRemoveIntegrantLoading || isRemoveBandLoading}
     />
-  ), [isFetching])
+  ), [
+    isFetching,
+    isPromoteLoading,
+    isDemoteLoading,
+    isRemoveIntegrantLoading,
+    isRemoveBandLoading,
+    setAction,
+    setConfirmDialogState
+  ])
+
+  // Actions
+  const demoteIntegrantAction = async (id: string) => {
+    const response = await demoteIntegrant({ id, bandId: band.id })
+    if ([200, 201].includes(response.status)) {
+      showMessage({
+        message: `A admin do integrante selecionado foi removido com sucesso!`,
+        type: 'success',
+        duration: 2000
+      })
+      refetchItem()
+    } else if ([401, 403].includes(response.status)) {
+      showMessage({
+        message: `Você não tem permissão para gerenciar níveis de permissão dos integrantes da banda!`,
+        type: 'warning',
+        duration: 2000
+      })
+    } else {
+      showMessage({
+        message: `Ocorreu um erro ao remover o admin do integrante selecionado! Tente novamente mais tarde.`,
+        type: 'danger',
+        duration: 2000
+      })
+    }
+  }
+
+  const promoteIntegrantAction = async (id: string) => {
+    const response = await promoteIntegrant({ id, bandId: band.id })
+    if ([200, 201].includes(response.status)) {
+      showMessage({
+        message: `O integrante selecionado agora é um admin da banda!`,
+        type: 'success',
+        duration: 2000
+      })
+      refetchItem()
+    } else if ([401, 403].includes(response.status)) {
+      showMessage({
+        message: `Você não tem permissão para gerenciar níveis de permissão dos integrantes da banda!`,
+        type: 'warning',
+        duration: 2000
+      })
+    } else {
+      showMessage({
+        message: `Ocorreu um erro ao promover o integrante selecionado! Tente novamente mais tarde.`,
+        type: 'danger',
+        duration: 2000
+      })
+    }
+  }
+
+  const confirmDialogActions = async (action: ConfirmActions) => {
+    switch (action.name) {
+      case 'delete_band':
+        const removeBandResponse = await removeBand(action.id)
+        if ([200, 201].includes(removeBandResponse.status)) {
+          showMessage({
+            message: `A banda foi removida com sucesso!`,
+            type: 'success',
+            duration: 2000
+          })
+          goBack()
+        } else if ([401, 403].includes(removeBandResponse.status)) {
+          showMessage({
+            message: `Você não tem permissão para remover essa banda!`,
+            type: 'warning',
+            duration: 2000
+          })
+        } else {
+          showMessage({
+            message: `Ocorreu um erro ao remover a banda! Tente novamente mais tarde.`,
+            type: 'danger',
+            duration: 2000
+          })
+        }
+        break
+      case 'remove_integrant':
+        const removeIntegrantResponse = await removeIntegrant({
+          id: action.id,
+          bandId: band.id
+        })
+        if ([200, 201].includes(removeIntegrantResponse.status)) {
+          showMessage({
+            message: `O integrante selecionado foi removido da banda!`,
+            type: 'success',
+            duration: 2000
+          })
+          refetchItem()
+        } else if ([401, 403].includes(removeIntegrantResponse.status)) {
+          showMessage({
+            message: `Você não tem permissão para remover integrantes da banda!`,
+            type: 'warning',
+            duration: 2000
+          })
+        } else {
+          showMessage({
+            message: `Ocorreu um erro ao remover o integrante selecionado! Tente novamente mais tarde.`,
+            type: 'danger',
+            duration: 2000
+          })
+        }
+        break
+    }
+  }
 
   // TSX
   return (
@@ -120,14 +258,19 @@ const BandScreen = ({ route }): React.ReactElement => {
       showFloatingButton
       floatingIcon="person-add-outline"
       onFloatingButtonPress={() => navigate("InviteIntegrants", { item: band, itemId: band.id })}
+      isFloatingButtonDisabled={isRemoveBandLoading || isFetching}
     >
       {
         band ? (
           <>
             <BandHeaderContainer
               band={band}
-              onDeletePress={() => {}}
+              onDeletePress={() => {
+                setAction({ name: 'delete_band', id: band.id })
+                setConfirmDialogState(true)
+              }}
               onEditPress={() => {}}
+              isLoading={isRemoveBandLoading || isFetching}
             />
             <Space my={2} />
             <BandFeatureContainer>
@@ -171,6 +314,12 @@ const BandScreen = ({ route }): React.ReactElement => {
           </LoadingContainer>
         ) : null
       }
+      <ConfirmDialog
+        action={action}
+        isVisible={isConfirmDialogOpen}
+        onClose={() => setConfirmDialogState(false)}
+        onConfirmAction={confirmDialogActions}
+      />
     </BaseContent>
   )
 } 
