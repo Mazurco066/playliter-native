@@ -1,5 +1,5 @@
 // Dependencies
-import ChordSheetJS, { ChordProFormatter, Song, Line } from 'chordsheetjs'
+import ChordSheetJS, { ChordProFormatter, Song, Line, ChordsOverWordsParser } from 'chordsheetjs'
 import { Chord } from 'chordsheetjs'
 import { getUniquesTyped } from './getUniques'
 
@@ -21,7 +21,7 @@ const chordProParser = {
 const chordsheetParser = {
   name: 'chordsheet',
   pattern: /.*/,
-  parser: new ChordSheetJS.ChordSheetParser({ preserveWhitespace: false })
+  parser: new ChordsOverWordsParser()
 }
 
 // Parser format for multi parser
@@ -133,7 +133,7 @@ export const getTransposedSong = (lyrics = '', transpose = 0) => {
   }
 }
 
-export const overwriteBaseTone = (song: Song) => {
+export const overwriteBaseTone = (song: Song): string => {
   try {
 
     // Chordsheetjs utils
@@ -153,6 +153,6 @@ export const overwriteBaseTone = (song: Song) => {
 
   } catch (err) {
     console.log('[overwriteBasetone]', err)
-    return {}
+    return ''
   }
 }

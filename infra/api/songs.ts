@@ -29,6 +29,9 @@ export const getPublicSongs = async (
 export const getSong = async (id: string) =>
   asyncRequestHandler(httpClient.get(`/v1/songs/${id}`))
 
+export const updateSong = async (id: string, data: any) =>
+  asyncRequestHandler(httpClient.put(`/v1/songs/${id}`, { ...data }))
+
 // Category section 
 export const getBandSongCategories = async (
   bandId: string,

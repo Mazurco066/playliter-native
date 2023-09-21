@@ -3,6 +3,7 @@ import styled from 'styled-components'
 import React, { useState, useEffect }  from 'react'
 import { useQuery } from '@tanstack/react-query'
 import { ISong } from '../../../domain'
+import { useRefreshOnFocus } from '../../hooks'
 
 // Main API
 import api from '../../../infra/api'
@@ -47,15 +48,20 @@ const SongScreen = ({ route }): React.ReactElement => {
     }
   }, [updatedItem])
 
+  // Refresh on focus
+  useRefreshOnFocus(refetchItem)
+
   // TSX
   return (
     <BaseContent hideCardsNavigation>
       {
         song ? (
           <>
-            <Text>Song - {song.title}</Text>
             <Songsheet
               song={song}
+              showControlHeaders
+              onToneUpdateSuccess={refetchItem}
+              canUpdateBaseTone
             />
           </>
         ) : isFetching ? (
