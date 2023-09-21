@@ -10,6 +10,7 @@ import api from '../../../infra/api'
 // Components
 import { Spinner, Text } from '@ui-kitten/components'
 import { View } from 'react-native'
+import { Songsheet } from '../../components'
 import { BaseContent } from '../../layouts'
 
 // Styled components
@@ -53,6 +54,9 @@ const SongScreen = ({ route }): React.ReactElement => {
         song ? (
           <>
             <Text>Song - {song.title}</Text>
+            <Songsheet
+              song={song}
+            />
           </>
         ) : isFetching ? (
           <LoadingContainer>
