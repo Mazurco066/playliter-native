@@ -33,13 +33,14 @@ import {
 } from '../../components'
 
 // Types
-import { UserAccount } from '../../../domain'
+import { CreateAccountDTO, UserAccount } from '../../../domain'
 
 // Styled components
 const Wrapper = styled(Layout)`
   flex: 1;
   justify-content: center;
   align-items: center;
+  width: 100%;
   ${color}
 `
 
@@ -54,6 +55,7 @@ const Form = styled(View)`
   padding: 16px;
   border-radius: 8px;
   width: 100%;
+  margin-bottom: 24px;
   ${color}
 `
 
@@ -70,15 +72,21 @@ const textStyle = {
 }
 
 // Page Main TSX
-const AuthScreen = ({ navigation }): React.ReactElement => {
+const SignUpScreen = ({ navigation }): React.ReactElement => {
   // Hooks
   const theme = useTheme()
-  const [ secureTextEntry, setSecureTextEntry ] = useState<boolean>(true)
+  const [secureTextEntry, setSecureTextEntry] = useState<boolean>(true)
   const { control, handleSubmit, formState: { errors } } = useForm()
   const { hydrateAuthData } = useAuthStore()
 
   // Mutations
   const { isLoading, mutateAsync } = useMutation(
+    (data: CreateAccountDTO) => {
+      return api.accounts.createAccount({ ...data })
+    }
+  )
+
+  const { isLoading: isLoginLoading, mutateAsync: loginAction } = useMutation(
     (data: { username: string, password: string }) => {
       return api.auth.login({
         username: data.username,
@@ -92,23 +100,49 @@ const AuthScreen = ({ navigation }): React.ReactElement => {
     setSecureTextEntry(!secureTextEntry)
   }
 
-  const submitLogin = async (data: { username: string, password: string }) => {
+  const submitLogin = async (data: {
+    username: string,
+    password: string,
+    name: string,
+    email: string
+  }) => {
     const response = await mutateAsync({
-      username: data.username,
-      password: data.password
+     password: data.password,
+     email: data.email,
+     name: data.name,
+     username: data.username
     })
     if ([200, 201].includes(response.status)) {
-      const { data: { account, token } } = response.data
-      hydrateAuthData(account as UserAccount, token)
-      showMessage({
-        message: `Bem vindo(a) ${account.name}`,
-        type: 'success',
-        duration: 2000
+      const loginResponse = await loginAction({
+        username: data.username,
+        password: data.password
       })
-      navigation.replace('Main')
+      if ([200, 201].includes(loginResponse.status)) {
+        const { data: { account, token } } = loginResponse.data
+        hydrateAuthData(account as UserAccount, token)
+        showMessage({
+          message: `Bem vindo(a) ${account.name}`,
+          type: 'success',
+          duration: 2000
+        })
+        navigation.replace('Main')
+      } else {
+        showMessage({
+          message: `Olá ${data.name}. Sua conta foi criada com sucesso!`,
+          type: 'success',
+          duration: 2000
+        })
+         navigation.goBack()
+      }
+    } else if ([400].includes(response.status)) {
+      showMessage({
+        message: 'Usuário ou E-mail já estão em uso por outro usuário!',
+        type: 'warning',
+        duration: 2500
+      })
     } else {
       showMessage({
-        message: 'Usuário ou senha incorreto(s)',
+        message: 'Ocorreu um erro durante a criação de sua conta. Tente novamente mais tarde!',
         type: 'danger',
         duration: 2500
       })
@@ -153,6 +187,27 @@ const AuthScreen = ({ navigation }): React.ReactElement => {
           >
             <Controller
               control={control}
+              name="name"
+              rules={{ required: true, minLength: 2 }}
+              render={({ field: { onBlur, onChange, value } }) => (
+                <Input
+                  label="Nome"
+                  placeholder="Insira seu nome"
+                  keyboardType="ascii-capable"
+                  accessoryLeft={props => <Icon {...props} name="person-outline" />}
+                  value={value}
+                  onBlur={onBlur}
+                  onChangeText={nextValue => onChange(nextValue)}
+                  caption={generateCaption(errors.username as FieldError)}
+                  textStyle={textStyle}
+                  disabled={isLoginLoading || isLoading}
+                />
+              )}
+              defaultValue=""
+            />
+            <Space my={2} />
+            <Controller
+              control={control}
               name="username"
               rules={{ required: true, minLength: 2 }}
               render={({ field: { onBlur, onChange, value } }) => (
@@ -166,12 +221,33 @@ const AuthScreen = ({ navigation }): React.ReactElement => {
                   onChangeText={nextValue => onChange(nextValue)}
                   caption={generateCaption(errors.username as FieldError)}
                   textStyle={textStyle}
-                  disabled={isLoading}
+                  disabled={isLoginLoading || isLoading}
                 />
               )}
               defaultValue=""
             />
             <Space my={2} />
+            <Controller
+              control={control}
+              name="email"
+              rules={{ required: true, minLength: 7 }}
+              render={({ field: { onBlur, onChange, value } }) => (
+                <Input
+                  label="E-mail"
+                  placeholder="Insira seu email"
+                  keyboardType="email-address"
+                  accessoryLeft={props => <Icon {...props} name="email-outline" />}
+                  value={value}
+                  onBlur={onBlur}
+                  onChangeText={nextValue => onChange(nextValue)}
+                  caption={generateCaption(errors.username as FieldError)}
+                  textStyle={textStyle}
+                  disabled={isLoginLoading || isLoading}
+                />
+              )}
+              defaultValue=""
+            />
+            <Space my={2}/>
             <Controller
               control={control}
               name="password"
@@ -189,48 +265,35 @@ const AuthScreen = ({ navigation }): React.ReactElement => {
                   onChangeText={nextValue => onChange(nextValue)}
                   caption={generateCaption(errors.password as FieldError)}
                   textStyle={textStyle}
-                  disabled={isLoading}
+                  disabled={isLoginLoading || isLoading}
                 />
               )}
               defaultValue=""
             />
-            <Space my={1} />
-            <TouchableOpacity
-              onPress={() => {
-                console.log('[forgot password] click')
-              }}
-            >
-              <Text
-                style={{ textAlign: 'center', fontWeight: '700' }}
-                status="primary"
-                category="s1"
-              >
-                Esqueci minha senha
-              </Text>
-            </TouchableOpacity>
             <Space my={2} />
             <Button
-              disabled={isLoading}
+              disabled={isLoginLoading || isLoading}
               onPress={handleSubmit(submitLogin)}
             >
-              Acessar
+              Criar Conta
             </Button>
             <Space my={1} />
             <TouchableOpacity
+              disabled={isLoginLoading || isLoading}
               onPress={() => {
-                navigation.navigate("SignUp")
+                navigation.goBack()
               }}
             >
               <Text
                 style={{ textAlign: 'center' }}
                 category='s2'
               >
-                Não possui conta? <Text
+                Já possui conta? <Text
                   style={{ fontWeight: '700' }}
                   status="primary"
                   category="s2"
                 >
-                  Criar uma agora!
+                  Fazer login!
                 </Text>
               </Text>
             </TouchableOpacity>
@@ -242,4 +305,4 @@ const AuthScreen = ({ navigation }): React.ReactElement => {
 }
 
 // Exporting page
-export default AuthScreen
+export default SignUpScreen

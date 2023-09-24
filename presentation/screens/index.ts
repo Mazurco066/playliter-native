@@ -6,6 +6,7 @@ import ConcertScreen from './Concert'
 import MainScreen from './Main'
 import Middleware from './Middleware'
 import ProfileScreen from './Profile'
+import SignUpScreen from './SignUp'
 import SongScreen from './Song'
 import SongsScreen from './Songs'
 
@@ -22,6 +23,7 @@ export {
   MainScreen,
   Middleware,
   ProfileScreen,
+  SignUpScreen,
   SongScreen,
   SongsScreen
 }

@@ -28,6 +28,7 @@ import {
   SaveCategory,
   SaveConcert,
   SaveNote,
+  SignUpScreen,
   SongScreen,
   SongListScreen,
   SongsScreen
@@ -43,7 +44,16 @@ const AuthNavigator = () => (
       header: () => null
     })}
   >
-    <AuthStack.Screen name="Login" component={AuthScreen} />
+    <AuthStack.Screen
+      name="Login"
+      component={AuthScreen}
+      options={{ animation: 'slide_from_right' }}
+    />
+    <AuthStack.Screen
+      name="SignUp"
+      component={SignUpScreen}
+      options={{ animation: 'slide_from_right' }}
+    />
   </AuthStack.Navigator>
 )
 
