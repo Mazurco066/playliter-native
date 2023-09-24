@@ -1,10 +1,9 @@
 // Dependencies
-import React, { useState } from 'react'
+import React from 'react'
 import { Controller, FieldError, useForm } from 'react-hook-form'
 import { useMutation } from '@tanstack/react-query'
 import styled from 'styled-components'
 import { color } from 'styled-system'
-import { useAuthStore } from '../../../main/store'
 import { generateCaption } from '../../utils'
 
 // Main API
@@ -24,16 +23,12 @@ import {
   Image,
   View,
   ScrollView,
-  TouchableOpacity,
-  TouchableWithoutFeedback
+  TouchableOpacity
 } from 'react-native'
 import {
   CustomKeyboardAvoidingView,
   Space
 } from '../../components'
-
-// Types
-import { UserAccount } from '../../../domain'
 
 // Styled components
 const Wrapper = styled(Layout)`
@@ -70,60 +65,42 @@ const textStyle = {
 }
 
 // Page Main TSX
-const AuthScreen = ({ navigation }): React.ReactElement => {
+const ForgotPasswordScreen = ({ navigation }): React.ReactElement => {
   // Hooks
   const theme = useTheme()
-  const [ secureTextEntry, setSecureTextEntry ] = useState<boolean>(true)
   const { control, handleSubmit, formState: { errors } } = useForm()
-  const { hydrateAuthData } = useAuthStore()
 
   // Mutations
   const { isLoading, mutateAsync } = useMutation(
-    (data: { username: string, password: string }) => {
-      return api.auth.login({
-        username: data.username,
-        password: data.password
-      })
+    (email: string) => {
+      return api.auth.forgotPassword(email)
     }
   )
 
   // Actions
-  const toggleSecureEntry = (): void => {
-    setSecureTextEntry(!secureTextEntry)
-  }
-
-  const submitLogin = async (data: { username: string, password: string }) => {
-    const response = await mutateAsync({
-      username: data.username,
-      password: data.password
-    })
+  const submitPasswordRecovery = async (data: { email: string }) => {
+    const response = await mutateAsync(data.email)
     if ([200, 201].includes(response.status)) {
-      const { data: { account, token } } = response.data
-      hydrateAuthData(account as UserAccount, token)
       showMessage({
-        message: `Bem vindo(a) ${account.name}`,
+        message: 'Um E-mail contendo a URL para redefinição de senha foi enviado para seu Inbox.',
         type: 'success',
-        duration: 2000
+        duration: 2500
       })
-      navigation.replace('Main')
+      navigation.goBack()
+    } else if ([400, 404].includes(response.status)) {
+      showMessage({
+        message: 'Esse E-mail não está vinculado a nenhuma conta nesse aplicativo.',
+        type: 'info',
+        duration: 2500
+      })
     } else {
       showMessage({
-        message: 'Usuário ou senha incorreto(s)',
+        message: 'Ocorreu um erro ao tentar recuperar sua senha. Tente novamente mais tarde!',
         type: 'danger',
         duration: 2500
       })
     }
   }
-
-  // Auxiliar Render functions
-  const renderPasswordIcon = (props: any): React.ReactElement => (
-    <TouchableWithoutFeedback onPress={toggleSecureEntry}>
-      <Icon
-        {...props}
-        name={secureTextEntry ? 'eye-off' : 'eye'}
-      />
-    </TouchableWithoutFeedback>
-  )
 
   // TSX
   return (
@@ -151,16 +128,27 @@ const AuthScreen = ({ navigation }): React.ReactElement => {
           <Form
             style={{ backgroundColor: theme['color-basic-700'] }}
           >
+            <Text
+              category="h6"
+            >
+              Redefinição de senha
+            </Text>
+            <Text
+              category="c1"
+            >
+              Insira seu E-mail e te enviaremos a URL para realizar a redefinição de sua senha de acesso ao aplicativo.
+            </Text>
+            <Space my={1} />
             <Controller
               control={control}
-              name="username"
-              rules={{ required: true, minLength: 2 }}
+              name="email"
+              rules={{ required: true, minLength: 7 }}
               render={({ field: { onBlur, onChange, value } }) => (
                 <Input
-                  label="Usuário"
-                  placeholder="Insira seu usuário"
-                  keyboardType="ascii-capable"
-                  accessoryLeft={props => <Icon {...props} name="person-outline" />}
+                  label="E-mail"
+                  placeholder="Insira seu email"
+                  keyboardType="email-address"
+                  accessoryLeft={props => <Icon {...props} name="email-outline" />}
                   value={value}
                   onBlur={onBlur}
                   onChangeText={nextValue => onChange(nextValue)}
@@ -172,65 +160,28 @@ const AuthScreen = ({ navigation }): React.ReactElement => {
               defaultValue=""
             />
             <Space my={2} />
-            <Controller
-              control={control}
-              name="password"
-              rules={{ required: true, minLength: 8 }}
-              render={({ field: { onBlur, onChange, value } }) => (
-                <Input
-                  label="Senha"
-                  placeholder="••••••••"
-                  keyboardType="ascii-capable"
-                  secureTextEntry={secureTextEntry}
-                  accessoryLeft={props => <Icon {...props} name="lock-outline" />}
-                  accessoryRight={renderPasswordIcon}
-                  value={value}
-                  onBlur={onBlur}
-                  onChangeText={nextValue => onChange(nextValue)}
-                  caption={generateCaption(errors.password as FieldError)}
-                  textStyle={textStyle}
-                  disabled={isLoading}
-                />
-              )}
-              defaultValue=""
-            />
-            <Space my={1} />
-            <TouchableOpacity
-              onPress={() => {
-                navigation.navigate("ForgotPassword")
-              }}
-            >
-              <Text
-                style={{ textAlign: 'center', fontWeight: '700' }}
-                status="primary"
-                category="s1"
-              >
-                Esqueci minha senha
-              </Text>
-            </TouchableOpacity>
-            <Space my={2} />
             <Button
               disabled={isLoading}
-              onPress={handleSubmit(submitLogin)}
+              onPress={handleSubmit(submitPasswordRecovery)}
             >
-              Acessar
+              Enviar Redefinição de Senha
             </Button>
             <Space my={1} />
             <TouchableOpacity
               onPress={() => {
-                navigation.navigate("SignUp")
+                navigation.goBack()
               }}
             >
               <Text
                 style={{ textAlign: 'center' }}
                 category='s2'
               >
-                Não possui conta? <Text
+                Lembrou sua senha? <Text
                   style={{ fontWeight: '700' }}
                   status="primary"
                   category="s2"
                 >
-                  Criar uma agora!
+                  Fazer login!
                 </Text>
               </Text>
             </TouchableOpacity>
@@ -242,4 +193,4 @@ const AuthScreen = ({ navigation }): React.ReactElement => {
 }
 
 // Exporting page
-export default AuthScreen
+export default ForgotPasswordScreen

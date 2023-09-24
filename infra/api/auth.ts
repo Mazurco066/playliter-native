@@ -11,3 +11,6 @@ interface LoginPayload {
 // Endpoints
 export const login = async (payload: LoginPayload) =>
   asyncRequestHandler(httpClient.post('/v1/auth/authenticate', { ...payload }))
+
+export const forgotPassword = async (email: string) =>
+  asyncRequestHandler(httpClient.post(`/v1/auth/forgot_password`, { email }))

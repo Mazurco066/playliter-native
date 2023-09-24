@@ -20,6 +20,7 @@ import {
   BandSongs,
   ConcertNotes,
   ConcertScreen,
+  ForgotPasswordScreen,
   InviteIntegrants,
   MainScreen,
   Middleware,
@@ -52,6 +53,11 @@ const AuthNavigator = () => (
     <AuthStack.Screen
       name="SignUp"
       component={SignUpScreen}
+      options={{ animation: 'slide_from_right' }}
+    />
+    <AuthStack.Screen
+      name="ForgotPassword"
+      component={ForgotPasswordScreen}
       options={{ animation: 'slide_from_right' }}
     />
   </AuthStack.Navigator>
