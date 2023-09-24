@@ -29,6 +29,7 @@ import {
   SaveConcert,
   SaveNote,
   SongScreen,
+  SongListScreen,
   SongsScreen
 } from '../../presentation/screens'
 
@@ -95,6 +96,11 @@ const MainNavigator = () => (
     <MainStack.Screen
       name="Concert"
       component={ConcertScreen}
+      options={{ animation: 'slide_from_right' }}
+    />
+    <MainStack.Screen
+      name="SongList"
+      component={SongListScreen}
       options={{ animation: 'slide_from_right' }}
     />
     <MainStack.Screen

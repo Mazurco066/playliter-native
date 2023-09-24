@@ -45,6 +45,22 @@ const ChorusContainer = styled(View)`
   ${color}
 `
 
+const TitleContainer = styled(View)`
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: flex-start;
+`
+
+const SongTitle = styled(Text)`
+  flex-grow: 1;
+  max-width: 90%;
+`
+
+const SongMenu = styled(View)`
+  flex: 0 0 auto;
+`
+
 const CommentText = styled(Text)`
   font-style: italic;
 `
@@ -70,6 +86,7 @@ const UpdateToneBtn = styled(Button)`
 
 // Songsheet parameters
 export interface ISongSheet {
+  children?: React.ReactElement | React.ReactElement[]
   song: ISong
   canUpdateBaseTone?: boolean
   isLoading?: boolean
@@ -80,6 +97,7 @@ export interface ISongSheet {
 
 // Songsheet component
 const Songsheet = ({
+  children,
   song,
   showControlHeaders = false,
   showHeaders = true,
@@ -200,11 +218,16 @@ const Songsheet = ({
             {
               showHeaders && showControlHeaders ? (
                 <SongControllHeaders>
-                  <Text
-                    category="h5"
-                  >
-                    {chordsheet.title}
-                  </Text>
+                  <TitleContainer>
+                    <SongTitle
+                      category="h5"
+                    >
+                      {chordsheet.title}
+                    </SongTitle>
+                    <SongMenu>
+                      {children}
+                    </SongMenu>
+                  </TitleContainer>
                   <Text
                     category="s1"
                     style={{
@@ -249,11 +272,16 @@ const Songsheet = ({
             { // Song default headers
               showHeaders && !showControlHeaders ? (
                 <SongHeaders>
-                  <Text
-                    category="h5"
-                  >
-                    {chordsheet.title}
-                  </Text>
+                  <TitleContainer>
+                    <SongTitle
+                      category="h5"
+                    >
+                      {chordsheet.title}
+                    </SongTitle>
+                    <SongMenu>
+                      {children}
+                    </SongMenu>
+                  </TitleContainer>
                   <Text
                     category="s1"
                     style={{

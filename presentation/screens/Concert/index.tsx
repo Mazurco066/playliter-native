@@ -198,7 +198,7 @@ const ConcertScreen = ({ route }): React.ReactElement => {
               onEditPress={() => console.log('edit click')}
               onNotesPress={() => navigate('ConcertNotes', { item: concert })}
               onReorderPress={() => navigate('ReorderConcert', { item: concert })}
-              onSequentialPress={() => console.log('sequential click')}
+              onSequentialPress={() => navigate('SongList', { itemId: concert.id, item: concert })}
             />
             <Space my={1} />
             <Text category="h5">

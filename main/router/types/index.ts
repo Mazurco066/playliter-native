@@ -9,6 +9,7 @@ export type MainStackParamList = {
   BandConcerts: { item?: IBand, itemId: string }
   BandSongs: { item?: IBand, itemId: string }
   Concert: { item?: IConcert, itemId: string }
+  SongList: { item?: IConcert, itemId: string }
   Song: { item?: ISong, itemId: string }
   ReorderConcert: { item: IConcert }
   AddConcertSongs: { item: IConcert }

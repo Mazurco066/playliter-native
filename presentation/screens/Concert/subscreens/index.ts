@@ -4,6 +4,7 @@ import ConcertNotes from './Notes'
 import ReorderConcert from './Reorder'
 import SaveConcert from './Save'
 import SaveNote from './SaveNote'
+import SongListScreen from './SongList'
 
 export {
   AddPublicConcertSongs,
@@ -11,5 +12,6 @@ export {
   ConcertNotes,
   ReorderConcert,
   SaveConcert,
-  SaveNote
+  SaveNote,
+  SongListScreen
 }
