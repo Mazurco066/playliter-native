@@ -21,11 +21,23 @@
       "adaptiveIcon": {
         "foregroundImage": "./assets/adaptive-icon.png",
         "backgroundColor": "#ffffff"
-      }
+      },
+      "package": "io.mazurco066.playliter"
     },
     "web": {
       "favicon": "./assets/favicon.png",
-      "build": { "babel": { "include": [ "@ui-kitten/components" ] } }
+      "build": {
+        "babel": {
+          "include": [
+            "@ui-kitten/components"
+          ]
+        }
+      }
+    },
+    "extra": {
+      "eas": {
+        "projectId": "2d42668f-ea93-4bff-8b43-2995f80d61fd"
+      }
     }
   }
 }
