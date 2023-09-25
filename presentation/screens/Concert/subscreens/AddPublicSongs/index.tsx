@@ -192,7 +192,7 @@ const AddPublicConcertSongs = ({ route }): React.ReactElement => {
           size="small"
           value={filterSearch}
           onChangeText={nextValue => setFilterSearch(nextValue)}
-          disabled={isLoading || isFetchingNextPage || isRefetching}
+          disabled={isLoading || isFetchingNextPage}
           style={{
             backgroundColor: theme['color-basic-700']
           }}

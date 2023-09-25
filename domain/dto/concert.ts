@@ -9,3 +9,10 @@ export interface IConcertSongDto {
   createdAt: string
   updatedAt: string
 }
+
+export interface SaveConcertDto {
+  band?: string
+  title: string
+  description: string
+  date: string
+}

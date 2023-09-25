@@ -195,7 +195,7 @@ const ConcertScreen = ({ route }): React.ReactElement => {
                 setAction({ name: 'delete_concert', id: concert.id })
                 setConfirmDialogState(true)
               }}
-              onEditPress={() => console.log('edit click')}
+              onEditPress={() => navigate('SaveConcert', { item: concert, bandId: concert.band.id })}
               onNotesPress={() => navigate('ConcertNotes', { item: concert })}
               onReorderPress={() => navigate('ReorderConcert', { item: concert })}
               onSequentialPress={() => navigate('SongList', { itemId: concert.id, item: concert })}

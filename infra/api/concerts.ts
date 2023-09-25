@@ -4,6 +4,7 @@ import { asyncRequestHandler } from '../../presentation/utils'
 
 // Request types and interfaces
 import { IPaging } from './_types'
+import { SaveConcertDto } from '../../domain/dto'
 
 // Endpoints
 export const getPendingConcerts = async () =>
@@ -18,6 +19,16 @@ export const getConcerts = async (
   filter: string = ''
 ) =>
   asyncRequestHandler(httpClient.get(`/v2/shows/list/${id}?limit=${limit}&offset=${offset}&filter=${encodeURI(filter)}`))
+
+export const createConcert = async (data: SaveConcertDto) =>
+  asyncRequestHandler(httpClient.post(`/v1/shows`, { ...data }))
+
+export const updateConcert = async (id: string, data: SaveConcertDto) =>
+  asyncRequestHandler(httpClient.put(`/v1/shows/${id}`, {
+    title: data.title,
+    description: data.description,
+    date: data.date
+  }))
 
 export const reorderConcert = async (id: string, songs: string[]) =>
   asyncRequestHandler(httpClient.put(`/v1/shows/${id}/reorder`, { songs }))

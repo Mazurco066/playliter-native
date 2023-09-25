@@ -4,6 +4,7 @@ import styled from 'styled-components'
 import { useNavigation } from '@react-navigation/native'
 import { NativeStackNavigationProp } from '@react-navigation/native-stack'
 import { useInfiniteQuery } from '@tanstack/react-query'
+import { useRefreshOnFocus } from '../../../../hooks'
 
 // Types
 import { IConcert } from '../../../../../domain'
@@ -93,6 +94,8 @@ const BandConcerts = ({ route }): React.ReactElement => {
     }
   )
 
+  useRefreshOnFocus(refetch)
+
   // All pages data
   const allPagesData = data?.pages.flatMap((value) => value.data.data) || []
 
@@ -148,7 +151,7 @@ const BandConcerts = ({ route }): React.ReactElement => {
         }
       }}
       showFloatingButton
-      onFloatingButtonPress={() => console.log('[pressed here]')}
+      onFloatingButtonPress={() => navigate("SaveConcert", { bandId: item.id })}
     >
       <Text category="h5">
         Apresentações realizadas

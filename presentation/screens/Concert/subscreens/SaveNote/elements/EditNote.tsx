@@ -13,7 +13,7 @@ import { IObservationType } from '../../../../../../domain'
 
 // Components
 import { showMessage } from 'react-native-flash-message'
-import { Button, Icon, Input, Text, useTheme } from '@ui-kitten/components'
+import { Button, Icon, Input, useTheme } from '@ui-kitten/components'
 import { View } from 'react-native'
 import { CustomKeyboardAvoidingView, Space } from '../../../../../components'
 import { generateCaption } from '../../../../../utils'
