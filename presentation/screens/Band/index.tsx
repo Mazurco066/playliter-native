@@ -269,7 +269,7 @@ const BandScreen = ({ route }): React.ReactElement => {
                 setAction({ name: 'delete_band', id: band.id })
                 setConfirmDialogState(true)
               }}
-              onEditPress={() => {}}
+              onEditPress={() => navigate('SaveBand', { item: band })}
               isLoading={isRemoveBandLoading || isFetching}
             />
             <Space my={2} />

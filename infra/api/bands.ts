@@ -4,6 +4,7 @@ import { asyncRequestHandler } from '../../presentation/utils'
 
 // Request types and interfaces
 import { IPaging } from './_types'
+import { SaveBandDto } from '../../domain/dto'
 
 // Endpoints
 export const getBands = async ({ limit, offset }: IPaging = { limit: 0, offset: 0 }) =>
@@ -11,6 +12,12 @@ export const getBands = async ({ limit, offset }: IPaging = { limit: 0, offset: 
 
 export const getBand = async (id: string) =>
   asyncRequestHandler(httpClient.get(`/v1/bands/get/${id}`))
+
+export const createBand = async (data: SaveBandDto) =>
+  asyncRequestHandler(httpClient.post(`/v1/bands`, data))
+
+export const updateBand = async (id: string, data: SaveBandDto) =>
+  asyncRequestHandler(httpClient.put(`/v1/bands/${id}`, data))
 
 export const deleteBand = async (id: string) =>
   asyncRequestHandler(httpClient.delete(`/v1/bands/${id}`))

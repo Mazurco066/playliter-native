@@ -5,11 +5,12 @@ import axios, { AxiosRequestHeaders, InternalAxiosRequestConfig } from 'axios'
 import { useAuthStore as store } from '../../main/store'
 import { navigationService } from '../../main/services'
 
+// Exporting base url
+// export const BASE_URL = 'http://10.0.2.2:3001/api'
+export const BASE_URL = 'https://grossly-dominant-rhino.ngrok-free.app/api'
+
 // Base HTTP Client
-const httpClient = axios.create({
-  // baseURL: 'http://10.0.2.2:3001/api'
-  baseURL: 'https://grossly-dominant-rhino.ngrok-free.app/api'
-})
+const httpClient = axios.create({ baseURL: BASE_URL })
 
 // Token Injection
 httpClient.interceptors.request.use(

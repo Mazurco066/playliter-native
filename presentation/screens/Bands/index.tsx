@@ -5,6 +5,7 @@ import { useNavigation } from '@react-navigation/native'
 import { NativeStackNavigationProp } from '@react-navigation/native-stack'
 import { useQuery } from '@tanstack/react-query'
 import { MainStackParamList } from '../../../main/router'
+import { getIcon } from '../../utils'
 
 // Types
 import { IBand } from '../../../domain'
@@ -13,7 +14,7 @@ import { IBand } from '../../../domain'
 import api from '../../../infra/api'
 
 // Components
-import { Spinner, Text } from '@ui-kitten/components'
+import { Button, Spinner, Text } from '@ui-kitten/components'
 import { FlatList, ListRenderItemInfo, View } from 'react-native'
 import { BaseContent } from '../../layouts'
 import { BandListItem } from './elements'
@@ -53,7 +54,7 @@ const BandsScreen = () => {
       <Text category="h5">
         Minhas bandas
       </Text>
-      <Space my={1} />
+      <Space my={1} />      
       {
         isBandsLoading ? (
           <LoadingContainer>
@@ -67,6 +68,15 @@ const BandsScreen = () => {
                   <Text category="s1">
                     Lista das bandas que você faz parte.
                   </Text>
+                  <Space my={1} />
+                  <Button
+                    size="small"
+                    accessoryLeft={getIcon('plus-outline')}
+                    onPress={() => navigate("SaveBand", { item: null })}
+                    disabled={isBandsLoading}
+                  >
+                    Criar uma banda
+                  </Button>
                   <FlatList
                     ItemSeparatorComponent={() => <Space my={1} />}
                     ListHeaderComponent={() => <Space my={2} />}
@@ -84,9 +94,20 @@ const BandsScreen = () => {
                   />
                 </>
               ) : (
-                <Text category="s1">
-                  Você não participa de nenhuma banda no momento.
-                </Text>
+                <>
+                  <Text category="s1">
+                    Você não participa de nenhuma banda no momento.
+                  </Text>
+                  <Space my={1} />
+                  <Button
+                    size="small"
+                    accessoryLeft={getIcon('plus-outline')}
+                    onPress={() => navigate("SaveBand", { item: null })}
+                    disabled={isBandsLoading}
+                  >
+                    Criar uma banda
+                  </Button>
+                </>
               )
             }
           </>

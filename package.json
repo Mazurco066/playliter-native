@@ -22,8 +22,10 @@
     "axios": "^1.4.0",
     "chordsheetjs": "^8.1.0",
     "expo": "~48.0.11",
+    "expo-image-picker": "~14.1.1",
     "expo-linear-gradient": "~12.1.2",
     "expo-status-bar": "~1.4.4",
+    "mime": "^3.0.0",
     "react": "18.2.0",
     "react-hook-form": "^7.43.9",
     "react-native": "0.71.7",
@@ -37,10 +39,12 @@
     "styled-components": "^5.3.9",
     "styled-system": "^5.1.5",
     "typescript": "^4.9.4",
+    "url": "^0.11.3",
     "zustand": "^4.3.8"
   },
   "devDependencies": {
     "@babel/core": "^7.20.0",
+    "@types/mime": "^3.0.2",
     "@types/styled-components": "^5.1.26",
     "@types/styled-system": "^5.1.16"
   },

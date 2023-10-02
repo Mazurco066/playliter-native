@@ -28,6 +28,7 @@ import {
   ReorderConcert,
   SaveCategory,
   SaveConcert,
+  SaveBandScreen,
   SaveNote,
   SignUpScreen,
   SongScreen,
@@ -81,6 +82,11 @@ const MainNavigator = () => (
     <MainStack.Screen
       name="Band"
       component={BandScreen}
+      options={{ animation: 'slide_from_right' }}
+    />
+    <MainStack.Screen
+      name="SaveBand"
+      component={SaveBandScreen}
       options={{ animation: 'slide_from_right' }}
     />
     <MainStack.Screen
