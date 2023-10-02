@@ -4,7 +4,7 @@ import { asyncRequestHandler } from '../../presentation/utils'
 
 // Request types and interfaces
 import { IPaging } from './_types'
-import { CreateAccountDTO } from '../../domain/dto'
+import { CreateAccountDTO, UpdateAccountDTO } from '../../domain/dto'
 
 // Endpoints
 export const getRegisteredAccounts = async ({ limit, offset }: IPaging = { limit: 0, offset: 0 }) =>
@@ -12,3 +12,6 @@ export const getRegisteredAccounts = async ({ limit, offset }: IPaging = { limit
 
 export const createAccount = async (data: CreateAccountDTO) =>
   asyncRequestHandler(httpClient.post(`/v1/accounts`, data))
+
+export const updateAccount = async (id: string, data: UpdateAccountDTO) =>
+  asyncRequestHandler(httpClient.put(`/v1/accounts/${id}`, data))

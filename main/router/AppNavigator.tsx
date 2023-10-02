@@ -10,6 +10,7 @@ const RootStack = createNativeStackNavigator()
 // Screens
 import { TopNavigation } from '../../presentation/layouts'
 import {
+  AboutScreen,
   AddPublicConcertSongs,
   AddConcertSongs,
   AuthScreen,
@@ -30,6 +31,7 @@ import {
   SaveConcert,
   SaveBandScreen,
   SaveNote,
+  SaveProfileScreen,
   SignUpScreen,
   SongScreen,
   SongListScreen,
@@ -159,27 +161,44 @@ const MainNavigator = () => (
     <MainStack.Screen
       name="Song"
       component={SongScreen}
+      options={{ animation: 'slide_from_right' }}
+    />
+    {/* Profile screen and subscreens */}
+    <MainStack.Screen
+      name="Profile"
+      component={ProfileScreen}
+      options={{ animation: 'slide_from_right' }}
+    />
+    <MainStack.Screen
+      name="SaveProfile"
+      component={SaveProfileScreen}
+      options={{ animation: 'slide_from_right' }}
     />
     {/* Standalone screens */}
     <MainStack.Screen
       name="Bands"
       component={BandsScreen}
+      options={{ animation: 'slide_from_right' }}
     />
     <MainStack.Screen
       name="Home"
       component={MainScreen}
+      options={{ animation: 'slide_from_right' }}
     />
     <MainStack.Screen
       name="Middleware"
       component={Middleware}
+      options={{ animation: 'slide_from_right' }}
     />
     <MainStack.Screen
-      name="Profile"
-      component={ProfileScreen}
+      name="About"
+      component={AboutScreen}
+      options={{ animation: 'slide_from_right' }}
     />
     <MainStack.Screen
       name="Songs"
       component={SongsScreen}
+      options={{ animation: 'slide_from_right' }}
     />
   </MainStack.Navigator>
 )

@@ -1,4 +1,5 @@
 // Screens
+import AboutScreen from './About'
 import AuthScreen from './Auth'
 import BandScreen from './Band'
 import BandsScreen from './Bands'
@@ -14,9 +15,11 @@ import SongsScreen from './Songs'
 // Subscreens
 export * from './Band/subscreens'
 export * from './Concert/subscreens'
+export * from './Profile/subscreens'
 
 // Unifying exports
 export {
+  AboutScreen,
   AuthScreen,
   BandScreen,
   BandsScreen,

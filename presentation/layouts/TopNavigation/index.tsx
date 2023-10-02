@@ -84,6 +84,10 @@ const TopNavigation = ({ navigation }): React.ReactElement => {
       <MenuItem
         accessoryLeft={getIcon('person-outline')}
         title='Perfil'
+        onPress={() => {
+          toggleMenu()
+          navigation.navigate('Profile')
+        }}
         style={{
           backgroundColor: theme['color-basic-700']
         }}
@@ -91,6 +95,10 @@ const TopNavigation = ({ navigation }): React.ReactElement => {
       <MenuItem
         accessoryLeft={getIcon('info')}
         title='Sobre'
+        onPress={() => {
+          toggleMenu()
+          navigation.navigate('About')
+        }}
         style={{
           backgroundColor: theme['color-basic-700']
         }}
