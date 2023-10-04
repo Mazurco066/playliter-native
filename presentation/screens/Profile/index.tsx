@@ -19,7 +19,7 @@ import { IBandInvitation } from '../../../domain'
 import { useAuthStore } from '../../../main/store'
 
 // Components
-import { Avatar, Button, Text, useTheme } from '@ui-kitten/components'
+import { Avatar, Button, Spinner, Text, useTheme } from '@ui-kitten/components'
 import { FlatList, ListRenderItemInfo, View } from 'react-native'
 import { InviteListItem } from './elements'
 import { Space } from '../../components'
@@ -35,6 +35,13 @@ const ProfileContainer = styled(View)`
   align-items: center;
   padding: 16px;
   ${color}
+`
+
+const LoadingContainer = styled(View)`
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
 `
 
 // Page Main JSX
@@ -124,7 +131,12 @@ const ProfileScreen = ({ navigation }) => {
         Notificações
       </Text>
       {
-        pendingInvites?.data?.data?.length > 0 ? (
+        isLoadingInvites ? (
+          <LoadingContainer>
+            <Space my={2} />
+            <Spinner size="large" />
+          </LoadingContainer>
+        ) : !isLoadingInvites && pendingInvites?.data?.data?.length > 0 ? (
           <FlatList
             ItemSeparatorComponent={() => <Space my={1} />}
             ListHeaderComponent={() => <Space my={2} />}

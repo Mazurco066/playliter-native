@@ -4,7 +4,7 @@ import { asyncRequestHandler } from '../../presentation/utils'
 
 // Request types and interfaces
 import { IPaging } from './_types'
-import { SaveBandDto } from '../../domain/dto'
+import { RespondInviteDto, SaveBandDto } from '../../domain/dto'
 
 // Endpoints
 export const getBands = async ({ limit, offset }: IPaging = { limit: 0, offset: 0 }) =>
@@ -15,6 +15,9 @@ export const getBand = async (id: string) =>
 
 export const getPendingInvitations = async () =>
   asyncRequestHandler(httpClient.get('/v1/invitations/pending_invites'))
+
+export const respondInvitation = async (data: RespondInviteDto) =>
+  asyncRequestHandler(httpClient.post('/v1/invitations/respond', data))
 
 export const createBand = async (data: SaveBandDto) =>
   asyncRequestHandler(httpClient.post(`/v1/bands`, data))
