@@ -27,6 +27,7 @@ import {
   Middleware,
   ProfileScreen,
   ReorderConcert,
+  RespondInviteScreen,
   SaveCategory,
   SaveConcert,
   SaveBandScreen,
@@ -172,6 +173,11 @@ const MainNavigator = () => (
     <MainStack.Screen
       name="SaveProfile"
       component={SaveProfileScreen}
+      options={{ animation: 'slide_from_right' }}
+    />
+    <MainStack.Screen
+      name="RespondInvite"
+      component={RespondInviteScreen}
       options={{ animation: 'slide_from_right' }}
     />
     {/* Standalone screens */}

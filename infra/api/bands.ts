@@ -13,6 +13,9 @@ export const getBands = async ({ limit, offset }: IPaging = { limit: 0, offset: 
 export const getBand = async (id: string) =>
   asyncRequestHandler(httpClient.get(`/v1/bands/get/${id}`))
 
+export const getPendingInvitations = async () =>
+  asyncRequestHandler(httpClient.get('/v1/invitations/pending_invites'))
+
 export const createBand = async (data: SaveBandDto) =>
   asyncRequestHandler(httpClient.post(`/v1/bands`, data))
 

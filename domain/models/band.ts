@@ -11,3 +11,20 @@ export interface IBand {
   members: UserAccount[]
   owner: UserAccount
 }
+
+export interface IBandInvitation {
+  id: string
+  createdAt: string
+  updatedAt: string
+  response: 'pending' | 'accepted' | 'denied'
+  band: {
+    id: string
+    createdAt: string
+    updatedAt: string
+    owner: string
+    logo: string
+    title: string
+    description: string
+  }
+  account: UserAccount
+}
