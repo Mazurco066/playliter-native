@@ -23,6 +23,7 @@ import {
   ConcertScreen,
   ForgotPasswordScreen,
   InviteIntegrants,
+  InsertCodeScreen,
   MainScreen,
   Middleware,
   ProfileScreen,
@@ -178,6 +179,11 @@ const MainNavigator = () => (
     <MainStack.Screen
       name="RespondInvite"
       component={RespondInviteScreen}
+      options={{ animation: 'slide_from_right' }}
+    />
+    <MainStack.Screen
+      name="InsertCode"
+      component={InsertCodeScreen}
       options={{ animation: 'slide_from_right' }}
     />
     {/* Standalone screens */}

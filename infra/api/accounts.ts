@@ -15,3 +15,9 @@ export const createAccount = async (data: CreateAccountDTO) =>
 
 export const updateAccount = async (id: string, data: UpdateAccountDTO) =>
   asyncRequestHandler(httpClient.put(`/v1/accounts/${id}`, data))
+
+export const resendValidationEmail = async () =>
+  asyncRequestHandler(httpClient.post('/v1/accounts/resend_verification_email'))
+
+export const verifyAccount = async (code: string) =>
+  asyncRequestHandler(httpClient.post('/accounts/verify_account', { code }))
