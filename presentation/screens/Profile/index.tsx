@@ -1,5 +1,5 @@
 // Dependencies
-import React, { useCallback } from 'react'
+import React, { useEffect, useCallback } from 'react'
 import styled from 'styled-components'
 import { color } from 'styled-system'
 import { useQuery, useMutation } from '@tanstack/react-query'
@@ -60,10 +60,17 @@ const LoadingContainer = styled(View)`
 const ProfileScreen = ({ navigation }) => {
   // Hooks
   const theme = useTheme()
-  const { getUserData, logoff } = useAuthStore()
+  const { getUserData, hydrateAuthData, logoff } = useAuthStore()
   const { navigate } = useNavigation<NativeStackNavigationProp<MainStackParamList>>()
 
   // HTTP Requests
+  const {
+    data: accountData,
+    refetch: refetchAccount
+  } = useQuery(
+    ['get-current-account'],
+    () => api.accounts.getCurrentAccount()
+  )
   const {
     data: pendingInvites,
     isLoading: isLoadingInvites,
@@ -77,7 +84,15 @@ const ProfileScreen = ({ navigation }) => {
   )
 
   // Refetch data
+  useRefreshOnFocus(refetchAccount)
   useRefreshOnFocus(refetchInvites)
+
+  // Effects
+  useEffect(() => {
+    if (accountData && accountData.data && accountData.data.data) {
+      hydrateAuthData(accountData.data.data)
+    }
+  }, [accountData])
 
   // User
   const currentUser = getUserData()
