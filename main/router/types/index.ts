@@ -27,4 +27,5 @@ export type MainStackParamList = {
   SaveCategory: { bandId: string, item?: ISongCategory }
   SaveConcert: { bandId: string, item?: IConcert }
   SaveNote: { concertId: string, item?: IObservationType }
+  SaveSong: { bandId: string, item?: ISong }
 }

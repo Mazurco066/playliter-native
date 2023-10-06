@@ -16,6 +16,7 @@ import SongsScreen from './Songs'
 export * from './Band/subscreens'
 export * from './Concert/subscreens'
 export * from './Profile/subscreens'
+export * from './Song/subscreens'
 
 // Unifying exports
 export {

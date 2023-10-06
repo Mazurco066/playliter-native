@@ -1,6 +1,8 @@
 // Dependencies
 import styled from 'styled-components'
 import React, { useState, useEffect }  from 'react'
+import { useNavigation } from '@react-navigation/native'
+import { NativeStackNavigationProp } from '@react-navigation/native-stack'
 import { useQuery } from '@tanstack/react-query'
 import { ISong } from '../../../domain'
 import { useRefreshOnFocus } from '../../hooks'
@@ -8,6 +10,9 @@ import { getIcon } from '../../utils'
 
 // Main API
 import api from '../../../infra/api'
+
+// Types
+import { MainStackParamList } from '../../../main/router'
 
 // Components
 import { Button, IndexPath, Spinner, OverflowMenu, MenuItem, useTheme } from '@ui-kitten/components'
@@ -30,6 +35,7 @@ const SongScreen = ({ route }): React.ReactElement => {
 
   // Hooks
   const theme = useTheme()
+  const { goBack, navigate } = useNavigation<NativeStackNavigationProp<MainStackParamList>>()
   const [ song, setSong ] = useState<ISong | null>(item ?? null)
   const [ visible, setVisible ] = useState<boolean>(false)
 
@@ -91,27 +97,21 @@ const SongScreen = ({ route }): React.ReactElement => {
                 accessoryLeft={getIcon('file-add-outline')}
                 disabled={isFetching}
                 onPress={() => {}}
-                style={{
-                  backgroundColor: theme['color-basic-700']
-                }}
+                style={{ backgroundColor: theme['color-basic-700'] }}
               />
               <MenuItem
                 title='Editar'
                 accessoryLeft={getIcon('edit-2-outline')}
                 disabled={isFetching}
-                onPress={() => {}}
-                style={{
-                  backgroundColor: theme['color-basic-700']
-                }}
+                onPress={() => navigate("SaveSong", { item: song, bandId: song.band.id })}
+                style={{ backgroundColor: theme['color-basic-700'] }}
               />
               <MenuItem
                 title='Excluir'
                 accessoryLeft={getIcon('trash-2-outline')}
                 disabled={isFetching}
                 onPress={() => {}}
-                style={{
-                  backgroundColor: theme['color-basic-700']
-                }}
+                style={{ backgroundColor: theme['color-basic-700'] }}
               />
             </OverflowMenu>
           </Songsheet>

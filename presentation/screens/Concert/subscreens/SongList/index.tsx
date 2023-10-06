@@ -1,10 +1,13 @@
 // Dependencies
 import React, { useCallback, useEffect, useState } from 'react'
+import * as Print from 'expo-print'
 import styled from 'styled-components'
 import { useQuery } from '@tanstack/react-query'
+import { shareAsync } from 'expo-sharing'
 import { useRefreshOnFocus } from '../../../../hooks'
 import { useConcertStore } from '../../../../../main/store'
 import { getIcon } from '../../../../utils'
+import { chordProSongtoHtml } from './pdf'
 
 // Main API
 import api from '../../../../../infra/api'
@@ -14,7 +17,7 @@ import { IConcert, ISong } from '../../../../../domain/models'
 
 // Components
 import { Button } from '@ui-kitten/components'
-import { View } from 'react-native'
+import { Platform, View } from 'react-native'
 import { Songsheet } from '../../../../components'
 import { BaseContent } from '../../../../layouts'
 
@@ -35,6 +38,7 @@ const SongListScreen = ({ route }): React.ReactElement => {
   // Hooks
   const { concert, setConcert } = useConcertStore()
   const [ songIndex, setSongIndex ] = useState<number>(0)
+  const [ selectedPrinter, setSelectedPrinter ] = useState(null)
 
   // Http requests
   const {
@@ -75,6 +79,38 @@ const SongListScreen = ({ route }): React.ReactElement => {
     setSongIndex((nextIndex > (songs.length - 1)) ? 0 : nextIndex)
   }, [songIndex, setSongIndex])
 
+  // Print functions
+  const print = async () => {
+    // On iOS/android prints the given html. On web prints the HTML from the current page.
+    await Print.printAsync({
+      html: chordProSongtoHtml(songs as ISong[]),
+      printerUrl: selectedPrinter?.url, // iOS only
+      width: 595, // A4 Size
+      height: 842, // A4 Size,
+      margins: {
+        bottom: 0,
+        left: 0,
+        right: 0,
+        top: 0
+      }
+    })
+  }
+
+  const printToFile = async () => {
+    // On iOS/android prints the given html. On web prints the HTML from the current page.
+    const { uri } = await Print.printToFileAsync({
+      html: chordProSongtoHtml(songs as ISong[])
+    })
+    console.log('File has been saved to:', uri)
+    await shareAsync(uri, { UTI: '.pdf', mimeType: 'application/pdf' })
+  }
+
+  const selectPrinter = async () => {
+    const printer = await Print.selectPrinterAsync() // iOS only
+    setSelectedPrinter(printer)
+    await print()
+  }
+
   // TSX
   return (
     <BaseContent
@@ -92,6 +128,13 @@ const SongListScreen = ({ route }): React.ReactElement => {
         <Button
           accessoryLeft={getIcon('printer-outline')}
           size="tiny"
+          onPress={() => {
+            if (Platform.OS === 'ios') {
+              selectPrinter()
+            } else {
+              printToFile()
+            }
+          }}
         >
           Exportar
         </Button>

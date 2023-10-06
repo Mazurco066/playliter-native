@@ -21,6 +21,7 @@ import {
   BandSongs,
   ConcertNotes,
   ConcertScreen,
+  EditSongScreen,
   ForgotPasswordScreen,
   InviteIntegrants,
   InsertCodeScreen,
@@ -163,6 +164,11 @@ const MainNavigator = () => (
     <MainStack.Screen
       name="Song"
       component={SongScreen}
+      options={{ animation: 'slide_from_right' }}
+    />
+    <MainStack.Screen
+      name="SaveSong"
+      component={EditSongScreen}
       options={{ animation: 'slide_from_right' }}
     />
     {/* Profile screen and subscreens */}
