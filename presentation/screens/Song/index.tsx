@@ -3,7 +3,7 @@ import styled from 'styled-components'
 import React, { useState, useEffect }  from 'react'
 import { useNavigation } from '@react-navigation/native'
 import { NativeStackNavigationProp } from '@react-navigation/native-stack'
-import { useQuery } from '@tanstack/react-query'
+import { useQuery, useMutation } from '@tanstack/react-query'
 import { ISong } from '../../../domain'
 import { useRefreshOnFocus } from '../../hooks'
 import { getIcon } from '../../utils'
@@ -17,8 +17,9 @@ import { MainStackParamList } from '../../../main/router'
 // Components
 import { Button, IndexPath, Spinner, OverflowMenu, MenuItem, useTheme } from '@ui-kitten/components'
 import { View } from 'react-native'
+import { showMessage } from 'react-native-flash-message'
 import { Songsheet } from '../../components'
-import { BaseContent } from '../../layouts'
+import { BaseContent, ConfirmDialog } from '../../layouts'
 
 // Styled components
 const LoadingContainer = styled(View)`
@@ -36,6 +37,7 @@ const SongScreen = ({ route }): React.ReactElement => {
   // Hooks
   const theme = useTheme()
   const { goBack, navigate } = useNavigation<NativeStackNavigationProp<MainStackParamList>>()
+  const [ isConfirmDialogOpen, setConfirmDialogState ] = useState<boolean>(false)
   const [ song, setSong ] = useState<ISong | null>(item ?? null)
   const [ visible, setVisible ] = useState<boolean>(false)
 
@@ -47,6 +49,13 @@ const SongScreen = ({ route }): React.ReactElement => {
   } = useQuery(
     [`get-song-${itemId}`],
     () => api.songs.getSong(itemId)
+  )
+
+  const {
+    isLoading: isDeletingSong,
+    mutateAsync: deleteSong
+  } = useMutation(
+    (id: string) => api.songs.deleteSong(id)
   )
 
   // Effects
@@ -63,6 +72,37 @@ const SongScreen = ({ route }): React.ReactElement => {
   // Actions
   const onItemSelect = (_: IndexPath): void => {
     setVisible(false)
+  }
+
+  const deleteSongAction = async () => {
+    const response = await deleteSong(song.id)
+    if (response.status < 400) {
+      showMessage({
+        message: 'Música removida com sucesso!.',
+        duration: 2000,
+        type: 'success'
+      })
+      goBack()
+    } else if ([400, 404].includes(response.status)) {
+      showMessage({
+        message: 'Música não encontrada!.',
+        duration: 2000,
+        type: 'warning'
+      })
+      goBack()
+    } else if ([401, 403].includes(response.status)) {
+      showMessage({
+        message: 'Você não tem permissões para remover essa música!.',
+        duration: 2000,
+        type: 'info'
+      })
+    } else {
+      showMessage({
+        message: 'Ocorreu um erro ao remover essa música. Tente novamente mais tarde.',
+        duration: 2000,
+        type: 'danger'
+      })
+    }
   }
 
   // Render components
@@ -95,22 +135,22 @@ const SongScreen = ({ route }): React.ReactElement => {
               <MenuItem
                 title='Duplicar'
                 accessoryLeft={getIcon('file-add-outline')}
-                disabled={isFetching}
+                disabled={isFetching || isDeletingSong}
                 onPress={() => {}}
                 style={{ backgroundColor: theme['color-basic-700'] }}
               />
               <MenuItem
                 title='Editar'
                 accessoryLeft={getIcon('edit-2-outline')}
-                disabled={isFetching}
+                disabled={isFetching || isDeletingSong}
                 onPress={() => navigate("SaveSong", { item: song, bandId: song.band.id })}
                 style={{ backgroundColor: theme['color-basic-700'] }}
               />
               <MenuItem
                 title='Excluir'
                 accessoryLeft={getIcon('trash-2-outline')}
-                disabled={isFetching}
-                onPress={() => {}}
+                disabled={isFetching || isDeletingSong}
+                onPress={() => setConfirmDialogState(true)}
                 style={{ backgroundColor: theme['color-basic-700'] }}
               />
             </OverflowMenu>
@@ -121,6 +161,11 @@ const SongScreen = ({ route }): React.ReactElement => {
           </LoadingContainer>
         ) : null
       }
+      <ConfirmDialog
+        isVisible={isConfirmDialogOpen}
+        onClose={() => setConfirmDialogState(false)}
+        onConfirm={deleteSongAction}
+      />
     </BaseContent>
   )
 } 

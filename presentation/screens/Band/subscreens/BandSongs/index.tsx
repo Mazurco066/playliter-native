@@ -4,6 +4,7 @@ import styled from 'styled-components'
 import { useNavigation } from '@react-navigation/native'
 import { NativeStackNavigationProp } from '@react-navigation/native-stack'
 import { useInfiniteQuery } from '@tanstack/react-query'
+import { useRefreshOnFocus } from '../../../../hooks'
 
 // Types
 import { ISong } from '../../../../../domain'
@@ -92,6 +93,7 @@ const BandSongs = ({ route }): React.ReactElement => {
       }
     }
   )
+  useRefreshOnFocus(refetch)
 
   // All pages data
   const allPagesData = data?.pages.flatMap((value) => value.data.data) || []

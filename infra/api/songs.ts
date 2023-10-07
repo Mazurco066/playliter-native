@@ -29,6 +29,9 @@ export const getPublicSongs = async (
 export const getSong = async (id: string) =>
   asyncRequestHandler(httpClient.get(`/v1/songs/${id}`))
 
+export const deleteSong = async (id: string) =>
+  asyncRequestHandler(httpClient.delete(`/v1/songs/${id}`))
+
 export const updateSong = async (id: string, data: any) =>
   asyncRequestHandler(httpClient.put(`/v1/songs/${id}`, { ...data }))
 
