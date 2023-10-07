@@ -72,6 +72,7 @@ interface IConcertHeaderContainer {
   isLoading?: boolean
   onAddPress?: () => void
   onDeletePress?: () => void
+  onDuplicatePress?: () => void
   onEditPress?: () => void
   onNotesPress?: () => void
   onReorderPress?: () => void
@@ -84,6 +85,7 @@ const ConcertHeaderContainer = ({
   isLoading = false,
   onAddPress = () => {},
   onDeletePress = () => {},
+  onDuplicatePress = () => {},
   onEditPress = () => {},
   onNotesPress = () => {},
   onReorderPress = () => {},
@@ -133,6 +135,15 @@ const ConcertHeaderContainer = ({
               accessoryLeft={getIcon('edit-2-outline')}
               disabled={isLoading}
               onPress={onEditPress}
+              style={{
+                backgroundColor: theme['color-basic-700']
+              }}
+            />
+            <MenuItem
+              title='Duplicar'
+              accessoryLeft={getIcon('folder-add-outline')}
+              disabled={isLoading}
+              onPress={onDuplicatePress}
               style={{
                 backgroundColor: theme['color-basic-700']
               }}

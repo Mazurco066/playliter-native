@@ -19,6 +19,7 @@ import {
   BandScreen,
   BandsScreen,
   BandSongs,
+  CloneConcertScreen,
   ConcertNotes,
   ConcertScreen,
   EditSongScreen,
@@ -123,6 +124,11 @@ const MainNavigator = () => (
     <MainStack.Screen
       name="Concert"
       component={ConcertScreen}
+      options={{ animation: 'slide_from_right' }}
+    />
+    <MainStack.Screen
+      name="CloneConcert"
+      component={CloneConcertScreen}
       options={{ animation: 'slide_from_right' }}
     />
     <MainStack.Screen

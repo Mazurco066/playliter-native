@@ -199,6 +199,7 @@ const ConcertScreen = ({ route }): React.ReactElement => {
               onNotesPress={() => navigate('ConcertNotes', { item: concert })}
               onReorderPress={() => navigate('ReorderConcert', { item: concert })}
               onSequentialPress={() => navigate('SongList', { itemId: concert.id, item: concert })}
+              onDuplicatePress={() => navigate('CloneConcert', { item: concert })}
             />
             <Space my={1} />
             <Text category="h5">

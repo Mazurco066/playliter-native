@@ -30,6 +30,9 @@ export const updateConcert = async (id: string, data: SaveConcertDto) =>
     date: data.date
   }))
 
+export const cloneConcert = async (concertId: string, date: string) =>
+  asyncRequestHandler(httpClient.post(`/v1/shows/${concertId}`, { date }))
+
 export const reorderConcert = async (id: string, songs: string[]) =>
   asyncRequestHandler(httpClient.put(`/v1/shows/${id}/reorder`, { songs }))
 
