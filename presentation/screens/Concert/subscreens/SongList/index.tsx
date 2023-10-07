@@ -6,7 +6,7 @@ import { useQuery } from '@tanstack/react-query'
 import { shareAsync } from 'expo-sharing'
 import { useRefreshOnFocus } from '../../../../hooks'
 import { useConcertStore } from '../../../../../main/store'
-import { getIcon } from '../../../../utils'
+import { getIcon, formatISODate } from '../../../../utils'
 import { chordProSongtoHtml } from './pdf'
 
 // Main API
@@ -81,9 +81,16 @@ const SongListScreen = ({ route }): React.ReactElement => {
 
   // Print functions
   const print = async () => {
+    const htmlContent = await chordProSongtoHtml(songs as ISong[], {
+      title: concert.title,
+      band: concert.band.title,
+      date: formatISODate(concert.date),
+      description: concert.description,
+      dailyMessage: concert.observations.find(obs => obs.title === 'Evangelho').data || null
+    })
     // On iOS/android prints the given html. On web prints the HTML from the current page.
     await Print.printAsync({
-      html: chordProSongtoHtml(songs as ISong[]),
+      html: htmlContent,
       printerUrl: selectedPrinter?.url, // iOS only
       width: 595, // A4 Size
       height: 842, // A4 Size,
@@ -98,8 +105,23 @@ const SongListScreen = ({ route }): React.ReactElement => {
 
   const printToFile = async () => {
     // On iOS/android prints the given html. On web prints the HTML from the current page.
+    const htmlContent = await chordProSongtoHtml(songs as ISong[], {
+      title: concert.title,
+      band: concert.band.title,
+      date: formatISODate(concert.date),
+      description: concert.description,
+      dailyMessage: concert.observations.find(obs => obs.title === 'Evangelho').data || null
+    })
     const { uri } = await Print.printToFileAsync({
-      html: chordProSongtoHtml(songs as ISong[])
+      html: htmlContent,
+      width: 595, // A4 Size
+      height: 842, // A4 Size,
+      margins: {
+        bottom: 0,
+        left: 0,
+        right: 0,
+        top: 0
+      }
     })
     console.log('File has been saved to:', uri)
     await shareAsync(uri, { UTI: '.pdf', mimeType: 'application/pdf' })
@@ -121,6 +143,7 @@ const SongListScreen = ({ route }): React.ReactElement => {
           accessoryLeft={getIcon('rewind-left-outline')}
           size="tiny"
           appearance="outline"
+          disabled={isFetching}
           onPress={onPrevPress}
         >
           Anterior
@@ -128,6 +151,7 @@ const SongListScreen = ({ route }): React.ReactElement => {
         <Button
           accessoryLeft={getIcon('printer-outline')}
           size="tiny"
+          disabled={isFetching}
           onPress={() => {
             if (Platform.OS === 'ios') {
               selectPrinter()
@@ -142,6 +166,7 @@ const SongListScreen = ({ route }): React.ReactElement => {
           accessoryLeft={getIcon('rewind-right-outline')}
           size="tiny"
           appearance="outline"
+          disabled={isFetching}
           onPress={onNextPress}
         >
           Próximo
