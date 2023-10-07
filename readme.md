@@ -1,6 +1,6 @@
 # Playliter native application
 
-Native version of [Playliter](https://playliter.com.br) containing all resources that the web version has with an exclusive EVA based design.
+The native version of [Playliter](https://playliter.com.br) includes all the resources available in the web version, along with an exclusive EVA-based design.
 
 ## Libraries and Structure
 
