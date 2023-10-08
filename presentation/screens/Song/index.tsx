@@ -136,7 +136,7 @@ const SongScreen = ({ route }): React.ReactElement => {
                 title='Duplicar'
                 accessoryLeft={getIcon('file-add-outline')}
                 disabled={isFetching || isDeletingSong}
-                onPress={() => {}}
+                onPress={() => navigate("CloneSong", { item: song })}
                 style={{ backgroundColor: theme['color-basic-700'] }}
               />
               <MenuItem

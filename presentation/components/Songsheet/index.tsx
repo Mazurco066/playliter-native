@@ -222,7 +222,7 @@ const Songsheet = ({
                     <SongTitle
                       category="h5"
                     >
-                      {chordsheet.title}
+                      {song.title}
                     </SongTitle>
                     <SongMenu>
                       {children}
