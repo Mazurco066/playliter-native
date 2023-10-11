@@ -3,7 +3,7 @@ import React, { useState, useCallback } from 'react'
 import styled from 'styled-components'
 import { useNavigation } from '@react-navigation/native'
 import { NativeStackNavigationProp } from '@react-navigation/native-stack'
-import { useInfiniteQuery } from '@tanstack/react-query'
+import { useInfiniteQuery, useQuery } from '@tanstack/react-query'
 import { useRefreshOnFocus } from '../../../../hooks'
 
 // Types
@@ -17,6 +17,7 @@ import api from '../../../../../infra/api'
 import { Button, Icon, Input, Spinner, Text, useTheme } from '@ui-kitten/components'
 import { FlashList, ListRenderItemInfo } from '@shopify/flash-list'
 import { View } from 'react-native'
+import { showMessage } from 'react-native-flash-message'
 import { BaseContent } from '../../../../layouts'
 import { SongListItem } from './elements'
 import { Space } from '../../../../components'
@@ -93,7 +94,18 @@ const BandSongs = ({ route }): React.ReactElement => {
       }
     }
   )
+  const {
+    data: bandCategories,
+    isLoading: isFetchingCategories,
+    refetch: refetchCategories
+  } = useQuery(
+    [`band-categories-${item.id}`],
+    () => api.songs.getBandSongCategories(item.id)
+  )
+
+  // Refetch data
   useRefreshOnFocus(refetch)
+  useRefreshOnFocus(refetchCategories)
 
   // All pages data
   const allPagesData = data?.pages.flatMap((value) => value.data.data) || []
@@ -150,7 +162,19 @@ const BandSongs = ({ route }): React.ReactElement => {
         }
       }}
       showFloatingButton
-      onFloatingButtonPress={() => console.log('[pressed here]')}
+      isFloatingButtonDisabled={isFetchingCategories}
+      onFloatingButtonPress={() => {
+        const categoryList = bandCategories?.data?.data?.data || []
+        if (categoryList.length > 0) {
+          navigate("SaveSong", { bandId: item.id })
+        } else {
+          showMessage({
+            message: 'A banda atual não tem categorias registradas. Crie ao menos uma para conseguir salvar músicas!',
+            duration: 2000,
+            type: 'info'
+          })
+        }
+      }}
     >
       <Text category="h5">
         Músicas publicadas
