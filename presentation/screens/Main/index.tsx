@@ -1,5 +1,5 @@
 // Dependencies
-import React from 'react'
+import React, { useCallback } from 'react'
 import styled from 'styled-components'
 import { useQuery } from '@tanstack/react-query'
 import { useNavigation } from '@react-navigation/native'
@@ -60,6 +60,22 @@ const MainScreen = (): React.ReactElement => {
   useRefreshOnFocus(refetchFutureConcerts)
   useRefreshOnFocus(refetchBands)
 
+  // Rernder band list item component
+  const renderBandListItem = useCallback(({ item }: ListRenderItemInfo<IBand>) => (
+    <BandListItem
+      onPress={() => navigate('Band', { item, itemId: item.id })}
+      item={item}
+    />
+  ) , [])
+
+  // Render concert list item
+  const renderConcertListItem = useCallback(({ item }: ListRenderItemInfo<IConcert>) => (
+    <ConcertListItem
+      onPress={() => navigate('Concert', { item, itemId: item.id })}
+      item={item}
+    />
+  ), [])
+
   // TSX
   return (
     <BaseContent>
@@ -87,12 +103,7 @@ const MainScreen = (): React.ReactElement => {
                     keyExtractor={(item) => item.id}
                     showsHorizontalScrollIndicator={false}
                     data={futureConcerts?.data?.data || []}
-                    renderItem={({ item }: ListRenderItemInfo<IConcert>) => (
-                      <ConcertListItem
-                        onPress={() => navigate('Concert', { item, itemId: item.id })}
-                        item={item}
-                      />
-                    )}
+                    renderItem={renderConcertListItem}
                   />
                 </>
               ) : (
@@ -126,12 +137,7 @@ const MainScreen = (): React.ReactElement => {
                   showsHorizontalScrollIndicator={false}
                   scrollEnabled={false}
                   data={bands?.data?.data || []}
-                  renderItem={({ item }: ListRenderItemInfo<IBand>) => (
-                    <BandListItem
-                      onPress={() => navigate('Band', { item, itemId: item.id })}
-                      item={item}
-                    />
-                  )}
+                  renderItem={renderBandListItem}
                 />
               </>
             ) : (

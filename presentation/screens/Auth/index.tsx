@@ -158,8 +158,8 @@ const AuthScreen = ({ navigation }): React.ReactElement => {
               rules={{ required: true, minLength: 2 }}
               render={({ field: { onBlur, onChange, value } }) => (
                 <Input
-                  label="Usuário"
-                  placeholder="Insira seu usuário"
+                  label="Usuário ou E-mail"
+                  placeholder="Insira seu usuário ou E-mail"
                   keyboardType="ascii-capable"
                   accessoryLeft={props => <Icon {...props} name="person-outline" />}
                   value={value}

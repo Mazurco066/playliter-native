@@ -1,7 +1,7 @@
 // Dependencies
 import React, { useRef, useState, useEffect } from 'react'
 import styled from 'styled-components'
-import { color } from 'styled-system'
+import { color, left } from 'styled-system'
 import { useQuery, useMutation } from '@tanstack/react-query'
 import { Controller, FieldError, useForm } from 'react-hook-form'
 import { useRefreshOnFocus } from '../../../../hooks'
@@ -11,13 +11,14 @@ import { generateCaption, plaintextToChordProFormat } from '../../../../utils'
 import api from '../../../../../infra/api'
 
 // Types
+import { AddSongDto, UpdateSongDto } from '../../../../../domain/dto'
 import { ISong, ISongCategory } from '../../../../../domain/models'
 
 // Components
 import CodeEditor, { CodeEditorSyntaxStyles } from '@rivascva/react-native-code-editor'
 import { Icon, Input, Button, IndexPath, Select, SelectItem, Text, Toggle, useTheme } from '@ui-kitten/components'
 import { Chord } from 'chordsheetjs'
-import { View } from 'react-native'
+import { Linking, TouchableOpacity, View } from 'react-native'
 import { CustomKeyboardAvoidingView, Space } from '../../../../components'
 import { BaseContent } from '../../../../layouts'
 
@@ -77,6 +78,16 @@ const EditSongScreen = ({ route }): React.ReactElement => {
     [`band-categories-${bandId}`],
     () => api.songs.getBandSongCategories(bandId)
   )
+  
+  const {
+    isLoading: isSaveLoading,
+    mutateAsync: saveSongAction
+  } = useMutation(
+    (data: { id?: string, dto: AddSongDto | UpdateSongDto }) =>
+      data.id
+        ? api.songs.updateSong(data.id, data.dto)
+        : api.songs.addSong(bandId, data.dto as AddSongDto)
+  )
 
   // Refething
   useRefreshOnFocus(refetchCategories)
@@ -102,11 +113,13 @@ const EditSongScreen = ({ route }): React.ReactElement => {
       setValue('title', item.title, options)
       setValue('writter', song.writter, options)
       setValue('embeddedUrl', song.embeddedUrl, options)
+      setValue('isPublic', song.isPublic, options)
     } else {
       const options = { shouldValidate: false, shouldDirty: true }
       setValue('title', '', options)
       setValue('writter', '', options)
       setValue('embeddedUrl', '', options)
+      setValue('isPublic', true, options)
     }
   }, [song])
 
@@ -122,20 +135,43 @@ const EditSongScreen = ({ route }): React.ReactElement => {
   }, [bandCategories, song])
 
   // Global loader status and computed array
-  const isLoading = isFetchingCategories
+  const isLoading = isFetchingCategories || isSaveLoading
   const categoryArray = bandCategories?.data?.data?.data || []
   
   // Actions
-  const submitSong = async () => {
+  const submitSong = async (data: {
+    title: string,
+    writter: string,
+    isPublic: boolean,
+    embeddedUrl: string
+  }) => {
+    // Get ui kitten component values and destruct values
+    const { embeddedUrl, isPublic,  title, writter } = data
+    const songTone = transpositions.find(t => t.step === Number(selectedToneIndex.toString()) - 1)?.label
+    const songCategory = categoryArray.find((_: ISongCategory, idx: number) => idx === Number(selectedCategoryIndex.toString()) - 1)
+    let bodyText = plaintextToChordProFormat(songBody) 
+
     // Define body metadata
-    // const hasTitle = bodyText.includes('{title:')
-    // const hasArtist = bodyText.includes('{artist:')
-    // const hasKey = bodyText.includes('{key:')
+    const hasTitle = bodyText.includes('{title:')
+    const hasArtist = bodyText.includes('{artist:')
+    const hasKey = bodyText.includes('{key:')
 
     // Add snippets tags if not present
-    // if (!hasKey) bodyText = `{key: ${data.tone}}\n` + bodyText
-    // if (!hasArtist) bodyText = `{artist: ${data.writter}}\n` + bodyText
-    // if (!hasTitle) bodyText = `{title: ${data.title}}\n` + bodyText
+    if (!hasKey) bodyText = `{key: ${songTone}}\n` + bodyText
+    if (!hasArtist) bodyText = `{artist: ${writter}}\n` + bodyText
+    if (!hasTitle) bodyText = `{title: ${title}}\n` + bodyText
+
+    // Mounting payload
+    const songPayload: UpdateSongDto = {
+      title,
+      writter,
+      tone: songTone,
+      category: songCategory?.id,
+      body: item.category,
+      embeddedUrl,
+      isPublic
+    }
+    console.log('[payload]', songPayload)
   }
 
   // TSX
@@ -164,6 +200,24 @@ const EditSongScreen = ({ route }): React.ReactElement => {
             alignItems: 'center'
           }}
         >
+          <Controller
+            control={control}
+            name="isPublic"
+            rules={{ required: true, minLength: 2 }}
+            render={({ field: { onBlur, onChange, value } }) => (
+              <Toggle
+                status="primary"
+                disabled={isLoading}
+                checked={value}
+                onChange={onChange}
+                onBlur={onBlur}
+              >
+                A música é pública?
+              </Toggle>
+            )}
+            defaultValue=""
+          />
+          <Space my={2} />
           <Controller
             control={control}
             name="title"
@@ -211,7 +265,7 @@ const EditSongScreen = ({ route }): React.ReactElement => {
           <Controller
             control={control}
             name="embeddedUrl"
-            rules={{ required: true, minLength: 2 }}
+            rules={{ required: false, minLength: 2 }}
             render={({ field: { onBlur, onChange, value } }) => (
               <Input
                 label="URL da música (opcional)"
@@ -279,10 +333,29 @@ const EditSongScreen = ({ route }): React.ReactElement => {
           <Text
             category="c1"
             status="warning"
+            style={{
+              textAlign: 'justify'
+            }}
           >
             OBS: É recomendado editar a música e suas notas no formato chordpro utilizando a versão WEB 
             do aplicativo pois sua expêriencia com o editor de música será melhor.
           </Text>
+          <TouchableOpacity
+            onPress={() => {
+              Linking.openURL('https://playliter.com.br')
+            }}
+            style={{ width: '100%' }}
+          >
+            <Text
+              category="c1"
+              style={{
+                textDecorationLine: 'underline',
+                textAlign: 'left'
+              }}
+            >
+              Link para versão web
+            </Text>
+          </TouchableOpacity>
           <Space my={1} />
           <CodeEditor
             ref={codeFieldRef}
@@ -291,9 +364,9 @@ const EditSongScreen = ({ route }): React.ReactElement => {
             language="plaintext"
             showLineNumbers
             onChange={newValue => {
-              const formattedValue = plaintextToChordProFormat(newValue)
-              //codeFieldRef.current.setNativeProps({ text: formattedValue })
-              setSongBody(formattedValue)
+              // const formattedValue = plaintextToChordProFormat(newValue)
+              // codeFieldRef.current.setNativeProps({ text: formattedValue })
+              setSongBody(newValue)
             }}
             style={{
               fontSize: 12,

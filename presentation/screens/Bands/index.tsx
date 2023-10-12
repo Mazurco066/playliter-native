@@ -1,5 +1,5 @@
 // Dependencies
-import React from 'react'
+import React, { useCallback } from 'react'
 import styled from 'styled-components'
 import { useNavigation } from '@react-navigation/native'
 import { NativeStackNavigationProp } from '@react-navigation/native-stack'
@@ -48,6 +48,23 @@ const BandsScreen = () => {
   // Hooks
   const { navigate } = useNavigation<NativeStackNavigationProp<MainStackParamList>>()
 
+  // Render list item component
+  const renderListItem = useCallback(({ item }: ListRenderItemInfo<IBand>) => (
+    <BandListItem
+      onPress={() => navigate('Band', { item, itemId: item.id })}
+      item={item}
+    />
+  ), [])
+
+  // Render list empty component
+  const renderListEmptyComponent = useCallback(() => (
+    isBandsLoading ? null : (
+      <Text category="s1">
+        Você não participa de nenhuma banda no momento
+      </Text>
+    )
+  ), [isBandsLoading])
+
   // TSX
   return (
     <BaseContent>
@@ -85,12 +102,8 @@ const BandsScreen = () => {
                     showsHorizontalScrollIndicator={false}
                     scrollEnabled={false}
                     data={bands?.data?.data || []}
-                    renderItem={({ item }: ListRenderItemInfo<IBand>) => (
-                      <BandListItem
-                        onPress={() => navigate('Band', { item, itemId: item.id })}
-                        item={item}
-                      />
-                    )}
+                    renderItem={renderListItem}
+                    ListEmptyComponent={renderListEmptyComponent}
                   />
                 </>
               ) : (

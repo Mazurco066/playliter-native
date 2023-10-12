@@ -3,7 +3,7 @@ import httpClient from './_httpClient'
 import { asyncRequestHandler } from '../../presentation/utils'
 
 // Request types and interfaces
-import { AddSongDto } from '../../domain/dto'
+import { AddSongDto, UpdateSongDto } from '../../domain/dto'
 import { IPaging } from './_types'
 
 // Endpoints
@@ -36,7 +36,7 @@ export const deleteSong = async (id: string) =>
 export const addSong = async (bandId: string, data: AddSongDto) =>
   asyncRequestHandler(httpClient.post(`/v1/songs/${bandId}`, { ...data }))
 
-export const updateSong = async (id: string, data: any) =>
+export const updateSong = async (id: string, data: UpdateSongDto) =>
   asyncRequestHandler(httpClient.put(`/v1/songs/${id}`, { ...data }))
 
 // Category section 

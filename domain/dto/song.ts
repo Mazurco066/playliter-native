@@ -17,3 +17,13 @@ export interface AddSongDto {
   isPublic: boolean
   embeddedUrl?: string
 }
+
+export interface UpdateSongDto {
+  title?: string
+  writter?: string
+  tone?: string
+  body?: string
+  category?: string
+  isPublic?: boolean
+  embeddedUrl?: string
+}
