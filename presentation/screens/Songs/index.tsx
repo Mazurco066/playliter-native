@@ -128,6 +128,15 @@ const SongsScreen = (): React.ReactElement => {
     />
   ), [isFetchingNextPage, isRefetching])
 
+  // Render empty component
+  const renderEmptyListComponent = useCallback(() => (
+    isLoading ? null : (
+      <Text category="s1">
+        Nãõ há músicas públicas publicada no app atualmente.
+      </Text>
+    )
+  ), [isLoading])
+
   //TSX
   return (
     <BaseContent
@@ -193,6 +202,7 @@ const SongsScreen = (): React.ReactElement => {
         scrollEnabled={false}
         data={allPagesData}
         renderItem={renderListItem}
+        ListEmptyComponent={renderEmptyListComponent}
         ListHeaderComponent={() => <Space my={2} />}
         ListFooterComponent={() => isFetchingNextPage
           ? (

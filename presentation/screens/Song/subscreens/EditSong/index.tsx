@@ -4,6 +4,8 @@ import styled from 'styled-components'
 import { color, left } from 'styled-system'
 import { useQuery, useMutation } from '@tanstack/react-query'
 import { Controller, FieldError, useForm } from 'react-hook-form'
+import { useNavigation } from '@react-navigation/native'
+import { NativeStackNavigationProp } from '@react-navigation/native-stack'
 import { useRefreshOnFocus } from '../../../../hooks'
 import { generateCaption, plaintextToChordProFormat } from '../../../../utils'
 
@@ -13,12 +15,14 @@ import api from '../../../../../infra/api'
 // Types
 import { AddSongDto, UpdateSongDto } from '../../../../../domain/dto'
 import { ISong, ISongCategory } from '../../../../../domain/models'
+import { MainStackParamList } from '../../../../../main/router'
 
 // Components
 import CodeEditor, { CodeEditorSyntaxStyles } from '@rivascva/react-native-code-editor'
 import { Icon, Input, Button, IndexPath, Select, SelectItem, Text, Toggle, useTheme } from '@ui-kitten/components'
 import { Chord } from 'chordsheetjs'
 import { Linking, TouchableOpacity, View } from 'react-native'
+import { showMessage } from 'react-native-flash-message'
 import { CustomKeyboardAvoidingView, Space } from '../../../../components'
 import { BaseContent } from '../../../../layouts'
 
@@ -55,6 +59,7 @@ const EditSongScreen = ({ route }): React.ReactElement => {
   const theme = useTheme()
   const codeFieldRef = useRef(null)
   const { control, handleSubmit, formState: { errors }, setValue } = useForm()
+  const { goBack } = useNavigation<NativeStackNavigationProp<MainStackParamList>>()
   const [ song ] = useState<ISong | null>(item)
   const [ transpositions, setTranspositions ] = useState<Array<any>>([])
   const [ selectedToneIndex, setSelectedToneIndex ] = React.useState<IndexPath | IndexPath[]>(new IndexPath(0))
@@ -149,6 +154,16 @@ const EditSongScreen = ({ route }): React.ReactElement => {
     const { embeddedUrl, isPublic,  title, writter } = data
     const songTone = transpositions.find(t => t.step === Number(selectedToneIndex.toString()) - 1)?.label
     const songCategory = categoryArray.find((_: ISongCategory, idx: number) => idx === Number(selectedCategoryIndex.toString()) - 1)
+    
+    // Validate body text
+    if (!songBody) {
+      return showMessage({
+        message: 'Há dados invalidos no preenchimento de seu formulário. Por favor verifique o preenchimento do mesmo.',
+        type: 'warning',
+        duration: 2000
+      })
+    }
+    
     let bodyText = plaintextToChordProFormat(songBody) 
 
     // Define body metadata
@@ -162,16 +177,48 @@ const EditSongScreen = ({ route }): React.ReactElement => {
     if (!hasTitle) bodyText = `{title: ${title}}\n` + bodyText
 
     // Mounting payload
-    const songPayload: UpdateSongDto = {
+    const songPayload: AddSongDto | UpdateSongDto = {
       title,
       writter,
       tone: songTone,
       category: songCategory?.id,
-      body: item.category,
-      embeddedUrl,
+      body: bodyText,
+      embeddedUrl: embeddedUrl || undefined,
       isPublic
     }
-    console.log('[payload]', songPayload)
+
+    // Saving song
+    const response = await saveSongAction({
+      dto: songPayload,
+      id: (item && item.id) ? item.id : null
+    })
+
+    if ([200, 201].includes(response.status)) {
+      showMessage({
+        message: 'Músicas salva com sucesso.',
+        type: 'success',
+        duration: 2000
+      })
+      goBack()
+    } else if ([400].includes(response.status)) {
+      showMessage({
+        message: 'Há dados invalidos no preenchimento de seu formulário. Por favor verifique o preenchimento do mesmo.',
+        type: 'warning',
+        duration: 2000
+      })
+    } else if ([404].includes(response.status)) {
+      showMessage({
+        message: `Músicas de id ${item.id} não encontrada!`,
+        type: 'info',
+        duration: 2000
+      })
+    } else {
+      showMessage({
+        message: `Ocorreu um erro ao salvar a música! Tente novamente mais tarde.`,
+        type: 'danger',
+        duration: 2000
+      })
+    }
   }
 
   // TSX
