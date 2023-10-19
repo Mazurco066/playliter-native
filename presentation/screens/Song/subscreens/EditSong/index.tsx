@@ -148,7 +148,7 @@ const EditSongScreen = ({ route }): React.ReactElement => {
     embeddedUrl: string
   }) => {
     // Get ui kitten component values and destruct values
-    const { body, embeddedUrl, isPublic,  title, writter } = data
+    const { body, embeddedUrl, isPublic, title, writter } = data
     const songTone = transpositions.find(t => t.step === Number(selectedToneIndex.toString()) - 1)?.label
     const songCategory = categoryArray.find((_: ISongCategory, idx: number) => idx === Number(selectedCategoryIndex.toString()) - 1)
     
