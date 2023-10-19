@@ -1,7 +1,7 @@
 // Dependencies
-import React, { useRef, useState, useEffect } from 'react'
+import React, { useState, useEffect } from 'react'
 import styled from 'styled-components'
-import { color, left } from 'styled-system'
+import { color } from 'styled-system'
 import { useQuery, useMutation } from '@tanstack/react-query'
 import { Controller, FieldError, useForm } from 'react-hook-form'
 import { useNavigation } from '@react-navigation/native'
@@ -18,7 +18,6 @@ import { ISong, ISongCategory } from '../../../../../domain/models'
 import { MainStackParamList } from '../../../../../main/router'
 
 // Components
-import CodeEditor, { CodeEditorSyntaxStyles } from '@rivascva/react-native-code-editor'
 import { Icon, Input, Button, IndexPath, Select, SelectItem, Text, Toggle, useTheme } from '@ui-kitten/components'
 import { Chord } from 'chordsheetjs'
 import { Linking, TouchableOpacity, View } from 'react-native'
@@ -57,22 +56,12 @@ const EditSongScreen = ({ route }): React.ReactElement => {
 
   // Hooks
   const theme = useTheme()
-  const codeFieldRef = useRef(null)
   const { control, handleSubmit, formState: { errors }, setValue } = useForm()
   const { goBack } = useNavigation<NativeStackNavigationProp<MainStackParamList>>()
   const [ song ] = useState<ISong | null>(item)
   const [ transpositions, setTranspositions ] = useState<Array<any>>([])
   const [ selectedToneIndex, setSelectedToneIndex ] = React.useState<IndexPath | IndexPath[]>(new IndexPath(0))
   const [ selectedCategoryIndex, setSelectedCategoryIndex ] = React.useState<IndexPath | IndexPath[]>(new IndexPath(0))
-  const [ songBody, setSongBody ] = useState<string>(
-    item
-      ? item.body
-        .replaceAll('<br>', '\n')
-        .replace(/{title:(.*)}\n/, '')
-        .replace(/{artist:(.*)}\n/, '')
-        .replace(/{key:(.*)}\n/, '')
-      : ''
-  )
 
   // Http requests
   const {
@@ -114,17 +103,24 @@ const EditSongScreen = ({ route }): React.ReactElement => {
     
     // Song form
     if (song) {
+      const editableBody = song.body
+        .replaceAll('<br>', '\n')
+        .replace(/{title:(.*)}\n/, '')
+        .replace(/{artist:(.*)}\n/, '')
+        .replace(/{key:(.*)}\n/, '')
       const options = { shouldValidate: true, shouldDirty: true }
       setValue('title', item.title, options)
       setValue('writter', song.writter, options)
       setValue('embeddedUrl', song.embeddedUrl, options)
       setValue('isPublic', song.isPublic, options)
+      setValue('body', editableBody, options)
     } else {
       const options = { shouldValidate: false, shouldDirty: true }
       setValue('title', '', options)
       setValue('writter', '', options)
       setValue('embeddedUrl', '', options)
       setValue('isPublic', true, options)
+      setValue('body', '', options)
     }
   }, [song])
 
@@ -146,25 +142,18 @@ const EditSongScreen = ({ route }): React.ReactElement => {
   // Actions
   const submitSong = async (data: {
     title: string,
+    body: string,
     writter: string,
     isPublic: boolean,
     embeddedUrl: string
   }) => {
     // Get ui kitten component values and destruct values
-    const { embeddedUrl, isPublic,  title, writter } = data
+    const { body, embeddedUrl, isPublic,  title, writter } = data
     const songTone = transpositions.find(t => t.step === Number(selectedToneIndex.toString()) - 1)?.label
     const songCategory = categoryArray.find((_: ISongCategory, idx: number) => idx === Number(selectedCategoryIndex.toString()) - 1)
     
-    // Validate body text
-    if (!songBody) {
-      return showMessage({
-        message: 'Há dados invalidos no preenchimento de seu formulário. Por favor verifique o preenchimento do mesmo.',
-        type: 'warning',
-        duration: 2000
-      })
-    }
-    
-    let bodyText = plaintextToChordProFormat(songBody) 
+    // Mofifiable body text
+    let bodyText = plaintextToChordProFormat(body) 
 
     // Define body metadata
     const hasTitle = bodyText.includes('{title:')
@@ -250,7 +239,7 @@ const EditSongScreen = ({ route }): React.ReactElement => {
           <Controller
             control={control}
             name="isPublic"
-            rules={{ required: true, minLength: 2 }}
+            rules={{ required: false }}
             render={({ field: { onBlur, onChange, value } }) => (
               <Toggle
                 status="primary"
@@ -301,7 +290,7 @@ const EditSongScreen = ({ route }): React.ReactElement => {
                 value={value}
                 onBlur={onBlur}
                 onChangeText={nextValue => onChange(nextValue)}
-                caption={generateCaption(errors.title as FieldError)}
+                caption={generateCaption(errors.writter as FieldError)}
                 textStyle={textStyle}
                 disabled={isLoading}
               />
@@ -312,7 +301,7 @@ const EditSongScreen = ({ route }): React.ReactElement => {
           <Controller
             control={control}
             name="embeddedUrl"
-            rules={{ required: false, minLength: 2 }}
+            rules={{ required: false, minLength: 7 }}
             render={({ field: { onBlur, onChange, value } }) => (
               <Input
                 label="URL da música (opcional)"
@@ -323,7 +312,7 @@ const EditSongScreen = ({ route }): React.ReactElement => {
                 value={value}
                 onBlur={onBlur}
                 onChangeText={nextValue => onChange(nextValue)}
-                caption={generateCaption(errors.title as FieldError)}
+                caption={generateCaption(errors.embeddedUrl as FieldError)}
                 textStyle={textStyle}
                 disabled={isLoading}
               />
@@ -381,7 +370,8 @@ const EditSongScreen = ({ route }): React.ReactElement => {
             category="c1"
             status="warning"
             style={{
-              textAlign: 'justify'
+              textAlign: 'justify',
+              width: '100%'
             }}
           >
             OBS: É recomendado editar a música e suas notas no formato chordpro utilizando a versão WEB 
@@ -403,25 +393,43 @@ const EditSongScreen = ({ route }): React.ReactElement => {
               Link para versão web
             </Text>
           </TouchableOpacity>
+          <TouchableOpacity
+            onPress={() => {
+              Linking.openURL('https://www.chordpro.org')
+            }}
+            style={{ width: '100%' }}
+          >
+            <Text
+              category="c1"
+              style={{
+                textDecorationLine: 'underline',
+                textAlign: 'left'
+              }}
+            >
+              Documentação do chordpro
+            </Text>
+          </TouchableOpacity>
           <Space my={1} />
-          <CodeEditor
-            ref={codeFieldRef}
-            initialValue={songBody}
-            syntaxStyle={CodeEditorSyntaxStyles.atomOneDark}
-            language="plaintext"
-            showLineNumbers
-            onChange={newValue => {
-              // const formattedValue = plaintextToChordProFormat(newValue)
-              // codeFieldRef.current.setNativeProps({ text: formattedValue })
-              setSongBody(newValue)
-            }}
-            style={{
-              fontSize: 12,
-              inputLineHeight: 16,
-              highlighterLineHeight: 16,
-              height: 200,
-              width: '100%'
-            }}
+          <Controller
+            control={control}
+            name="body"
+            rules={{ required: true, minLength: 2 }}
+            render={({ field: { onBlur, onChange, value } }) => (
+              <Input
+                multiline
+                label="Corpo da música (Chordpro)"
+                size="small"
+                placeholder="Insira a música em formato chordpro"
+                keyboardType="default"
+                value={value}
+                onBlur={onBlur}
+                onChangeText={nextValue => onChange(nextValue)}
+                caption={generateCaption(errors.body as FieldError)}
+                textStyle={textStyle}
+                disabled={isLoading}
+              />
+            )}
+            defaultValue=""
           />
           <Space my={2} />
           <Button
