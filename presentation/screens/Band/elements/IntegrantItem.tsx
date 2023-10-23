@@ -156,7 +156,7 @@ const IntegrantItem = ({
           </SongTextInfo>
         </ItemData>
         {
-          band.owner.id !== item.id ? (
+          (band.owner.id !== item.id && item.id !== account.id) ? (
             <ActionContainer>
               <OverflowMenu
                 anchor={renderToggleButton}

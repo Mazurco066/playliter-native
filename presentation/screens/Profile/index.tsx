@@ -1,5 +1,5 @@
 // Dependencies
-import React, { useEffect, useCallback } from 'react'
+import React, { useEffect, useCallback, useState } from 'react'
 import styled from 'styled-components'
 import { color } from 'styled-system'
 import { useQuery, useMutation } from '@tanstack/react-query'
@@ -20,10 +20,11 @@ import { useAuthStore } from '../../../main/store'
 
 // Components
 import { Avatar, Button, Icon, Spinner, Text, useTheme } from '@ui-kitten/components'
-import { FlatList, ListRenderItemInfo, TouchableOpacity, View } from 'react-native'
+import { FlatList, ListRenderItemInfo, View } from 'react-native'
+import { showMessage } from 'react-native-flash-message'
 import { InviteListItem } from './elements'
 import { Space } from '../../components'
-import { BaseContent } from '../../layouts'
+import { BaseContent, ConfirmDialog } from '../../layouts'
 
 // Styled components
 const ProfileContainer = styled(View)`
@@ -61,6 +62,7 @@ const ProfileScreen = ({ navigation }) => {
   // Hooks
   const theme = useTheme()
   const { getUserData, hydrateAuthData, logoff } = useAuthStore()
+  const [ isConfirmDialogOpen, setConfirmDialogState ] = useState<boolean>(false)
   const { navigate } = useNavigation<NativeStackNavigationProp<MainStackParamList>>()
 
   // HTTP Requests
@@ -79,8 +81,11 @@ const ProfileScreen = ({ navigation }) => {
     ['band_invites'],
     () => api.bands.getPendingInvitations()
   )
-  const {isLoading: isLoadingEmail, mutateAsync: resendEmail } = useMutation(
+  const { isLoading: isLoadingEmail, mutateAsync: resendEmail } = useMutation(
     () => api.accounts.resendValidationEmail()
+  )
+  const { isLoading: isDeletingAccount, mutateAsync: deleteAccount } = useMutation(
+    () => api.accounts.deleteAccountData()
   )
 
   // Refetch data
@@ -93,6 +98,26 @@ const ProfileScreen = ({ navigation }) => {
       hydrateAuthData(accountData.data.data)
     }
   }, [accountData])
+
+  // Handlers
+  const deleteAccountHandler = async () => {
+    const response = await deleteAccount()
+    if (response.status < 400) {
+      showMessage({
+        message: 'Todos os dados de sua conta foram deletados com sucesso dos servidores do applicativo!',
+        duration: 3000,
+        type: 'success'
+      })
+      logoff()
+      navigation.replace('Auth')
+    } else {
+      showMessage({
+        message: 'Ocorreu um erro ao remover os dados da sua conta, os servidores devem estar ocupados no momento. Tente novamente mais tarde.',
+        duration: 2000,
+        type: 'warning'
+      })
+    }
+  }
 
   // User
   const currentUser = getUserData()
@@ -144,12 +169,26 @@ const ProfileScreen = ({ navigation }) => {
       </Button>
       <Space my={1} />
       <Button
-        accessoryLeft={getIcon("log-out")}
+        accessoryLeft={getIcon("alert-triangle-outline")}
         size="small"
         status="danger"
         onPress={() => {
-          logoff()
-          navigation.replace('Auth')
+          setConfirmDialogState(true)
+        }}
+      >
+        Excluir minha conta
+      </Button>
+      <Space my={1} />
+      <Button
+        accessoryLeft={getIcon("log-out")}
+        disabled={isDeletingAccount}
+        size="small"
+        status="info"
+        onPress={() => {
+          if (!isDeletingAccount) {
+            logoff()
+            navigation.replace('Auth')
+          }
         }}
       >
         Logoff
@@ -186,7 +225,7 @@ const ProfileScreen = ({ navigation }) => {
               size="small"
               appearance="outline"
               status="warning"
-              disabled={isLoadingEmail}
+              disabled={isLoadingEmail || isDeletingAccount}
               onPress={() => resendEmail()}
               style={{
                 width: '100%'
@@ -199,7 +238,7 @@ const ProfileScreen = ({ navigation }) => {
               size="small"
               appearance="outline"
               status="info"
-              disabled={isLoadingEmail}
+              disabled={isLoadingEmail || isDeletingAccount}
               onPress={() => navigation.navigate("InsertCode")}
               style={{
                 width: '100%'
@@ -244,7 +283,13 @@ const ProfileScreen = ({ navigation }) => {
           </>
         )
       }
-      
+      <ConfirmDialog
+        enableTimer
+        isVisible={isConfirmDialogOpen}
+        onClose={() => setConfirmDialogState(false)}
+        onConfirm={deleteAccountHandler}
+        message="Certifique-se de verificar se você não está como lider de alguma banda. Caso estiver transfira a liderança para outro membro pois caso contrário a banda e as músicas salvas nessa banda serão removidas e pode ocorrer de ter terceiros utilizando as músicas públicas de sua banda nas suas apresentações."
+      />
     </BaseContent>
   )
 }

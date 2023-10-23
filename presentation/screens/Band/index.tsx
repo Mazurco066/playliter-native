@@ -18,7 +18,7 @@ import { FlatList, ListRenderItemInfo, View } from 'react-native'
 import { showMessage } from 'react-native-flash-message'
 import { Space } from '../../components'
 import { BandFeature, BandHeaderContainer, IntegrantItem } from './elements'
-import { BaseContent,ConfirmDialog } from '../../layouts'
+import { BaseContent, ConfirmDialog } from '../../layouts'
 
 // Styled components
 const LoadingContainer = styled(View)`

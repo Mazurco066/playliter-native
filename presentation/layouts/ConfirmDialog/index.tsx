@@ -1,11 +1,11 @@
 // Dependencies
-import React from 'react'
+import React, { useCallback, useEffect, useState } from 'react'
 import styled from 'styled-components'
 import { color } from 'styled-system'
 import { getIcon } from '../../utils'
 
 // Components
-import { Button, Card, Modal, Text, useTheme } from '@ui-kitten/components'
+import { Button, Card, Icon, Modal, Spinner, Text, useTheme } from '@ui-kitten/components'
 import { Dimensions, View } from 'react-native'
 import { Space } from '../../components'
 
@@ -34,6 +34,7 @@ interface IConfirmDialog {
   title?: string
   message?: string
   isVisible: boolean
+  enableTimer?: boolean
   onClose: () => void
   onConfirm?: () => void,
   onConfirmAction?: (action: { name: string, id?: string }) => void
@@ -44,6 +45,7 @@ const ConfirmDialog = ({
   action = { name: 'generic' },
   title = 'Tem certeza?',
   message = 'Essa ação é permanente!',
+  enableTimer = false,
   isVisible,
   onClose,
   onConfirm = () => {},
@@ -51,6 +53,35 @@ const ConfirmDialog = ({
 }: IConfirmDialog) : React.ReactElement => {
   // Hooks
   const theme = useTheme()
+  const [ canConfirm, setCanconfirm ] = useState<boolean>(true)
+
+  // Effects
+  useEffect(() => {
+    if (enableTimer) {
+      setCanconfirm(false)
+      setTimeout(() => setCanconfirm(true), 3000)
+    }
+  }, [ isVisible ])
+
+  // Render confirm icon
+  const renderConfirmIcon = useCallback(() => {
+    if (canConfirm) return (
+      <Icon
+        style={{
+          width: 16,
+          height: 16
+        }}
+        name="checkmark-outline"
+        fill="#ffffff"
+      />
+    )
+    return (
+      <Spinner
+        size="tiny"
+        status="info"
+      />
+    )
+  }, [canConfirm])
 
   // TSX
   return (
@@ -89,11 +120,14 @@ const ConfirmDialog = ({
           <Button
             size="small"
             status="success"
-            accessoryLeft={getIcon('checkmark-outline')}
+            accessoryLeft={renderConfirmIcon}
+            disabled={!canConfirm}
             onPress={() => {
-              onClose()
-              onConfirm()
-              onConfirmAction(action)
+              if (canConfirm) {
+                onClose()
+                onConfirm()
+                onConfirmAction(action)
+              }
             }}
             style={{ flex: 1 }}
           />
