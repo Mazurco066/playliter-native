@@ -34,6 +34,9 @@ export const inviteIntegrant = async (bandId: string, id: string) =>
 export const promoteIntegrant = async (bandId: string, id: string) =>
   asyncRequestHandler(httpClient.post(`/v1/bands/promote_member/${bandId}`, { accountId: id }))
 
+export const transferOwnership = async (bandId: string, id: string) =>
+  asyncRequestHandler(httpClient.post(`/v1/bands/transfer_ownership/${bandId}`, { accountId: id }))
+
 export const demoteIntegrant = async (bandId: string, id: string) =>
   asyncRequestHandler(httpClient.post(`/v1/bands/demote_member/${bandId}`, { accountId: id }))
 

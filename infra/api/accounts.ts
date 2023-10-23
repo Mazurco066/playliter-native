@@ -24,3 +24,6 @@ export const resendValidationEmail = async () =>
 
 export const verifyAccount = async (code: string) =>
   asyncRequestHandler(httpClient.post('/v1/accounts/verify_account', { code }))
+
+export const deleteAccountData = async () =>
+  asyncRequestHandler(httpClient.delete('/v2/songs/wipe_account_data'))

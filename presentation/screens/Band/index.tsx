@@ -36,7 +36,7 @@ const BandFeatureContainer = styled(View)`
 `
 
 // Page interfaces
-type ConfirmActions = { name: 'delete_band' | 'remove_integrant', id?: string }
+type ConfirmActions = { name: 'delete_band' | 'remove_integrant' | 'transfer_ownership', id?: string }
 
 // Page Main component
 const BandScreen = ({ route }): React.ReactElement => {
@@ -90,6 +90,10 @@ const BandScreen = ({ route }): React.ReactElement => {
     (data: { id: string, bandId: string }) => api.bands.promoteIntegrant(data.bandId, data.id)
   )
 
+  const { isLoading: isTransferLoading, mutateAsync: transferOwnership } = useMutation(
+    (data: { id: string, bandId: string }) => api.bands.transferOwnership(data.bandId, data.id)
+  )
+
   const { isLoading: isDemoteLoading, mutateAsync: demoteIntegrant } = useMutation(
     (data: { id: string, bandId: string }) => api.bands.demoteIntegrant(data.bandId, data.id)
   )
@@ -132,11 +136,15 @@ const BandScreen = ({ route }): React.ReactElement => {
       item={item}
       onDemotePress={() => demoteIntegrantAction(item.id)}
       onPromotePress={() => promoteIntegrantAction(item.id)}
+      onTransferPress={() => {
+        setAction({ name: 'transfer_ownership', id: item.id })
+        setConfirmDialogState(true)
+      }}
       onRemovePress={() => {
         setAction({ name: 'remove_integrant', id: item.id })
         setConfirmDialogState(true)
       }}
-      isLoading={isFetching || isPromoteLoading || isDemoteLoading || isRemoveIntegrantLoading || isRemoveBandLoading}
+      isLoading={isFetching || isPromoteLoading || isDemoteLoading || isRemoveIntegrantLoading || isRemoveBandLoading || isTransferLoading}
     />
   ), [
     isFetching,
@@ -144,6 +152,7 @@ const BandScreen = ({ route }): React.ReactElement => {
     isDemoteLoading,
     isRemoveIntegrantLoading,
     isRemoveBandLoading,
+    isTransferLoading,
     setAction,
     setConfirmDialogState
   ])
@@ -243,6 +252,32 @@ const BandScreen = ({ route }): React.ReactElement => {
         } else {
           showMessage({
             message: `Ocorreu um erro ao remover o integrante selecionado! Tente novamente mais tarde.`,
+            type: 'danger',
+            duration: 2000
+          })
+        }
+        break
+      case 'transfer_ownership':
+        const transferOwnershipResponse = await transferOwnership({
+          id: action.id,
+          bandId: band.id
+        })
+        if ([200, 201].includes(transferOwnershipResponse.status)) {
+          showMessage({
+            message: `O integrante selecionado é o novo lider da banda!`,
+            type: 'success',
+            duration: 2000
+          })
+          refetchItem()
+        } else if ([401, 403].includes(transferOwnershipResponse.status)) {
+          showMessage({
+            message: `Você só pode transferir liderança se for o lider atual da banda!`,
+            type: 'warning',
+            duration: 2000
+          })
+        } else {
+          showMessage({
+            message: `Ocorreu um erro ao transferir a liderança! Tente novamente mais tarde.`,
             type: 'danger',
             duration: 2000
           })

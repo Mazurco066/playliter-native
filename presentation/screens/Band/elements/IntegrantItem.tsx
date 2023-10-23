@@ -2,7 +2,7 @@
 import React, { useState } from 'react'
 import styled from 'styled-components'
 import { color } from 'styled-system'
-import { useBandStore } from '../../../../main/store'
+import { useBandStore, useAuthStore } from '../../../../main/store'
 import { getBandRole, getIcon } from '../../../utils'
 
 // Types
@@ -77,11 +77,12 @@ const ActionContainer = styled(View)`
 
 // Component props
 interface IIntegrantItem {
-  item: UserAccount,
-  isLoading?: boolean,
-  onDemotePress?: () => void,
-  onPromotePress?: () => void,
-  onRemovePress?: () => void,
+  item: UserAccount
+  isLoading?: boolean
+  onDemotePress?: () => void
+  onPromotePress?: () => void
+  onRemovePress?: () => void
+  onTransferPress?: () => void
 }
 
 // Component
@@ -90,10 +91,12 @@ const IntegrantItem = ({
   isLoading = false,
   onDemotePress = () => {},
   onPromotePress = () => {},
-  onRemovePress = () => {}
+  onRemovePress = () => {},
+  onTransferPress = () => {}
 }: IIntegrantItem): React.ReactElement => {
   // Hooks
   const theme = useTheme()
+  const { account } = useAuthStore()
   const { band } = useBandStore()
   const [ visible, setVisible ] = useState<boolean>(false)
 
@@ -161,6 +164,19 @@ const IntegrantItem = ({
                 onSelect={onItemSelect}
                 onBackdropPress={() => setVisible(false)}
               >
+                {
+                  band.owner.id === account.id ? (
+                    <MenuItem
+                      title="Transferir liderança"
+                      accessoryLeft={getIcon('trending-up-outline')}
+                      disabled={isLoading}
+                      onPress={onTransferPress}
+                      style={{
+                        backgroundColor: theme['color-basic-700']
+                      }}
+                    />
+                  ) : null
+                }
                 {
                   band.admins.find((admin: UserAccount) => admin.id === item.id) ? (
                     <MenuItem
