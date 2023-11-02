@@ -1,5 +1,5 @@
 // Dependencies
-import axios, { AxiosRequestHeaders, InternalAxiosRequestConfig } from 'axios'
+import axios, { AxiosError, AxiosRequestHeaders, InternalAxiosRequestConfig } from 'axios'
 
 // Store and navigation service
 import { useAuthStore as store } from '../../main/store'
@@ -27,14 +27,24 @@ httpClient.interceptors.request.use(
 )
 
 // Unauthorized response verification
-httpClient.interceptors.response.use(async response => {
-  const token = store.getState().getToken()
-  if (token && response.status === 401) {
-    store.getState().logoff()
-    navigationService.replace('Auth')
+httpClient.interceptors.response.use(
+  response => {
+    const token = store.getState().getToken()
+    if (token && [401].includes(response.status)) {
+      store.getState().logoff()
+      navigationService.replace('Auth')
+    }
+    return response
+  },
+  (error: AxiosError) => {
+    const token = store.getState().getToken()
+    if (token && [401].includes(error.response.status)) {
+      store.getState().logoff()
+      navigationService.replace('Auth')
+    }
+    return Promise.reject(error)
   }
-  return response
-})
+)
 
 // Exporting HTTP Client
 export default httpClient
