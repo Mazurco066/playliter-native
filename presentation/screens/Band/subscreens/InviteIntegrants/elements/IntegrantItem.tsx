@@ -61,7 +61,7 @@ const AccountTextInfo = styled(Text)`
 `
 
 // Component props
-interface IIntegrantItem {
+type IIntegrantItem = {
   item: UserAccount,
   isLoading?: boolean,
   onPress?: () => void

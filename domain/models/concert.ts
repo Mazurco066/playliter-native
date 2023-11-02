@@ -1,4 +1,4 @@
-export interface IConcert {
+export type IConcert = {
   id: string
   createdAt: string
   updatedAt: string
@@ -27,7 +27,7 @@ export interface IConcert {
   observations: IObservationType[]
 }
 
-export interface IObservationType {
+export type IObservationType = {
   id: string
   title: string
   data: string

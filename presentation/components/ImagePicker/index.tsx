@@ -27,7 +27,7 @@ const BandLogoEditBtn = styled(Button)`
 `
 
 // Props
-interface IPhoneImagePicker {
+type IPhoneImagePicker = {
   uri: string
   isLoading?: boolean
   onImageSelect: (result: ImagePicker.ImagePickerResult) => void

@@ -51,7 +51,7 @@ const SongTextInfo = styled(Text)`
 `
 
 // Component properties
-interface ISongListItem {
+type ISongListItem = {
   item: ISong
   isLoading?: boolean
   onPress?: () => void

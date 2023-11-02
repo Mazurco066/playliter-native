@@ -1,10 +1,10 @@
-export interface SaveBandDto {
+export type SaveBandDto = {
   title: string
   description: string
   logo?: string
 }
 
-export interface RespondInviteDto {
+export type RespondInviteDto = {
   inviteId: string
   response: 'accepted' | 'denied'
 }

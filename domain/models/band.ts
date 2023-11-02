@@ -1,6 +1,6 @@
 import { UserAccount } from './account'
 
-export interface IBand {
+export type IBand = {
   id: string
   createdAt: string
   updatedAt: string
@@ -12,7 +12,7 @@ export interface IBand {
   owner: UserAccount
 }
 
-export interface IBandInvitation {
+export type IBandInvitation = {
   id: string
   createdAt: string
   updatedAt: string

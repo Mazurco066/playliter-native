@@ -1,11 +1,11 @@
-export interface CreateAccountDTO {
+export type CreateAccountDTO = {
   name: string
   email: string
   username: string
   password: string
 }
 
-export interface UpdateAccountDTO {
+export type UpdateAccountDTO = {
   name: string
   email: string
   avatar?: string

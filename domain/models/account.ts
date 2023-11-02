@@ -1,4 +1,4 @@
-export interface UserAccount {
+export type UserAccount = {
   id: string
   role: string,
   isEmailconfirmed: boolean

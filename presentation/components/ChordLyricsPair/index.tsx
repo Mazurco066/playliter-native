@@ -20,7 +20,7 @@ const ChordText = styled(Text)`
 const LyricsText = styled(Text)``
 
 // Props
-interface IChordLyricsPair {
+type IChordLyricsPair = {
   item: {
     lyrics: string
     transposed: string

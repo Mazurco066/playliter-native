@@ -54,7 +54,7 @@ const ItemAction = styled(TouchableOpacity)`
 `
 
 // Component properties
-interface IConcertListItem {
+type IConcertListItem = {
   item: IConcertSongDto
   number?: number
   isActive?: boolean

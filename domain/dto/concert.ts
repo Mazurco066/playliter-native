@@ -1,4 +1,4 @@
-export interface IConcertSongDto {
+export type IConcertSongDto = {
   isPublic: boolean
   embeddedUrl: string
   title: string
@@ -10,7 +10,7 @@ export interface IConcertSongDto {
   updatedAt: string
 }
 
-export interface SaveConcertDto {
+export type SaveConcertDto = {
   band?: string
   title: string
   description: string

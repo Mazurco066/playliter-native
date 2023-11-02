@@ -42,7 +42,7 @@ const LimitedItemText = styled(Text)`
 `
 
 // Component properties
-interface IConcertListItem {
+type IConcertListItem = {
   item: IObservationType,
   onPress?: () => void
 }

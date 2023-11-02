@@ -44,7 +44,7 @@ const BandItemText = styled(Text)`
 `
 
 // Component properties
-interface IConcertListItem {
+type IConcertListItem = {
   item: IBand
   onPress?: () => void
   isLoading?: boolean

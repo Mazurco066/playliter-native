@@ -48,7 +48,7 @@ const textStyle = {
   marginLeft: -8
 }
 
-interface IEditNote {
+type IEditNote = {
   isLoading?: boolean,
   item?: IObservationType,
   onCancel?: () => void,

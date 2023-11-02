@@ -85,7 +85,7 @@ const UpdateToneBtn = styled(Button)`
 `
 
 // Songsheet parameters
-export interface ISongSheet {
+export type ISongSheet = {
   children?: React.ReactElement | React.ReactElement[]
   song: ISong
   canUpdateBaseTone?: boolean

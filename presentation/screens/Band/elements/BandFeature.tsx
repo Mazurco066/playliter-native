@@ -42,7 +42,7 @@ const GradientAscent = styled(LinearGradient)`
 `
 
 // Component params
-interface IBandFeature {
+type IBandFeature = {
   isLoading?: boolean,
   onPress?: () => void,
   amount: number,

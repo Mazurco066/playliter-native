@@ -47,7 +47,7 @@ const DataContainer = styled(View)`
 `
 
 // Component props
-interface IViewCategory {
+type IViewCategory = {
   isLoading?: boolean,
   item: ISongCategory,
   onEdit?: () => void,

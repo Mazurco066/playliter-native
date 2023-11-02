@@ -76,7 +76,7 @@ const ActionContainer = styled(View)`
 `
 
 // Component props
-interface IIntegrantItem {
+type IIntegrantItem = {
   item: UserAccount
   isLoading?: boolean
   onDemotePress?: () => void

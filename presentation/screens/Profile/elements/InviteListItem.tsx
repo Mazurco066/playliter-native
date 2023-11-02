@@ -39,7 +39,7 @@ const InviteItemText = styled(Text)`
 `
 
 // Component properties
-interface IInviteListItem {
+type IInviteListItem = {
   item: IBandInvitation
   onPress?: () => void
   isLoading?: boolean

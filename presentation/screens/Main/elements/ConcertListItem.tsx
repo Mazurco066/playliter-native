@@ -52,7 +52,7 @@ const ItemData = styled(View)`
 `
 
 // Component properties
-interface IConcertListItem {
+type IConcertListItem = {
   item: IConcert,
   onPress?: () => void
 }

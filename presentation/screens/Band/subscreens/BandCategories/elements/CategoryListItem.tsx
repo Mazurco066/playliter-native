@@ -51,7 +51,7 @@ const CategoryTextInfo = styled(Text)`
 `
 
 // Component properties
-interface ICategoryListItem {
+type ICategoryListItem = {
   item: ISongCategory
   isLoading?: boolean
   onPress?: () => void

@@ -47,7 +47,7 @@ const DataContainer = styled(View)`
 `
 
 // Component props
-interface IViewNote {
+type IViewNote = {
   isLoading?: boolean,
   item: IObservationType,
   onEdit?: () => void,

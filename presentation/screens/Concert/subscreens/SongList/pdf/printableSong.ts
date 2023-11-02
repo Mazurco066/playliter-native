@@ -6,7 +6,7 @@ import { ISong } from '../../../../../../domain/models'
 import { pdfPreviewStyles, pdfPrintStyles } from './styles'
 
 // Method params
-interface IPreviewData {
+type IPreviewData = {
   title: string
   band: string
   date: string
@@ -25,7 +25,7 @@ export async function chordProSongtoHtml(songs: ISong[], pdfPreview?: IPreviewDa
 
   // PDF Preview page
   if (pdfPreview) {
-    previewHtml += `<div id="ghost-preview"><span>dummy</span></div><div id="pdf-preview"><div class="svg-container"><img src="${imageAsset.uri}" alt="PDF Preview" /></div><div class="show-info"><h3 class="show-title">${pdfPreview.title}</h3><h4 class="band-info">${pdfPreview.date} - ${pdfPreview.band}</h4><p class="show-desc">${pdfPreview.description}</p>`
+    previewHtml += `<div id="ghost-preview"><span>dummy</span></div><div id="pdf-preview"><div class="svg-container"><img src="https://raw.githubusercontent.com/Mazurco066/cdn/main/playliter-bg.png" alt="PDF Preview" /></div><div class="show-info"><h3 class="show-title">${pdfPreview.title}</h3><h4 class="band-info">${pdfPreview.date} - ${pdfPreview.band}</h4><p class="show-desc">${pdfPreview.description}</p>`
     if (pdfPreview.dailyMessage) {
       previewHtml += `<p class="show-add-text">${pdfPreview.dailyMessage}</p>`
     }

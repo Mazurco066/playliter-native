@@ -67,7 +67,7 @@ const ButtonContainer = styled(View)`
 `
 
 // Component params
-interface IConcertHeaderContainer {
+type IConcertHeaderContainer = {
   concert: IConcert
   isLoading?: boolean
   onAddPress?: () => void

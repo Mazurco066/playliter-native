@@ -63,7 +63,7 @@ const BandLogo = styled(Avatar)`
 `
 
 // Component params
-interface IBandHeaderContainer {
+type IBandHeaderContainer = {
   band: IBand
   isLoading?: boolean
   onAddPress?: () => void

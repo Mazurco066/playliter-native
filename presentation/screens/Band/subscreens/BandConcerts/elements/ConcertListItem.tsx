@@ -53,7 +53,7 @@ const SongTextInfo = styled(Text)`
 `
 
 // Component properties
-interface IConcertListItem {
+type IConcertListItem = {
   item: IConcert
   isLoading?: boolean
   onPress?: () => void

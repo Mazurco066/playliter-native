@@ -48,7 +48,7 @@ const textStyle = {
   marginLeft: -8
 }
 
-interface IEditCategory {
+type IEditCategory = {
   isLoading?: boolean,
   item?: ISongCategory,
   onCancel?: () => void,

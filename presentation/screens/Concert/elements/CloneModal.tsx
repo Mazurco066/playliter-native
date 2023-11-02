@@ -30,7 +30,7 @@ const styles = StyleSheet.create({
 })
 
 // Props
-interface ICloneModal {
+type ICloneModal = {
   visible: boolean
   setVisible: (value: boolean) => void
   onDuplicate?: (date: string) => void,

@@ -1,4 +1,4 @@
-export interface SongPayloadDto {
+export type SongPayloadDto = {
   id: string
   title: string
   writter: string
@@ -8,7 +8,7 @@ export interface SongPayloadDto {
   isPublic: boolean
 }
 
-export interface AddSongDto {
+export type AddSongDto = {
   title: string
   writter: string
   tone: string
@@ -18,7 +18,7 @@ export interface AddSongDto {
   embeddedUrl?: string
 }
 
-export interface UpdateSongDto {
+export type UpdateSongDto = {
   title?: string
   writter?: string
   tone?: string

@@ -1,4 +1,4 @@
-export interface ISong {
+export type ISong = {
   id: string
   createdAt: string
   updatedAt: string
@@ -20,7 +20,7 @@ export interface ISong {
   }
 }
 
-export interface ISongCategory {
+export type ISongCategory = {
   id: string
   createdAt: string
   updatedAt: string
