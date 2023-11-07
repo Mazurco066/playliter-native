@@ -3,10 +3,10 @@ import { create } from 'zustand'
 import { IBand } from '../../domain'
 
 // Auth store type
-export interface IBandStore {
+export type IBandStore = {
   band?: IBand
-  getBand: () => IBand | null,
-  setBand: (data: IBand) => void,
+  getBand: () => IBand | null
+  setBand: (data: IBand) => void
 }
 
 // Auth store

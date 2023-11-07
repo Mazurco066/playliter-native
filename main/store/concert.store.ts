@@ -3,11 +3,11 @@ import { create } from 'zustand'
 import { IConcert } from '../../domain'
 
 // Auth store type
-export interface IConcertStore {
+export type IConcertStore = {
   concert?: IConcert
-  getConcert: () => IConcert | null,
+  getConcert: () => IConcert | null
   removeObservation: (id: string) => void
-  setConcert: (data: IConcert) => void,
+  setConcert: (data: IConcert) => void
 }
 
 // Auth store

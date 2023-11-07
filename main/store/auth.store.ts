@@ -5,7 +5,7 @@ import { createJSONStorage, persist } from 'zustand/middleware'
 import { UserAccount } from '../../domain'
 
 // Auth store type
-export interface IAuthStore {
+export type IAuthStore = {
   account?: UserAccount
   token?: string
   hydrateAuthData: (data: UserAccount, token?: string) => void
