@@ -11,5 +11,5 @@ export const uploadImage = async (formData: FormData) =>
     }
   }))
 
-  
-  
+export const scrapLiturgy = async (date: string) =>
+  asyncRequestHandler(httpClient.post(`/v1/helpers/daily_liturgy`, { date }))

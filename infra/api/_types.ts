@@ -1,4 +1,4 @@
-export interface IPaging {
+export type IPaging = {
   limit: number
   offset: number
 }

@@ -123,7 +123,6 @@ const SongListScreen = ({ route }): React.ReactElement => {
         top: 0
       }
     })
-    console.log('File has been saved to:', uri)
     await shareAsync(uri, { UTI: '.pdf', mimeType: 'application/pdf' })
   }
 
@@ -135,9 +134,7 @@ const SongListScreen = ({ route }): React.ReactElement => {
 
   // TSX
   return (
-    <BaseContent
-      hideCardsNavigation
-    >
+    <BaseContent hideCardsNavigation>
       <SongControlContainer>
         <Button
           accessoryLeft={getIcon('rewind-left-outline')}
