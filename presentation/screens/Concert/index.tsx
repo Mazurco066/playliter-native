@@ -190,6 +190,7 @@ const ConcertScreen = ({ route }): React.ReactElement => {
             <ConcertHeaderContainer
               concert={concert}
               isLoading={isApiLoading}
+              canNavigate={concert.songs.length >= 1}
               onAddPress={() => navigate('AddPublicConcertSongs', { item: concert })}
               onDeletePress={() => {
                 setAction({ name: 'delete_concert', id: concert.id })
