@@ -1,5 +1,5 @@
 // Dependencies
-import React, { useCallback, useEffect } from 'react'
+import React, { useCallback, useEffect, useState } from 'react'
 import { useNavigation } from '@react-navigation/native'
 import { NativeStackNavigationProp } from '@react-navigation/native-stack'
 import styled from 'styled-components'
@@ -8,7 +8,7 @@ import { useConcertStore } from '../../../../../main/store'
 
 // Http client
 import api from '../../../../../infra/api'
-import { useQuery } from '@tanstack/react-query'
+import { useQuery, useMutation } from '@tanstack/react-query'
 
 // Types
 import { IConcert, IObservationType } from '../../../../../domain'
@@ -18,6 +18,7 @@ import { MainStackParamList } from '../../../../../main/router'
 import { Button, Text, useTheme } from '@ui-kitten/components'
 import { LinearGradient } from 'expo-linear-gradient'
 import { FlatList, ListRenderItemInfo, View } from 'react-native'
+import { showMessage } from 'react-native-flash-message'
 import { NoteListItem } from './elements'
 import { BaseContent } from '../../../../layouts'
 import { getIcon } from '../../../../utils'
@@ -67,16 +68,29 @@ const ConcertNotes = ({ route }): React.ReactElement => {
   const { item: { id: concertId } } = route.params
   const {
     data: updatedItem,
-    refetch: refetchItem
+    refetch: refetchItem,
+    isLoading
   } = useQuery(
     [`get-concert-${concertId}`],
     () => api.concerts.getConcert(concertId)
   )
+  const { mutateAsync: fetchLiturgy } = useMutation((date: string) => {
+    return api.helpers.scrapLiturgy(date)
+  })
+  const { mutateAsync: addObservationRequest } = useMutation((data: {
+    concertId: string,
+    title: string,
+    content: string
+  }) => {
+    return api.concerts.addConcertObservation(data.concertId, data.title, data.content)
+  })
+
 
   // Refetch on focus
   useRefreshOnFocus(refetchItem)
 
   // Hooks
+  const [ isScrapLoading, setScrapLoading ] = useState<boolean>(false)
   const { concert, setConcert } = useConcertStore()
   const { navigate } = useNavigation<NativeStackNavigationProp<MainStackParamList>>()
   const theme = useTheme()
@@ -92,10 +106,55 @@ const ConcertNotes = ({ route }): React.ReactElement => {
   // Render item
   const renderItem = useCallback(({ item }: ListRenderItemInfo<IObservationType>) => (
     <NoteListItem
-      onPress={() => navigate("SaveNote", { concertId: concert.id, item: item })}
+      onPress={() => navigate('SaveNote', { concertId: concert.id, item: item })}
       item={item}
     />
   ), [navigate, concert])
+
+  // Handlers
+  const onImportLiturgy = async () => {
+    setScrapLoading(true)
+    const liturgyResponse = await fetchLiturgy(concert.date.split('T')[0])
+
+     // Verify if request was successfull
+     if ([200, 201].includes(liturgyResponse.status)) {
+
+      // PS: Promise.all works but it ll misss some observations
+      // Api is not adding all if all requests are at same time on Promise.all
+      const responses = []
+      for (let i = 0; i < liturgyResponse.data.data.length; i++) {
+        const liturgy = liturgyResponse.data.data[i]
+        const obsResponse = await addObservationRequest({
+          title: liturgy.title,
+          content: liturgy.content,
+          concertId: concert.id
+        })
+        responses.push(obsResponse)
+      }
+      
+      // Verify import errors
+      const hasImportErrors = responses.find(resp => ![200, 201].includes(resp.status))
+
+      // User feedback
+      setScrapLoading(false)
+      refetchItem()
+      if (!hasImportErrors) {
+        showMessage({
+          message: 'Liturgia referente ao dia da apresentação importada com sucesso!',
+          duration: 2000,
+          type: 'success'
+        })
+      } else {
+        showMessage({
+          message: "Alguns items referentes a liturgia diária falharam a ser importadas do site 'Pocket Terço'!",
+          duration: 2000,
+          type: 'info'
+        })
+      }
+    } else {
+      setScrapLoading(false)
+    }
+  }
 
   // Destruct data
   const { observations } = concert
@@ -129,6 +188,8 @@ const ConcertNotes = ({ route }): React.ReactElement => {
             <Button
               status="primary"
               size="medium"
+              onPress={onImportLiturgy}
+              disabled={isLoading || isScrapLoading}
               style={{
                 flex: 1,
                 borderRadius: 8

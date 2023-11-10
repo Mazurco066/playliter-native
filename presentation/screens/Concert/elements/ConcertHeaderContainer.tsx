@@ -70,6 +70,7 @@ const ButtonContainer = styled(View)`
 type IConcertHeaderContainer = {
   concert: IConcert
   isLoading?: boolean
+  canNavigate?: boolean
   onAddPress?: () => void
   onDeletePress?: () => void
   onDuplicatePress?: () => void
@@ -83,6 +84,7 @@ type IConcertHeaderContainer = {
 const ConcertHeaderContainer = ({
   concert,
   isLoading = false,
+  canNavigate = true,
   onAddPress = () => {},
   onDeletePress = () => {},
   onDuplicatePress = () => {},
@@ -230,7 +232,7 @@ const ConcertHeaderContainer = ({
             status="primary"
             size="medium"
             onPress={onSequentialPress}
-            disabled={isLoading}
+            disabled={isLoading || !canNavigate}
             style={{
               flex: 1,
               borderRadius: 8
