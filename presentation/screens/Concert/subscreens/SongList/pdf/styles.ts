@@ -140,6 +140,9 @@ export const pdfPrintStyles: string = `
   font-family: -apple-system,BlinkMacSystemFont,"Segoe UI",Helvetica,Arial,sans-serif,"Apple Color Emoji","Segoe UI Emoji","Segoe UI Symbol";
   font-size: 16px;
 }
+.song-tone string {
+  color: #4963f7;
+}
 .column, .row {
   display: flex!important;
 }
