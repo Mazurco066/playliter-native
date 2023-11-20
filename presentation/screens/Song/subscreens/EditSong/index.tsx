@@ -7,7 +7,15 @@ import { Controller, FieldError, useForm } from 'react-hook-form'
 import { useNavigation } from '@react-navigation/native'
 import { NativeStackNavigationProp } from '@react-navigation/native-stack'
 import { useRefreshOnFocus } from '../../../../hooks'
-import { generateCaption, plaintextToChordProFormat } from '../../../../utils'
+import {
+  generateCaption,
+  isValidUrl,
+  plaintextToChordProFormat,
+  removeLeadingTrailingNewlines,
+  removeMusicalTabs,
+  removeTextPatternsFromSong,
+  removeToneText
+} from '../../../../utils'
 
 // Api
 import api from '../../../../../infra/api'
@@ -18,7 +26,18 @@ import { ISong, ISongCategory } from '../../../../../domain/models'
 import { MainStackParamList } from '../../../../../main/router'
 
 // Components
-import { Icon, Input, Button, IndexPath, Select, SelectItem, Text, Toggle, useTheme } from '@ui-kitten/components'
+import {
+  Card,
+  Icon,
+  Input,
+  Button,
+  IndexPath,
+  Select,
+  SelectItem,
+  Text,
+  Toggle,
+  useTheme
+} from '@ui-kitten/components'
 import { Chord } from 'chordsheetjs'
 import { Linking, TouchableOpacity, View } from 'react-native'
 import { showMessage } from 'react-native-flash-message'
@@ -26,6 +45,10 @@ import { CustomKeyboardAvoidingView, Space } from '../../../../components'
 import { BaseContent } from '../../../../layouts'
 
 // Styled components
+const ImportContainer = styled(Card)`
+  border-radius: 8px;
+`
+
 const Container = styled(View)`
   display: flex;
   flex-direction: column;
@@ -59,6 +82,7 @@ const EditSongScreen = ({ route }): React.ReactElement => {
   const { control, handleSubmit, formState: { errors }, setValue } = useForm()
   const { goBack } = useNavigation<NativeStackNavigationProp<MainStackParamList>>()
   const [ song ] = useState<ISong | null>(item)
+  const [ songUrl, setSongUrl ] = useState<string>('')
   const [ transpositions, setTranspositions ] = useState<Array<any>>([])
   const [ selectedToneIndex, setSelectedToneIndex ] = React.useState<IndexPath | IndexPath[]>(new IndexPath(0))
   const [ selectedCategoryIndex, setSelectedCategoryIndex ] = React.useState<IndexPath | IndexPath[]>(new IndexPath(0))
@@ -81,6 +105,13 @@ const EditSongScreen = ({ route }): React.ReactElement => {
       data.id
         ? api.songs.updateSong(data.id, data.dto)
         : api.songs.addSong(bandId, data.dto as AddSongDto)
+  )
+
+  const {
+    isLoading: isScrapLoading,
+    mutateAsync: scrapSongAction
+  } = useMutation(
+    (url: string) => api.helpers.scrapSongs(url)
   )
 
   // Refething
@@ -136,7 +167,7 @@ const EditSongScreen = ({ route }): React.ReactElement => {
   }, [bandCategories, song])
 
   // Global loader status and computed array
-  const isLoading = isFetchingCategories || isSaveLoading
+  const isLoading = isFetchingCategories || isSaveLoading || isScrapLoading
   const categoryArray = bandCategories?.data?.data?.data || []
   
   // Actions
@@ -210,6 +241,70 @@ const EditSongScreen = ({ route }): React.ReactElement => {
     }
   }
 
+  const submitImportSong = async () => {
+    // Validate url
+    if (!songUrl) {
+      return showMessage({
+        message: 'Nenhuma URL foi inserida.!',
+        type: 'warning',
+        duration: 2000
+      })
+    }
+    if (!isValidUrl(songUrl)) {
+      return showMessage({
+        message: 'A URL inserida não é válida!',
+        type: 'warning',
+        duration: 2000
+      })
+    }
+    if (
+      !songUrl.includes('cifras.com.br')
+      && !songUrl.includes('cifraclub.com.br')
+    ) {
+      return showMessage({
+        message: 'A URL inserida deve ser do cifraclub ou cifras.com!',
+        type: 'info',
+        duration: 2000
+      })
+    }
+
+    // Request song data on cifraclub or cifras.com
+    const response = await scrapSongAction(songUrl)
+    if ([200, 201].includes(response.status)) {
+
+      // Destruct song data
+      const { loot, writter, title } = response.data.data
+
+      // Format song body to chordpro
+      const withoutLeadingTrails = removeLeadingTrailingNewlines(loot)
+      const withoutTabs = removeMusicalTabs(withoutLeadingTrails)
+      const withoutPrefixes = removeTextPatternsFromSong(withoutTabs)
+      const withoutTone = removeToneText(withoutPrefixes)
+      const chordproBody = plaintextToChordProFormat(withoutTone)
+
+      // Fill form data
+      const options = { shouldValidate: true, shouldDirty: true }
+      setValue('title', title, options)
+      setValue('writter', writter, options)
+      setValue('body', chordproBody, options)
+
+      // User feedback
+      showMessage({
+        message: `Música importada com sucesso de: ${songUrl}`,
+        type: 'success',
+        duration: 2000
+      })
+      setSongUrl('')
+
+    } else {
+      return showMessage({
+        message: 'Não foi possível importar a música da url informada!',
+        type: 'danger',
+        duration: 2000
+      })
+    }
+  }
+
   // TSX
   return (
     <BaseContent hideCardsNavigation>
@@ -224,6 +319,37 @@ const EditSongScreen = ({ route }): React.ReactElement => {
             : 'Insira os dados para salvar uma nova música'
         }
       </Text>
+      <Space my={2} />
+      <ImportContainer>
+        <CustomKeyboardAvoidingView>
+          <Text
+            style={{ fontWeight: 'bold' }}
+          >
+            Importar música
+          </Text>
+          <Space my={1} />
+          <Text>
+            Se a música estiver disponível no Cifra Club ou no Cifras.com 
+            insira o link da música que a formataremos por você.
+          </Text>
+          <Space my={1} />
+          <Input
+            size="small"
+            placeholder="https://cifrablub.com.br/..."
+            value={songUrl}
+            onChangeText={val => setSongUrl(val)}
+            disabled={isLoading}
+          />
+          <Space my={1} />
+          <Button
+            size="small"
+            disabled={isLoading}
+            onPress={submitImportSong}
+          >
+            Importar música
+          </Button>
+        </CustomKeyboardAvoidingView>
+      </ImportContainer>
       <Space my={2} />
       <Container
         style={{
