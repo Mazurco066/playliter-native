@@ -1,9 +1,9 @@
 // Dependencies
 import { Chord } from 'chordsheetjs'
 import { Asset } from 'expo-asset'
-import { getTransposedSong, formatISODate } from '../../../../../utils'
+import { getColorSchema, getColoredUrl, getTransposedSong, formatISODate } from '../../../../../utils'
 import { ISong } from '../../../../../../domain/models'
-import { pdfPreviewStyles, pdfPrintStyles } from './styles'
+import { getPdfPrintStyles, pdfPreviewStyles } from './styles'
 
 // Method params
 type IPreviewData = {
@@ -15,9 +15,16 @@ type IPreviewData = {
 }
 
 // Converter function
-export async function chordProSongtoHtml(songs: ISong[], pdfPreview?: IPreviewData): Promise<string> {
+export async function chordProSongtoHtml(
+  songs: ISong[],
+  color: string,
+  pdfPreview?: IPreviewData,
+): Promise<string> {
   let previewHtml = ''
   let songsHtml = ''
+
+  // Define color schema
+  const colorSchema = getColorSchema(color)
 
   // Loading preview asset
   const imageAsset = Asset.fromModule(require('../../../../../../assets/playliter-bg.png'))
@@ -25,7 +32,7 @@ export async function chordProSongtoHtml(songs: ISong[], pdfPreview?: IPreviewDa
 
   // PDF Preview page
   if (pdfPreview) {
-    previewHtml += `<div id="ghost-preview"><span>dummy</span></div><div id="pdf-preview"><div class="svg-container"><img src="https://raw.githubusercontent.com/Mazurco066/cdn/main/playliter-bg.png" alt="PDF Preview" /></div><div class="show-info"><h3 class="show-title">${pdfPreview.title}</h3><h4 class="band-info">${pdfPreview.date} - ${pdfPreview.band}</h4><p class="show-desc">${pdfPreview.description}</p>`
+    previewHtml += `<div id="ghost-preview"><span>dummy</span></div><div id="pdf-preview" class="${color}"><div class="svg-container"><img src="${getColoredUrl(color)}" alt="PDF Preview" /></div><div class="show-info"><h3 class="show-title">${pdfPreview.title}</h3><h4 class="band-info">${pdfPreview.date} - ${pdfPreview.band}</h4><p class="show-desc">${pdfPreview.description}</p>`
     if (pdfPreview.dailyMessage) {
       previewHtml += `<p class="show-add-text">${pdfPreview.dailyMessage}</p>`
     }
@@ -82,7 +89,7 @@ export async function chordProSongtoHtml(songs: ISong[], pdfPreview?: IPreviewDa
   }
 
   // Unifing content
-  const finalHtml = `<html><head><meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0, user-scalable=no" /></head><style>${pdfPreviewStyles}${pdfPrintStyles}</style><body>${previewHtml}${songsHtml}</body></html>`
+  const finalHtml = `<html><head><meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0, user-scalable=no" /></head><style>${pdfPreviewStyles}${getPdfPrintStyles(colorSchema.primary, colorSchema.secondary)}</style><body>${previewHtml}${songsHtml}</body></html>`
 
   // Returning html to print
   return finalHtml
