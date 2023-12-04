@@ -50,8 +50,18 @@ const SongListScreen = ({ route }): React.ReactElement => {
     () => api.concerts.getConcert(itemId)
   )
 
+  const {
+    data: colorData,
+    isLoading: isColorLoading,
+    refetch: refetchColor
+  } = useQuery(
+    [`get-liturgy-${itemId}`],
+    () => api.helpers.getLiturgyColor(itemId)
+  )
+
   // Refetch on focus
   useRefreshOnFocus(refetchItem)
+  useRefreshOnFocus(refetchColor)
 
   // Effects
   useEffect(() => {
@@ -80,13 +90,13 @@ const SongListScreen = ({ route }): React.ReactElement => {
   }, [songIndex, setSongIndex])
 
   // Print functions
-  const print = async () => {
-    const htmlContent = await chordProSongtoHtml(songs as ISong[], {
+  const print = async (color: string) => {
+    const htmlContent = await chordProSongtoHtml(songs as ISong[], color, {
       title: concert.title,
       band: concert.band.title,
       date: formatISODate(concert.date),
       description: concert.description,
-      dailyMessage: concert.observations.find(obs => obs.title === 'Evangelho').data || null
+      dailyMessage: concert.observations.find(obs => obs.title.includes('Evangelho'))?.data || null
     })
     // On iOS/android prints the given html. On web prints the HTML from the current page.
     await Print.printAsync({
@@ -103,14 +113,14 @@ const SongListScreen = ({ route }): React.ReactElement => {
     })
   }
 
-  const printToFile = async () => {
+  const printToFile = async (color: string) => {
     // On iOS/android prints the given html. On web prints the HTML from the current page.
-    const htmlContent = await chordProSongtoHtml(songs as ISong[], {
+    const htmlContent = await chordProSongtoHtml(songs as ISong[], color, {
       title: concert.title,
       band: concert.band.title,
       date: formatISODate(concert.date),
       description: concert.description,
-      dailyMessage: concert.observations.find(obs => obs.title === 'Evangelho').data || null
+      dailyMessage: concert.observations.find(obs => obs.title.includes('Evangelho'))?.data || null
     })
     const { uri } = await Print.printToFileAsync({
       html: htmlContent,
@@ -126,10 +136,10 @@ const SongListScreen = ({ route }): React.ReactElement => {
     await shareAsync(uri, { UTI: '.pdf', mimeType: 'application/pdf' })
   }
 
-  const selectPrinter = async () => {
+  const selectPrinter = async (color: string) => {
     const printer = await Print.selectPrinterAsync() // iOS only
     setSelectedPrinter(printer)
-    await print()
+    await print(color)
   }
 
   // TSX
@@ -148,12 +158,17 @@ const SongListScreen = ({ route }): React.ReactElement => {
         <Button
           accessoryLeft={getIcon('printer-outline')}
           size="tiny"
-          disabled={isFetching}
-          onPress={() => {
-            if (Platform.OS === 'ios') {
-              selectPrinter()
-            } else {
-              printToFile()
+          disabled={isFetching || isColorLoading}
+          onPress={async () => {
+            const liturgyColor = colorData?.data?.data?.color || 'purple'
+            try {
+              if (Platform.OS === 'ios') {
+                await selectPrinter(liturgyColor)
+              } else {
+                await printToFile(liturgyColor)
+              }
+            } catch (error) {
+              console.log('[export error]', error)
             }
           }}
         >
