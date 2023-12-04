@@ -17,5 +17,8 @@ export const uploadImage = async (formData: FormData): Promise<AxiosResponse> =>
 export const scrapLiturgy = async (date: string): Promise<AxiosResponse> =>
   asyncRequestHandler(httpClient.post(`/v1/helpers/daily_liturgy`, { date }))
 
+export const getLiturgyColor = async (id: string): Promise<AxiosResponse> =>
+  asyncRequestHandler(httpClient.get(`/v1/helpers/liturgy_color/${id}`))
+
 export const scrapSongs = async (url: string): Promise<AxiosResponse> =>
   asyncRequestHandler(httpClient.post(`/v1/helpers/scrap_song`, { url }))
