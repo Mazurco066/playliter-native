@@ -12,6 +12,9 @@ import { ISong } from '../../../domain/models'
 // Main API
 import api from '../../../infra/api'
 
+// Json data
+import guitarChords from '../../../assets/chords/guitar.json'
+
 // Components
 import ChordLyricsPair from '../ChordLyricsPair'
 import { Button, IndexPath, Select, SelectItem, Text, useTheme } from '@ui-kitten/components'
@@ -344,6 +347,8 @@ const Songsheet = ({
                                                   </CommentText>
                                                 ) : (
                                                   <ChordLyricsPair
+                                                    chordsData={guitarChords}
+                                                    displayCharts
                                                     item={item}
                                                   />
                                                 )
@@ -386,6 +391,8 @@ const Songsheet = ({
                                                   </CommentText>
                                                 ) : (
                                                   <ChordLyricsPair
+                                                    chordsData={guitarChords}
+                                                    displayCharts
                                                     item={item}
                                                   />
                                                 )

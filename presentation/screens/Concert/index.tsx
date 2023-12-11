@@ -196,11 +196,11 @@ const ConcertScreen = ({ route }): React.ReactElement => {
                 setAction({ name: 'delete_concert', id: concert.id })
                 setConfirmDialogState(true)
               }}
+              onDuplicatePress={() => navigate('CloneConcert', { item: concert })}
               onEditPress={() => navigate('SaveConcert', { item: concert, bandId: concert.band.id })}
               onNotesPress={() => navigate('ConcertNotes', { item: concert })}
               onReorderPress={() => navigate('ReorderConcert', { item: concert })}
               onSequentialPress={() => navigate('SongList', { itemId: concert.id, item: concert })}
-              onDuplicatePress={() => navigate('CloneConcert', { item: concert })}
             />
             <Space my={1} />
             <Text category="h5">
