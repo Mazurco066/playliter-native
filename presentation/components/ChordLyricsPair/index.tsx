@@ -23,6 +23,8 @@ const ChartContainer = styled(View)`
   justify-content: center;
   align-items: center;
   padding: 12px 8px;
+  border-radius: 8px;
+  flex: 1;
 `
 
 const LyricsText = styled(Text)``
@@ -91,12 +93,18 @@ const ChordLyricsPair =
             visible={isVisible}
             onBackdropPress={() => setVisible(false)}
             anchor={() => renderToggleButton(transposed.replace(/\s/g, ''))}
+            style={{
+              borderRadius: 8,
+              display: 'flex'
+            }}
           >
-            <ChartContainer>
+            <ChartContainer style={{
+              backgroundColor: theme['color-secondary-400']
+            }}>
               <ChordText
                 category="p1"
                 style={{
-                  color: theme['color-secondary-500']
+                  color: theme['color-primary-600']
                 }}
               >
                 {transposed.replace(/\s/g, '')}
