@@ -131,8 +131,10 @@ const BandHeaderContainer = ({
         </ActionContainer>
         <Text
           category="h6"
+          numberOfLines={2}
           style={{
-            fontWeight: 'bold'
+            fontWeight: 'bold',
+            textAlign: 'center'
           }}
         >
           {band.title}
