@@ -187,6 +187,7 @@ const SongListScreen = ({ route }): React.ReactElement => {
       <Songsheet
         song={songs[songIndex] as ISong}
         showHeaders
+        showCharts
       />
     </BaseContent>
   )

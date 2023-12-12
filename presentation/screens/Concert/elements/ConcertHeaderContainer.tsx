@@ -184,8 +184,10 @@ const ConcertHeaderContainer = ({
         </Text>
         <Text
           category="s1"
+          numberOfLines={2}
           style={{
-            fontWeight: 'bold'
+            fontWeight: 'bold',
+            textAlign: 'center'
           }}
         >
           {concert.title}

@@ -1,8 +1,8 @@
 // Dependencies
-import React, { useEffect, useState } from 'react'
+import React, { useCallback, useEffect, useState } from 'react'
 import styled from 'styled-components'
 import { color } from 'styled-system'
-import { getTransposedSong, overwriteBaseTone } from '../../utils'
+import { getTransposedSong, getUniqueChords, overwriteBaseTone } from '../../utils'
 import { useMutation } from '@tanstack/react-query'
 
 // Types
@@ -12,11 +12,15 @@ import { ISong } from '../../../domain/models'
 // Main API
 import api from '../../../infra/api'
 
+// Json data
+import guitarChords from '../../../assets/chords/guitar.json'
+
 // Components
+import ChordChart from '../ChordChart'
 import ChordLyricsPair from '../ChordLyricsPair'
 import { Button, IndexPath, Select, SelectItem, Text, useTheme } from '@ui-kitten/components'
 import { showMessage } from 'react-native-flash-message'
-import { View } from 'react-native'
+import { FlatList, ListRenderItemInfo, TouchableOpacity, View } from 'react-native'
 import { Chord } from 'chordsheetjs'
 
 // Styled components
@@ -84,6 +88,24 @@ const UpdateToneBtn = styled(Button)`
   margin-top: 8px;
 `
 
+const ChordChartContainer = styled(View)`
+  background-color: red;
+  border-radius: 8px;
+  padding: 8px;
+  margin-top: 16px;
+  margin-bottom: 8px;
+`
+
+const ChordChartItem = styled(View)`
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-width: 100px;
+  min-height: 100px;
+  border-radius: 8px;
+  overflow: hidden;
+`
+
 // Songsheet parameters
 export type ISongSheet = {
   children?: React.ReactElement | React.ReactElement[]
@@ -91,6 +113,7 @@ export type ISongSheet = {
   canUpdateBaseTone?: boolean
   isLoading?: boolean
   showControlHeaders?: boolean
+  showCharts?: boolean
   showHeaders?: boolean
   onToneUpdateSuccess?: () => void
 }
@@ -101,15 +124,22 @@ const Songsheet = ({
   song,
   showControlHeaders = false,
   showHeaders = true,
+  showCharts = false,
   onToneUpdateSuccess = () => {},
   isLoading = false,
   canUpdateBaseTone = false
 }: ISongSheet): React.ReactElement => {
   // Hooks
   const theme = useTheme()
+  const [ isChartsVisible, setChartsVisibility ] = useState<boolean>(true)
   const [ transpositions, setTranspositions ] = useState<Array<any>>([])
+  const [ uniqueChords, setUniqueChords ] = useState<string[]>([])
   const [ chordsheet, setChordsheet ] = useState<any | null>(null)
   const [ selectedIndex, setSelectedIndex ] = React.useState<IndexPath | IndexPath[]>(new IndexPath(0))
+  const [ uniqueChordsData, setUniqueChordsData ] = useState<{
+    positions: string[],
+    key: string
+  }[]>([])
 
   // Http requests
   const { isLoading: isMutateLoading, mutateAsync } = useMutation(
@@ -120,7 +150,9 @@ const Songsheet = ({
   useEffect(() => {
     const transposeIndex = Number(selectedIndex.toString()) - 1
     const cs = getTransposedSong(song.body || '', transposeIndex)
+    const uc = getUniqueChords(song.body || '', transposeIndex)
     setChordsheet(cs)
+    setUniqueChords(uc)
     const baseTone = song.tone
     const key = Chord.parse(baseTone)
     const steps = []
@@ -135,9 +167,33 @@ const Songsheet = ({
   }, [song])
 
   useEffect(() => {
+    if (uniqueChords.length > 0) {
+      const data = uniqueChords.map(uc => {
+        if (guitarChords.hasOwnProperty(uc)) {
+          const chordObj = guitarChords[uc].find(() => true)
+          if (chordObj != null) {
+            return {
+              positions: chordObj.positions,
+              key: uc
+            }
+          }
+        } else {
+          return {
+            positions: ['x', 'x', 'x', 'x', 'x', 'x'],
+            key: uc
+          }
+        }
+      })
+      setUniqueChordsData(data)
+    }
+  }, [uniqueChords])
+
+  useEffect(() => {
     const transposeIndex = Number(selectedIndex.toString()) - 1
     const cs = getTransposedSong(song.body || '', transposeIndex)
+    const uc = getUniqueChords(song.body || '', transposeIndex)
     setChordsheet(cs)
+    setUniqueChords(uc)
   }, [song, selectedIndex])
 
   // Actions
@@ -208,6 +264,33 @@ const Songsheet = ({
       }
     }
   }
+
+  const renderChordItem = useCallback(({ 
+    item,
+    index
+  }: ListRenderItemInfo<{
+    positions: string[],
+    key: string
+  }>) => (
+    <ChordChartItem key={index}>
+      <Text
+        category="p1"
+        style={{
+          color: theme['color-secondary-500'],
+          fontWeight: 'bold'
+        }}
+      >
+        {item.key}
+      </Text>
+      <ChordChart
+        chord={item.positions}
+        showTuning
+        width={80}
+        height={100}
+        color="#ffffff"
+      />
+    </ChordChartItem>
+  ), [theme])
 
   // TSX
   return (
@@ -305,6 +388,45 @@ const Songsheet = ({
                 </SongHeaders>
               ) : null
             }
+            { // Song unique chords
+              showCharts && uniqueChordsData.length > 0 ? (
+                <>
+                  <ChordChartContainer
+                    style={{
+                      backgroundColor: theme['color-basic-700'],
+                      display: isChartsVisible ? 'flex' : 'none'
+                    }}
+                  >
+                    <FlatList
+                      horizontal
+                      keyExtractor={(_, index) => `chart-${index}`}
+                      showsHorizontalScrollIndicator={false}
+                      data={uniqueChordsData || []}
+                      renderItem={renderChordItem}
+                    />
+                  </ChordChartContainer>
+                  <TouchableOpacity
+                    onPress={() => setChartsVisibility(!isChartsVisible)}
+                  >
+                    <Text
+                      category="label"
+                      style={{
+                        fontSize: 16,
+                        textAlign: 'left',
+                        marginBottom: 16,
+                        marginTop: isChartsVisible ? 0 : 16
+                      }}
+                    >
+                      {
+                        isChartsVisible
+                          ? 'Ocultar acordes'
+                          : 'Mostrar acordes'
+                      }
+                    </Text>
+                  </TouchableOpacity>
+                </>
+              ) : null
+            }
             {/* Verse */}
             <View>
               {
@@ -344,6 +466,8 @@ const Songsheet = ({
                                                   </CommentText>
                                                 ) : (
                                                   <ChordLyricsPair
+                                                    chordsData={guitarChords}
+                                                    displayCharts
                                                     item={item}
                                                   />
                                                 )
@@ -386,6 +510,8 @@ const Songsheet = ({
                                                   </CommentText>
                                                 ) : (
                                                   <ChordLyricsPair
+                                                    chordsData={guitarChords}
+                                                    displayCharts
                                                     item={item}
                                                   />
                                                 )
