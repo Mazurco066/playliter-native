@@ -122,6 +122,7 @@ const SongScreen = ({ route }): React.ReactElement => {
         song ? (
           <Songsheet
             song={song}
+            showCharts
             showControlHeaders
             onToneUpdateSuccess={refetchItem}
             canUpdateBaseTone
