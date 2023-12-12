@@ -42,7 +42,7 @@ const AboutScreen = ({ navigation }) => (
       <Text
         category="c1"
       >
-        Versão: 1.0.1
+        Versão: 1.1.0
       </Text>
       <Space my={2} />
       <Text

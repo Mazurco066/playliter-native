@@ -276,7 +276,8 @@ const Songsheet = ({
       <Text
         category="p1"
         style={{
-          color: theme['color-secondary-500']
+          color: theme['color-secondary-500'],
+          fontWeight: 'bold'
         }}
       >
         {item.key}
