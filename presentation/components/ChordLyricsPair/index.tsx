@@ -99,12 +99,12 @@ const ChordLyricsPair =
             }}
           >
             <ChartContainer style={{
-              backgroundColor: theme['color-secondary-400']
+              backgroundColor: theme['color-basic-700']
             }}>
               <ChordText
                 category="p1"
                 style={{
-                  color: theme['color-primary-600']
+                  color: theme['color-secondary-500']
                 }}
               >
                 {transposed.replace(/\s/g, '')}
@@ -113,6 +113,7 @@ const ChordLyricsPair =
                 displayCharts && positions ? (
                   <ChordChart
                     chord={positions}
+                    color="#ffffff"
                     showTuning
                   />
                 ) : null

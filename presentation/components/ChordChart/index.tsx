@@ -2,7 +2,6 @@
 import React from 'react'
 
 // Components
-import { useTheme } from '@ui-kitten/components'
 import { View } from 'react-native'
 import Svg, {
   Circle,
@@ -17,7 +16,8 @@ type IChordChart = {
   height?: number,
   showTuning?: boolean,
   tuning?: string[],
-  chord: string[]
+  chord: string[],
+  color?: string
 }
 
 // Chart component
@@ -26,11 +26,9 @@ const ChordChart = ({
   height = 120,
   showTuning = false,
   tuning = ['E', 'A', 'D', 'G', 'B', 'E'],
-  chord = ['x', 'x', 'x', 'x', 'x', 'x']
+  chord = ['x', 'x', 'x', 'x', 'x', 'x'],
+  color = '#8257E5'
 }: IChordChart) => {
-  // Hooks
-  const theme = useTheme()
-
   // Chard data calcs
   let fretPosition = 0
   let lower = 100
@@ -75,7 +73,7 @@ const ChordChart = ({
   let fretWidth = 1
   let stringWidth = 1
 
-  let defaultColor = theme['color-primary-600']
+  let defaultColor = color
   let strokeWidth = 1
 
   let stringSpacing = (chartWidth / numStrings);
