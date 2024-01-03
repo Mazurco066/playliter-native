@@ -139,23 +139,23 @@ const AddPublicConcertSongs = ({ route }): React.ReactElement => {
     <Icon
       {...props}
       name={
-        isLoading || isFetchingNextPage || isRefetching
+        isFetchingNextPage || isRefetching
           ? 'loader-outline'
           : 'search-outline'
       }
     />
-  ), [isLoading, isFetchingNextPage, isRefetching])
+  ), [isFetchingNextPage, isRefetching])
 
   const renderResetButton = useCallback((props: any): React.ReactElement => (
     <Icon
       {...props}
       name={
-        isLoading || isFetchingNextPage || isRefetching
+        isFetchingNextPage || isRefetching
           ? 'loader-outline'
           : 'sync-outline'
       }
     />
-  ), [isLoading, isFetchingNextPage, isRefetching])
+  ), [isFetchingNextPage, isRefetching])
 
   // Render list view item function
   const renderListItem = useCallback(({ item }: ListRenderItemInfo<ISong>) => (
@@ -192,7 +192,7 @@ const AddPublicConcertSongs = ({ route }): React.ReactElement => {
           size="small"
           value={filterSearch}
           onChangeText={nextValue => setFilterSearch(nextValue)}
-          disabled={isLoading || isFetchingNextPage}
+          disabled={isFetchingNextPage || isRefetching}
           style={{
             backgroundColor: theme['color-basic-700']
           }}
@@ -202,9 +202,9 @@ const AddPublicConcertSongs = ({ route }): React.ReactElement => {
             status="info"
             size="small"
             accessoryLeft={renderResetButton}
-            disabled={isLoading || isFetchingNextPage || isRefetching}
+            disabled={isFetchingNextPage || isRefetching}
             onPress={() => {
-              if (!isLoading && !isFetchingNextPage && !isRefetching) {
+              if (!isFetchingNextPage && !isRefetching) {
                 setFilterSearch('')
                 setTimeout(() => refetch(), 150)
               }
@@ -216,9 +216,9 @@ const AddPublicConcertSongs = ({ route }): React.ReactElement => {
             status="primary"
             size="small"
             accessoryLeft={renderSearchButton}
-            disabled={isLoading || isFetchingNextPage || isRefetching}
+            disabled={isFetchingNextPage || isRefetching}
             onPress={() => {
-              if (!isLoading && !isFetchingNextPage && !isRefetching) {
+              if (!isFetchingNextPage && !isRefetching) {
                 refetch()
               }
             }}
