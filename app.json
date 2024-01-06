@@ -23,7 +23,7 @@
         "backgroundColor": "#633FC4"
       },
       "package": "io.mazurco066.playliter",
-      "versionCode": 3
+      "versionCode": 4
     },
     "web": {
       "favicon": "./assets/favicon.png",
