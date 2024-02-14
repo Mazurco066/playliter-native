@@ -1,3 +1,21 @@
 {
-  "greeting": "Welcome"
+  "main_screen": {
+    "greeting": "Welcome ",
+    "pending_concerts": "You have {{count}} pending concerts to attend.",
+    "no_pending_concerts": "There is no pending concerts to attend.",
+    "band_title": "My bands",
+    "no_bands": "You have no band afiliations at the moment."
+  },
+  "roles": {
+    "admin": "Admin",
+    "founder": "Founder",
+    "member": "Member",
+    "no_filiation": "No filiation"
+  },
+  "success_msgs": {
+    "title": "Success!"
+  },
+  "error_msgs": {
+    
+  }
 }

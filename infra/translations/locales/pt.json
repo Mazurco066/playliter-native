@@ -1,3 +1,21 @@
 {
-  "greeting": "Bem vindo"
+  "main_screen": {
+    "greeting": "Bem vindo ",
+    "pending_concerts": "Você tem {{count}} apresentações agendadas.",
+    "no_pending_concerts": "Você não possui apresentações futuras agendadas.",
+    "band_title": "Minhas bandas",
+    "no_bands": "Você não participa de nenhuma banda no momento."
+  },
+  "roles": {
+    "admin": "Administrador",
+    "founder": "Fundador",
+    "member": "Membro",
+    "no_filiation": "Sem afiliação"
+  },
+  "success_msgs": {
+    "title": "Sucesso!"
+  },
+  "error_msgs": {
+
+  }
 }
