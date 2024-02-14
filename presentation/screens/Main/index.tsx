@@ -1,6 +1,7 @@
 // Dependencies
 import React, { useCallback } from 'react'
 import styled from 'styled-components'
+import { useTranslation, withTranslation } from 'react-i18next'
 import { useQuery } from '@tanstack/react-query'
 import { useNavigation } from '@react-navigation/native'
 import { NativeStackNavigationProp } from '@react-navigation/native-stack'
@@ -34,6 +35,7 @@ const MainScreen = (): React.ReactElement => {
   // Hooks
   const { account } = useAuthStore()
   const { navigate } = useNavigation<NativeStackNavigationProp<MainStackParamList>>()
+  const { t } = useTranslation()
 
   // HTTP Requests
   const {
@@ -118,6 +120,9 @@ const MainScreen = (): React.ReactElement => {
       <Space my={2} />
       <Text category="h5">
         Minhas bandas
+      </Text>
+      <Text category="h5">
+        {t('greeting')}
       </Text>
       {
         isBandsLoading ? (

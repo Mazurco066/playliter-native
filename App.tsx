@@ -1,4 +1,5 @@
 // Dependencies
+//import 'intl-pluralrules'
 import { StatusBar } from 'expo-status-bar'
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
 
@@ -19,6 +20,9 @@ import { default as theme } from './theme.json'
 
 // App Toast Messages
 import FlashMessage from 'react-native-flash-message'
+
+// Expo localization service
+import './infra/translations'
 
 // Create a client for tanstack client
 const queryClient: QueryClient = new QueryClient()
