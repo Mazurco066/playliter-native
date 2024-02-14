@@ -1,7 +1,7 @@
 // Dependencies
 import React, { useCallback } from 'react'
 import styled from 'styled-components'
-import { useTranslation, withTranslation } from 'react-i18next'
+import { useTranslation } from 'react-i18next'
 import { useQuery } from '@tanstack/react-query'
 import { useNavigation } from '@react-navigation/native'
 import { NativeStackNavigationProp } from '@react-navigation/native-stack'
