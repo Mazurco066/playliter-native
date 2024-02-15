@@ -10,6 +10,15 @@
     "band_title": "My bands",
     "no_bands": "You have no band afiliations at the moment."
   },
+  "songs_screen": {
+    "no_public_songs": "There is no songs published at the moment.",
+    "public_title": "Public songs",
+    "public_search_placeholder": "Search for published songs:",
+    "search_placeholder": "Search...",
+    "clear_filters": "Clear filters",
+    "search_btn": "Search",
+    "published_by": "Published by "
+  },
   "roles": {
     "admin": "Admin",
     "founder": "Founder",

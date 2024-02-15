@@ -1,5 +1,6 @@
 // Dependencies
 import React from 'react'
+import { useTranslation } from 'react-i18next'
 import styled from 'styled-components'
 import { color } from 'styled-system'
 
@@ -73,6 +74,7 @@ const SongListItem = ({
 }: IConcertListItem): React.ReactElement => {
   // Hooks
   const theme = useTheme()
+  const { t } = useTranslation()
 
   // TSX
   return (
@@ -123,7 +125,7 @@ const SongListItem = ({
               marginTop: 2
             }}
           >
-            Publicada por {item.band.title}
+            {t('songs_screen.published_by')}{item.band.title}
           </SongTextInfo>
         </ItemData>
       </ItemLayout>

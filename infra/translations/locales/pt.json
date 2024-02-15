@@ -10,6 +10,15 @@
     "band_title": "Minhas bandas",
     "no_bands": "Você não participa de nenhuma banda no momento."
   },
+  "songs_screen": {
+    "no_public_songs": "Não há músicas públicas publicada no app atualmente.",
+    "public_title": "Repertório público",
+    "public_search_placeholder": "Pequise por músicas pulbicadas no app:",
+    "search_placeholder": "Pesquisar...",
+    "clear_filters": "Limpar Filtros",
+    "search_btn": "Pesquisar",
+    "published_by": "Publicada por "
+  },
   "roles": {
     "admin": "Administrador",
     "founder": "Fundador",
