@@ -1,5 +1,6 @@
 // Dependencies
 import React, { useState, useCallback } from 'react'
+import { useTranslation } from 'react-i18next'
 import styled from 'styled-components'
 import { useNavigation } from '@react-navigation/native'
 import { NativeStackNavigationProp } from '@react-navigation/native-stack'
@@ -61,6 +62,7 @@ const BandConcerts = ({ route }): React.ReactElement => {
   const theme = useTheme()
   const [ filterSearch, setFilterSearch ] = useState<string>('')
   const { navigate } = useNavigation<NativeStackNavigationProp<MainStackParamList>>()
+  const { t } = useTranslation()
 
   // Api request function
   const fetchBandConcerts = async ({ pageParam = 0 }) => {
@@ -136,10 +138,10 @@ const BandConcerts = ({ route }): React.ReactElement => {
   const renderListEmptyComponent = useCallback(() => (
     isLoading ? null : (
       <Text category="s1">
-        Não há apresentações registradas nessa banda
+        {t('band_screen.no_concerts')}
       </Text>
     )
-  ), [isLoading])
+  ), [isLoading, t])
 
   //TSX
   return (
@@ -154,16 +156,16 @@ const BandConcerts = ({ route }): React.ReactElement => {
       onFloatingButtonPress={() => navigate("SaveConcert", { bandId: item.id })}
     >
       <Text category="h5">
-        Apresentações realizadas
+        {t('band_screen.concert_heading')}
       </Text>
       <Space my={1} />
       <Text category="s1">
-        Pequise por apresentações nessa banda:
+        {t('band_screen.concert_placeholder')}
       </Text>
       <Space my={1} />
       <SearchContainer>
         <SearchInput 
-          placeholder="Pesquisar..."
+          placeholder={t('band_screen.search_placeholder')}
           keyboardType="default"
           size="small"
           value={filterSearch}
@@ -186,7 +188,7 @@ const BandConcerts = ({ route }): React.ReactElement => {
               }
             }}
           >
-            Limpar Filtros
+            {t('band_screen.clear_filter_btn')}
           </SearchButton>
           <SearchButton
             status="primary"
@@ -199,7 +201,7 @@ const BandConcerts = ({ route }): React.ReactElement => {
               }
             }}
           >
-            Pesquisar
+            {t('band_screen.search_button')}
           </SearchButton>
         </ButtonContainer>
       </SearchContainer>

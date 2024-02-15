@@ -1,5 +1,6 @@
 // Dependencies
 import React from 'react'
+import { useTranslation } from 'react-i18next'
 import styled from 'styled-components'
 import { color } from 'styled-system'
 
@@ -64,6 +65,7 @@ const ViewCategory = ({
 }: IViewCategory): React.ReactElement => {
   // Hooks
   const theme = useTheme()
+  const { t } = useTranslation()
 
   // TSX
   return (
@@ -88,7 +90,7 @@ const ViewCategory = ({
             disabled={isLoading}
             accessoryLeft={getIcon('edit-outline')}
           >
-            Editar
+            {t('band_screen.edit_button')}
           </Button>
           <Button
             size="tiny"
@@ -97,7 +99,7 @@ const ViewCategory = ({
             disabled={isLoading}
             accessoryLeft={getIcon('edit-outline')}
           >
-            Remover
+            {t('band_screen.remove_button')}
           </Button>
         </ButtonContainer>
       </HeaderContainer>

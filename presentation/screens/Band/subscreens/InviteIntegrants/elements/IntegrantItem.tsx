@@ -1,5 +1,6 @@
 // Dependencies
 import React from 'react'
+import { useTranslation } from 'react-i18next'
 import styled from 'styled-components'
 import { color } from 'styled-system'
 import { useBandStore } from '../../../../../../main/store'
@@ -76,6 +77,7 @@ const IntegrantItem = ({
   // Hooks
   const theme = useTheme()
   const { band } = useBandStore()
+  const { t } = useTranslation()
 
   // TSX
   return (
@@ -114,7 +116,12 @@ const IntegrantItem = ({
               color: theme['color-secondary-500']
             }}
           >
-            {getBandRole(item.id, band)}
+            {getBandRole(item.id, band, [
+              t('roles.founder'),
+              t('roles.admin'),
+              t('roles.member'),
+              t('roles.no_filiation')
+            ])}
           </AccountTextInfo>
         </ItemData>
       </ItemLayout>

@@ -1,5 +1,6 @@
 // Dependencies
 import React, { useEffect } from 'react'
+import { useTranslation } from 'react-i18next'
 import { Controller, FieldError, useForm } from 'react-hook-form'
 import styled from 'styled-components'
 import { color } from 'styled-system'
@@ -65,6 +66,7 @@ const EditCategory = ({
   // Hooks
   const theme = useTheme()
   const { band } = useBandStore()
+  const { t } = useTranslation()
   const {
     control,
     handleSubmit,
@@ -100,20 +102,20 @@ const EditCategory = ({
     })
     if ([200, 201].includes(response.status)) {
       showMessage({
-        message: `A categoria foi salva com sucesso!`,
+        message: t('success_msgs.save_category_msg'),
         type: 'success',
         duration: 2000
       })
       onGoBack()
     } else if ([401, 403].includes(response.status)) {
       showMessage({
-        message: `Você não tem permissão para salvar categorias!`,
+        message: t('error_msgs.save_category_denied_msg'),
         type: 'warning',
         duration: 2000
       })
     } else {
       showMessage({
-        message: `Ocorreu um erro ao salvar a categoria! Tente novamente mais tarde.`,
+        message: t('error_msgs.save_category_error_msg'),
         type: 'danger',
         duration: 2000
       })
@@ -139,8 +141,8 @@ const EditCategory = ({
           rules={{ required: true, minLength: 2 }}
           render={({ field: { onBlur, onChange, value } }) => (
             <Input
-              label="Título"
-              placeholder="Insira um título"
+              label={t('band_screen.input_category_title_label')}
+              placeholder={t('band_screen.input_category_title_placeholder')}
               keyboardType="default"
               accessoryLeft={props => <Icon {...props} name="bookmark-outline" />}
               value={value}
@@ -161,8 +163,8 @@ const EditCategory = ({
           render={({ field: { onBlur, onChange, value } }) => (
             <Input
               multiline
-              label="Descrição"
-              placeholder="Digite uma descrição"
+              label={t('band_screen.input_category_desc_label')}
+              placeholder={t('band_screen.input_category_desc_placeholder')}
               keyboardType="default"
               accessoryLeft={props => <Icon {...props} name="book-open-outline" />}
               value={value}
@@ -183,14 +185,14 @@ const EditCategory = ({
             style={{ flex: 1 }}
             disabled={isLoading || isSavingCategory}
           >
-            Cancelar
+            {t('band_screen.cancel_button')}
           </Button>
           <Button
             style={{ flex: 1 }}
             onPress={handleSubmit(submitCategory)}
             disabled={isLoading || isSavingCategory}
           >
-            Salvar
+            {t('band_screen.save_button')}
           </Button>
         </ButtonGroup>
       </CustomKeyboardAvoidingView>

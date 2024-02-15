@@ -1,6 +1,7 @@
 // Dependencies
 import mime from 'mime'
 import React, { useEffect, useState } from 'react'
+import { useTranslation } from 'react-i18next'
 import styled from 'styled-components'
 import { color } from 'styled-system'
 import { Controller, FieldError, useForm } from 'react-hook-form'
@@ -59,6 +60,7 @@ const SaveBandScreen = ({ route }) : React.ReactElement => {
   const theme = useTheme()
   const { goBack } = useNavigation<NativeStackNavigationProp<MainStackParamList>>()
   const [ imageUri, setImageUri ] = useState<string>(DEFAULT_IMG)
+  const { t } = useTranslation()
   const {
     control,
     handleSubmit,
@@ -131,26 +133,26 @@ const SaveBandScreen = ({ route }) : React.ReactElement => {
     })
     if ([200, 201].includes(response.status)) {
       showMessage({
-        message: uploadError ? 'Banda foi salva com sucesso porem ocorreu um erro ao fazer o upload  de seu logo.' : 'Banda salva com sucesso.',
+        message: uploadError ? t('success_msgs.save_band_without_logo_msg') : t('success_msgs.save_band_msg'),
         type: uploadError ? 'info' : 'success',
         duration: 2000
       })
       goBack()
     } else if ([400].includes(response.status)) {
       showMessage({
-        message: 'Há dados invalidos no preenchimento de seu formulário. Por favor verifique o preenchimento do mesmo.',
+        message: t('error_msgs.invalid_form_msg'),
         type: 'warning',
         duration: 2000
       })
     } else if ([404].includes(response.status)) {
       showMessage({
-        message: `Banda de id ${item.id} não encontrada!`,
+        message: t('error_msgs.band_not_found_msg'),
         type: 'info',
         duration: 2000
       })
     } else {
       showMessage({
-        message: `Ocorreu um erro ao salvar a banda! Tente novamente mais tarde.`,
+        message: t('error_msgs.save_band_error_msg'),
         type: 'danger',
         duration: 2000
       })
@@ -161,14 +163,14 @@ const SaveBandScreen = ({ route }) : React.ReactElement => {
   return (
     <BaseContent hideCardsNavigation>
       <Text category="h5">
-        Salvar banda
+        {t('band_screen.save_band_title')}
       </Text>
       <Space my={1} />
       <Text category="s1">
         {
           item
-            ? 'Atualize os dados de sua banda:'
-            : 'Insira os dados para criar sua banda'
+            ? t('band_screen.update_band_heading')
+            : t('band_screen.save_band_heading')
         }
       </Text>
       <Space my={2} />
@@ -201,8 +203,8 @@ const SaveBandScreen = ({ route }) : React.ReactElement => {
             rules={{ required: true, minLength: 2 }}
             render={({ field: { onBlur, onChange, value } }) => (
               <Input
-                label="Título"
-                placeholder="Insira um título"
+                label={t('band_screen.input_band_title_label')}
+                placeholder={t('band_screen.input_band_title_placeholder')}
                 keyboardType="default"
                 accessoryLeft={props => <Icon {...props} name="book-open-outline" />}
                 value={value}
@@ -223,8 +225,8 @@ const SaveBandScreen = ({ route }) : React.ReactElement => {
             render={({ field: { onBlur, onChange, value } }) => (
               <Input
                 multiline
-                label="Descrição"
-                placeholder="Insira uma descrição para apresentação"
+                label={t('band_screen.input_band_desc_label')}
+                placeholder={t('band_screen.input_band_desc_placeholder')}
                 keyboardType="default"
                 accessoryLeft={props => <Icon {...props} name="menu-2-outline" />}
                 value={value}
@@ -243,7 +245,7 @@ const SaveBandScreen = ({ route }) : React.ReactElement => {
             onPress={handleSubmit(submitBand)}
             style={{ width: '100%' }}
           >
-            Salvar
+            {t('band_screen.save_button')}
           </Button>
         </CustomKeyboardAvoidingView>
       </Container>
