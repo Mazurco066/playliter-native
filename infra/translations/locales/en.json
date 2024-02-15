@@ -1,4 +1,8 @@
 {
+  "bands_screen": {
+    "add_band": "Add new band",
+    "description": "List of bands you associate in."
+  },
   "main_screen": {
     "greeting": "Welcome ",
     "pending_concerts": "You have {{count}} pending concerts to attend.",

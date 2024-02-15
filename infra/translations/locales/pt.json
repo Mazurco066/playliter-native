@@ -1,4 +1,8 @@
 {
+  "bands_screen": {
+    "add_band": "Criar uma banda",
+    "description": "Lista das bandas que você faz parte."
+  },
   "main_screen": {
     "greeting": "Bem vindo ",
     "pending_concerts": "Você tem {{count}} apresentações agendadas.",
