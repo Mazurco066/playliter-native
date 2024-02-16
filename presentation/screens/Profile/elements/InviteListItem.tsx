@@ -1,5 +1,6 @@
 // Dependencies
 import React from 'react'
+import { useTranslation } from 'react-i18next'
 import styled from 'styled-components'
 import { color } from 'styled-system'
 
@@ -53,6 +54,7 @@ const InviteListItem = ({
 }: IInviteListItem): React.ReactElement => {
   // Hooks
   const theme = useTheme()
+  const { t } = useTranslation()
 
   // TSX
   return (
@@ -80,7 +82,7 @@ const InviteListItem = ({
               color: theme['color-secondary-500']
             }}
           >
-            Novo convite ({item.band.title})
+            {t('profile.new_invite_label')}({item.band.title})
           </InviteItemText>
           <InviteItemText
             category="c1"
@@ -88,7 +90,7 @@ const InviteListItem = ({
               fontSize: 14
             }}
           >
-            Voce foi convidado a se juntar a banda: {item.band.title}.
+            {t('profile.new_invite_message', { name: item.band.title })}
           </InviteItemText>
         </ItemData>
       </ItemLayout>

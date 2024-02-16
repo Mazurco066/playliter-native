@@ -1,4 +1,31 @@
 {
+  "profile": {
+    "edit_account": "Editar dados da conta",
+    "delete_account": "Excluir minha conta",
+    "logoff": "Logoff",
+    "peding_confirmation": "Por favor valide o E-mail de sua conta. No caso de voce não ter recebido o E-mail clique no botão abaixo para soliciar o reenvio do E-mail de validação de conta.",
+    "resend_email": "Reenviar E-mail de validação",
+    "insert_code": "Inserir código de validação",
+    "notifications_heading": "Notificações",
+    "no_notifications": "Não há notificações pendentes para sua conta.",
+    "confirm_wipe": "Certifique-se de verificar se você não está como lider de alguma banda. Caso estiver transfira a liderança para outro membro pois caso contrário a banda e as músicas salvas nessa banda serão removidas e pode ocorrer de ter terceiros utilizando as músicas públicas de sua banda nas suas apresentações.",
+    "new_invite_label": "Novo convite ",
+    "new_invite_message": "Voce foi convidado a se juntar a banda: {{name}}.",
+    "validate_mail_heading": "Validar E-mail",
+    "validate_mail_placeholder": "Insira o código que voce recebeu em seu E-mail para finalizar a validação de sua conta.",
+    "validate_mail_label": "Insira o código presente no corpo do E-mail:",
+    "you_were_invited": "Voce foi convidado a se juntar a uma banda. Visualize os detalhes da banda abaixo e decida se irá aceitar ou recusar.",
+    "accept_action": "Aceitar",
+    "deny_action": "Recusar",
+    "respond_invite_heading": "Responder convite",
+    "save_profile_heading": "Atualizar perfil",
+    "save_profile_placeholder": "Atualize os dados de seu perfil no app.",
+    "name_label": "Nome",
+    "name_placeholder": "Insira seu nome",
+    "email_label": "E-mail",
+    "email_placeholder": "Insira seu E-mail",
+    "save_button": "Salvar"
+  },
   "auth": {
     "welcome": "Bem vindo {{name}}!",
     "username_label": "Usuário ou E-mail",
@@ -108,7 +135,13 @@
     "remove_category_msg": "A categoria foi removida da banda com sucesso!",
     "save_category_msg": "A categoria foi salva com sucesso!",
     "confirmation_mail_msg": "Um E-mail contendo a URL para redefinição de senha foi enviado para seu Inbox.",
-    "account_created_msg": "Olá {{name}} Sua conta foi criada com sucesso!"
+    "account_created_msg": "Olá {{name}} Sua conta foi criada com sucesso!",
+    "wipe_msg": "Todos os dados de sua conta foram deletados com sucesso dos servidores do applicativo!",
+    "email_validation_msg": "Seu E-mail foi validado com sucesso!",
+    "invite_accepted_msg": "O convite foi aceito com sucesso!",
+    "invite_denied_msg": "O convite foi recusado com sucesso!",
+    "save_profile_msg": "Sua conta foi atualizada com sucesso.",
+    "save_profile_without_avatar_msg": "Sua conta foi atualizada com sucesso porem ocorreu um erro ao fazer o upload  de seu avatar."
   },
   "error_msgs": {
     "demote_denied_msg": "Você não tem permissão para gerenciar níveis de permissão dos integrantes da banda!",
@@ -135,6 +168,12 @@
     "email_already_taken_msg": "Esse E-mail já está vinculado a nenhuma conta nesse aplicativo.",
     "email_send_error_msg": "Ocorreu um erro ao tentar recuperar sua senha. Tente novamente mais tarde!",
     "username_in_use_msg": "Usuário ou E-mail já estão em uso por outro usuário!",
-    "username_error_msg": "Ocorreu um erro durante a criação de sua conta. Tente novamente mais tarde!"
+    "username_error_msg": "Ocorreu um erro durante a criação de sua conta. Tente novamente mais tarde!",
+    "wipe_error_msg": "Ocorreu um erro ao remover os dados da sua conta, os servidores devem estar ocupados no momento. Tente novamente mais tarde.",
+    "email_validation_invalid_msg": "Código de verificação inválido!",
+    "email_validation_error_msg": "Ocorreu um erro ao validar seu E-mail! Tente novamente mais tarde.",
+    "respond_invite_error_msg": "Ocorreu um erro ao responder o convite! Por favor tente novamente mais tarde.",
+    "account_not_found_msg": "Conta não encontrada!",
+    "save_profile_error_msg": "Ocorreu um erro ao atualizar sua conta! Tente novamente mais tarde."
   }
 }

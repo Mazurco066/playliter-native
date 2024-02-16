@@ -1,4 +1,31 @@
 {
+  "profile": {
+    "edit_account": "Update account data",
+    "delete_account": "Delete account",
+    "logoff": "Logoff",
+    "peding_confirmation": "Please validate your E-mail address. If you didn't received the E-mail click on resend E-mail to receive one.",
+    "resend_email": "Resend validation E-mail",
+    "insert_code": "Insert your verification code",
+    "notifications_heading": "Notifications",
+    "no_notifications": "There is no pending notifications.",
+    "confirm_wipe": "Be sure to check that you're not a band leader. If you are, transfer the leadership to another member, otherwise the band and the songs saved in that band will be removed and it may happen that there are third parties using your band's public songs in their performances.",
+    "new_invite_label": "New invite ",
+    "new_invite_message": "You were invited to join a band: {{name}}.",
+    "validate_mail_heading": "Validate E-mail",
+    "validate_mail_placeholder": "Enter the code you received in your email to finish your account validation.",
+    "validate_mail_label": "Type the code received in your E-mail:",
+    "you_were_invited": "You've been asked to join a band. View the band details below and decide whether to accept or decline.",
+    "accept_action": "Accept",
+    "deny_action": "Decline",
+    "respond_invite_heading": "Respond invite",
+    "save_profile_heading": "Update profile",
+    "save_profile_placeholder": "Update you account data.",
+    "name_label": "Name",
+    "name_placeholder": "Type your name",
+    "email_label": "E-mail",
+    "email_placeholder": "Type your E-mail",
+    "save_button": "Save"
+  },
   "auth": {
     "welcome": "Welcome {{name}}!",
     "username_label": "Username or E-mail",
@@ -108,7 +135,13 @@
     "remove_category_msg": "The selected category was successfully deleted!",
     "save_category_msg": "Category successfully saved!",
     "confirmation_mail_msg": "An E-mail containing the reset url was sent.",
-    "account_created_msg": "Hello {{name}} Your account was successfully created!"
+    "account_created_msg": "Hello {{name}} Your account was successfully created!",
+    "wipe_msg": "Your account was successfully deleted from the app! We hope to see you again in the future.",
+    "email_validation_msg": "Your E-mail address was successfully validated!",
+    "invite_accepted_msg": "You accepted the invite!",
+    "invite_denied_msg": "You denied the invite!",
+    "save_profile_msg": "Your account data was successfully saved.",
+    "save_profile_without_avatar_msg": "Your account data was successfully saved but an error ocourred while uploading your avatar image."
   },
   "error_msgs": {
     "demote_denied_msg": "You lack permissions to manage member roles!",
@@ -135,6 +168,12 @@
     "email_already_taken_msg": "This E-mail address is already in use by another account.",
     "email_send_error_msg": "An error ocourred while reseting your password. Try again later!",
     "username_in_use_msg": "Username or E-mail already in use by another account!",
-    "username_error_msg": "An error ocourred while creating your account. Try again later!"
+    "username_error_msg": "An error ocourred while creating your account. Try again later!",
+    "wipe_error_msg": "An error ocourred while deleting your account data, the server is busy at the moment. Try again later.",
+    "email_validation_invalid_msg": "Invalid verification code!",
+    "email_validation_error_msg": "An error ocourred while validationg your E-mail address! Try again later.",
+    "respond_invite_error_msg": "An error ocourred while responding the invite! Por favor Try again later.",
+    "account_not_found_msg": "Account not found!",
+    "save_profile_error_msg": "An error ocourred while updating your account data! Try again later."
   }
 }
