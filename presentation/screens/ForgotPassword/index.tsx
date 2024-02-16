@@ -1,5 +1,6 @@
 // Dependencies
 import React from 'react'
+import { useTranslation } from 'react-i18next'
 import { Controller, FieldError, useForm } from 'react-hook-form'
 import { useMutation } from '@tanstack/react-query'
 import styled from 'styled-components'
@@ -69,6 +70,7 @@ const ForgotPasswordScreen = ({ navigation }): React.ReactElement => {
   // Hooks
   const theme = useTheme()
   const { control, handleSubmit, formState: { errors } } = useForm()
+  const { t } = useTranslation()
 
   // Mutations
   const { isLoading, mutateAsync } = useMutation(
@@ -82,20 +84,20 @@ const ForgotPasswordScreen = ({ navigation }): React.ReactElement => {
     const response = await mutateAsync(data.email)
     if ([200, 201].includes(response.status)) {
       showMessage({
-        message: 'Um E-mail contendo a URL para redefinição de senha foi enviado para seu Inbox.',
+        message: t('success_msgs.confirmation_mail_msg'),
         type: 'success',
         duration: 2500
       })
       navigation.goBack()
     } else if ([400, 404].includes(response.status)) {
       showMessage({
-        message: 'Esse E-mail não está vinculado a nenhuma conta nesse aplicativo.',
+        message: t('error_msgs.email_already_taken_msg'),
         type: 'info',
         duration: 2500
       })
     } else {
       showMessage({
-        message: 'Ocorreu um erro ao tentar recuperar sua senha. Tente novamente mais tarde!',
+        message: t('error_msgs.email_send_error_msg'),
         type: 'danger',
         duration: 2500
       })
@@ -104,9 +106,7 @@ const ForgotPasswordScreen = ({ navigation }): React.ReactElement => {
 
   // TSX
   return (
-    <Wrapper
-      level="1"
-    >
+    <Wrapper level="1">
       <ScrollView
         centerContent
         contentContainerStyle={{
@@ -122,21 +122,13 @@ const ForgotPasswordScreen = ({ navigation }): React.ReactElement => {
             alignItems: 'center'
           }}
         >
-          <Logo
-            source={require('../../../assets/logo_white.png')}
-          />
-          <Form
-            style={{ backgroundColor: theme['color-basic-700'] }}
-          >
-            <Text
-              category="h6"
-            >
-              Redefinição de senha
+          <Logo source={require('../../../assets/logo_white.png')} />
+          <Form style={{ backgroundColor: theme['color-basic-700'] }}>
+            <Text category="h6">
+              {t('auth.password_redefinition_label')}
             </Text>
-            <Text
-              category="c1"
-            >
-              Insira seu E-mail e te enviaremos a URL para realizar a redefinição de sua senha de acesso ao aplicativo.
+            <Text category="c1">
+              {t('auth.password_redefinition_description')}
             </Text>
             <Space my={1} />
             <Controller
@@ -145,8 +137,8 @@ const ForgotPasswordScreen = ({ navigation }): React.ReactElement => {
               rules={{ required: true, minLength: 7 }}
               render={({ field: { onBlur, onChange, value } }) => (
                 <Input
-                  label="E-mail"
-                  placeholder="Insira seu email"
+                  label={t('auth.email_label')}
+                  placeholder={t('auth.email_placeholder')}
                   keyboardType="email-address"
                   accessoryLeft={props => <Icon {...props} name="email-outline" />}
                   value={value}
@@ -164,7 +156,7 @@ const ForgotPasswordScreen = ({ navigation }): React.ReactElement => {
               disabled={isLoading}
               onPress={handleSubmit(submitPasswordRecovery)}
             >
-              Enviar Redefinição de Senha
+              {t('auth.send_email_action')}
             </Button>
             <Space my={1} />
             <TouchableOpacity
@@ -176,12 +168,12 @@ const ForgotPasswordScreen = ({ navigation }): React.ReactElement => {
                 style={{ textAlign: 'center' }}
                 category='s2'
               >
-                Lembrou sua senha? <Text
+                {t('auth.remember_password')}<Text
                   style={{ fontWeight: '700' }}
                   status="primary"
                   category="s2"
                 >
-                  Fazer login!
+                  {t('auth.login_now')}
                 </Text>
               </Text>
             </TouchableOpacity>

@@ -1,4 +1,27 @@
 {
+  "auth": {
+    "welcome": "Bem vindo {{name}}!",
+    "username_label": "Usuário ou E-mail",
+    "username_placeholder": "Insira seu usuário ou E-mail",
+    "password_label": "Senha",
+    "forgot_password_link": "Esqueci minha senha",
+    "login_action": "Acessar",
+    "has_no_account": "Não possui conta? ",
+    "create_now": "Criar uma agora!",
+    "password_redefinition_label": "Redefinição de senha",
+    "password_redefinition_description": "Insira seu E-mail e te enviaremos a URL para realizar a redefinição de sua senha de acesso ao aplicativo.",
+    "email_label": "E-mail",
+    "email_placeholder": "Insira seu email",
+    "send_email_action": "Enviar Redefinição de Senha",
+    "remember_password": "Lembrou sua senha? ",
+    "login_now": "Fazer login!",
+    "name_label": "Nome",
+    "name_placeholder": "Insira seu nome",
+    "create_username_label": "Usuário",
+    "create_username_placeholder": "Insira seu usuário",
+    "create_action": "Criar Conta",
+    "already_has_account": "Já possui conta? "
+  },
   "band_screen": {
     "members_title": "Participantes",
     "songs_title": "Músicas publicadas",
@@ -83,7 +106,9 @@
     "save_band_msg": "Banda salva com sucesso.",
     "save_band_without_logo_msg": "Banda foi salva com sucesso porem ocorreu um erro ao fazer o upload  de seu logo.",
     "remove_category_msg": "A categoria foi removida da banda com sucesso!",
-    "save_category_msg": "A categoria foi salva com sucesso!"
+    "save_category_msg": "A categoria foi salva com sucesso!",
+    "confirmation_mail_msg": "Um E-mail contendo a URL para redefinição de senha foi enviado para seu Inbox.",
+    "account_created_msg": "Olá {{name}} Sua conta foi criada com sucesso!"
   },
   "error_msgs": {
     "demote_denied_msg": "Você não tem permissão para gerenciar níveis de permissão dos integrantes da banda!",
@@ -105,6 +130,11 @@
     "remove_category_denied_msg": "Você não tem permissão para remover essa categoria!",
     "remove_category_error_msg": "Ocorreu um erro ao remover a categoria! Tente novamente mais tarde.",
     "save_category_denied_msg": "Você não tem permissão para salvar categorias!",
-    "save_category_error_msg": "Ocorreu um erro ao salvar a categoria! Tente novamente mais tarde."
+    "save_category_error_msg": "Ocorreu um erro ao salvar a categoria! Tente novamente mais tarde.",
+    "incorrect_user": "Usuário ou senha incorreto(s)",
+    "email_already_taken_msg": "Esse E-mail já está vinculado a nenhuma conta nesse aplicativo.",
+    "email_send_error_msg": "Ocorreu um erro ao tentar recuperar sua senha. Tente novamente mais tarde!",
+    "username_in_use_msg": "Usuário ou E-mail já estão em uso por outro usuário!",
+    "username_error_msg": "Ocorreu um erro durante a criação de sua conta. Tente novamente mais tarde!"
   }
 }

@@ -1,4 +1,27 @@
 {
+  "auth": {
+    "welcome": "Welcome {{name}}!",
+    "username_label": "Username or E-mail",
+    "username_placeholder": "Insert your username or E-mail",
+    "password_label": "Password",
+    "forgot_password_link": "Forgot my password",
+    "login_action": "Login",
+    "has_no_account": "Doesn't have an account? ",
+    "create_now": "Sign Up!",
+    "password_redefinition_label": "Password reset",
+    "password_redefinition_description": "Type your E-mail and if an account exists we will send an url to your E-mail address containing the password reset url.",
+    "email_label": "E-mail",
+    "email_placeholder": "Type your E-mail",
+    "send_email_action": "Reset my password",
+    "remember_password": "Remembered your password? ",
+    "login_now": "Login!",
+    "name_label": "Name",
+    "name_placeholder": "Type your name",
+    "create_username_label": "Username",
+    "create_username_placeholder": "Type your username",
+    "create_action": "Create account",
+    "already_has_account": "Already has an account? "
+  },
   "band_screen": {
     "members_title": "Members",
     "songs_title": "Published songs",
@@ -83,7 +106,9 @@
     "save_band_msg": "Band successfully saved.",
     "save_band_without_logo_msg": "The band was successfully saved but an error ocourred while uploading your logo image.",
     "remove_category_msg": "The selected category was successfully deleted!",
-    "save_category_msg": "Category successfully saved!"
+    "save_category_msg": "Category successfully saved!",
+    "confirmation_mail_msg": "An E-mail containing the reset url was sent.",
+    "account_created_msg": "Hello {{name}} Your account was successfully created!"
   },
   "error_msgs": {
     "demote_denied_msg": "You lack permissions to manage member roles!",
@@ -105,6 +130,11 @@
     "remove_category_denied_msg": "You lack permissions in the band to remove categories!",
     "remove_category_error_msg": "An error has ocourred while removing the category! Try again later.",
     "save_category_denied_msg": "You lack permissions in the band to save categories!",
-    "save_category_error_msg": "An error has ocourred while saving the category! Try again later."
+    "save_category_error_msg": "An error has ocourred while saving the category! Try again later.",
+    "incorrect_user": "Incorrect user or password",
+    "email_already_taken_msg": "This E-mail address is already in use by another account.",
+    "email_send_error_msg": "An error ocourred while reseting your password. Try again later!",
+    "username_in_use_msg": "Username or E-mail already in use by another account!",
+    "username_error_msg": "An error ocourred while creating your account. Try again later!"
   }
 }
