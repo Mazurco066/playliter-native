@@ -1,4 +1,34 @@
 {
+  "song_screen": {
+    "duplicate_action": "Duplicar",
+    "edit_action": "Editar",
+    "delete_action": "Excluir",
+    "no_bands": "Você não participa de nenhuma banda no momento.",
+    "clone_heading": "Clonar música",
+    "clone_placeholder": "Selecione a banda na qual você deseja clonar essa música.",
+    "confirm_clone": "Deseja clonar a música para a banda selecionada?",
+    "save_song_heading": "Salvar música",
+    "update_song_placeholder": "Atualize os dados da música:",
+    "save_song_placeholder": "Insira os dados para salvar uma nova música",
+    "import_heading": "Importar música",
+    "import_placeholder": "Se a música estiver disponível no Cifra Club ou no Cifras.com insira o link da música que a formataremos por você.",
+    "import_action": "Importar música",
+    "public_label": "A música é pública?",
+    "title_label": "Título",
+    "title_placeholder": "Insira um título",
+    "writter_label": "Autor",
+    "writter_placeholder": "Insira o autor da música",
+    "url_label": "URL da música (opcional)",
+    "url_placeholder": "Url embeeded youtube ou spotify",
+    "tone_label": "Tom base",
+    "category_label": "Categoria da música",
+    "web_warning": "OBS: É recomendado editar a música e suas notas no formato chordpro utilizando a versão WEB do aplicativo pois sua expêriencia com o editor de música será melhor.",
+    "web_link": "Link para versão web",
+    "chordpro_link": "Documentação do chordpro",
+    "song_label": "Corpo da música (Chordpro)",
+    "song_placeholder": "Insira a música em formato chordpro",
+    "save_action": "Salvar"
+  },
   "profile": {
     "edit_account": "Editar dados da conta",
     "delete_account": "Excluir minha conta",
@@ -141,7 +171,11 @@
     "invite_accepted_msg": "O convite foi aceito com sucesso!",
     "invite_denied_msg": "O convite foi recusado com sucesso!",
     "save_profile_msg": "Sua conta foi atualizada com sucesso.",
-    "save_profile_without_avatar_msg": "Sua conta foi atualizada com sucesso porem ocorreu um erro ao fazer o upload  de seu avatar."
+    "save_profile_without_avatar_msg": "Sua conta foi atualizada com sucesso porem ocorreu um erro ao fazer o upload  de seu avatar.",
+    "delete_song_msg": "Música removida com sucesso!",
+    "clone_song_msg": "A música foi clonada com sucesso para banda selecionada!",
+    "save_song_msg": "Música salva com sucesso.",
+    "song_import_msg": "Música importada com sucesso de: {{name}}"
   },
   "error_msgs": {
     "demote_denied_msg": "Você não tem permissão para gerenciar níveis de permissão dos integrantes da banda!",
@@ -174,6 +208,17 @@
     "email_validation_error_msg": "Ocorreu um erro ao validar seu E-mail! Tente novamente mais tarde.",
     "respond_invite_error_msg": "Ocorreu um erro ao responder o convite! Por favor tente novamente mais tarde.",
     "account_not_found_msg": "Conta não encontrada!",
-    "save_profile_error_msg": "Ocorreu um erro ao atualizar sua conta! Tente novamente mais tarde."
+    "save_profile_error_msg": "Ocorreu um erro ao atualizar sua conta! Tente novamente mais tarde.",
+    "song_not_found_msg": "Música não encontrada!",
+    "song_delete_denied_msg": "Você não tem permissões para remover essa música!",
+    "song_delete_error_msg": "Ocorreu um erro ao remover essa música. Tente novamente mais tarde.",
+    "clone_song_error_msg": "Ocorreu um erro ao clonar a música para banda selecionada. Tente novamente mais tarde",
+    "clone_song_nc_msg": "A banda selecionada não possui categorias registradas. Cadastre ao menos uma para clonar a música para essa banda.",
+    "clone_song_cl_msg": "Ocorreu um erro ao listar as categorias da banda selecionada. Tente novamente mais tarde.",
+    "save_song_error_msg": "Ocorreu um erro ao salvar a música! Tente novamente mais tarde.",
+    "no_url_msg": "Nenhuma URL foi inserida!",
+    "invalid_url_msg": "A URL inserida não é válida!",
+    "type_url_msg": "A URL inserida deve ser do cifraclub ou cifras.com!",
+    "song_import_error_msg": "Não foi possível importar a música da url informada!"
   }
 }
