@@ -64,7 +64,11 @@
     "card_home": "Home",
     "card_bands": "Bandas",
     "card_songs": "Músicas",
-    "card_profile": "Meu perfil"
+    "card_profile": "Meu perfil",
+    "print_generated": "PDF gerado pelo app ",
+    "print_by": "Por: ",
+    "print_pitch": "Tom: ",
+    "print_at": " em"
   },
   "song_screen": {
     "duplicate_action": "Duplicar",

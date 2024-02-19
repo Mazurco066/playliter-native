@@ -99,7 +99,12 @@ const SongListScreen = ({ route }): React.ReactElement => {
       date: formatISODate(concert.date),
       description: concert.description,
       dailyMessage: concert.observations.find(obs => obs.title.includes('Evangelho'))?.data || null
-    })
+    }, [
+      t('components.print_generated'),
+      t('components.print_by'),
+      t('components.print_pitch'),
+      t('components.print_at')
+    ])
     // On iOS/android prints the given html. On web prints the HTML from the current page.
     await Print.printAsync({
       html: htmlContent,
@@ -123,7 +128,12 @@ const SongListScreen = ({ route }): React.ReactElement => {
       date: formatISODate(concert.date),
       description: concert.description,
       dailyMessage: concert.observations.find(obs => obs.title.includes('Evangelho'))?.data || null
-    })
+    }, [
+      t('components.print_generated'),
+      t('components.print_by'),
+      t('components.print_pitch'),
+      t('components.print_at')
+    ])
     const { uri } = await Print.printToFileAsync({
       html: htmlContent,
       width: 595, // A4 Size
