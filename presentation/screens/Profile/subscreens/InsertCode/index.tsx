@@ -1,5 +1,6 @@
 // Dependencies
 import React, { useEffect, useState } from 'react'
+import { useTranslation } from 'react-i18next'
 import styled from 'styled-components'
 import { color } from 'styled-system'
 import { useMutation } from '@tanstack/react-query'
@@ -60,6 +61,7 @@ const InsertCodeScreen = ({ navigation }): React.ReactElement => {
   const [ value, setValue ] = useState<string>('')
   const ref = useBlurOnFulfill({value, cellCount: CELL_COUNT})
   const [ props, getCellOnLayoutHandler ] = useClearByFocusCell({ value, setValue })
+  const { t } = useTranslation()
 
   // Http requests
   const { isLoading, mutateAsync: verifyAccount } = useMutation(
@@ -75,21 +77,21 @@ const InsertCodeScreen = ({ navigation }): React.ReactElement => {
       const r = await verifyAccount(code)
       if ([200, 201].includes(r.status)) {
         showMessage({
-          message: 'Seu E-mail foi validado com sucesso!',
+          message: t('success_msgs.email_validation_msg'),
           duration: 2000,
           type: 'success'
         })
         navigation.goBack()
       } else if ([400, 404].includes(r.status)) {
         showMessage({
-          message: 'Código de verificação inválido!',
+          message: t('error_msgs.email_validation_invalid_msg'),
           duration: 2000,
           type: 'warning'
         })
         setValue('')
       } else {
         showMessage({
-          message: 'Ocorreu um erro ao validar seu E-mail! Tente novamente mais tarde.',
+          message: t('error_msgs.email_validation_error_msg'),
           duration: 2000,
           type: 'danger'
         })
@@ -104,11 +106,11 @@ const InsertCodeScreen = ({ navigation }): React.ReactElement => {
   return (
     <BaseContent hideCardsNavigation>
       <Text category="h5">
-        Validar E-mail
+        {t('profile.validate_mail_heading')}
       </Text>
       <Space my={1} />
       <Text category="s1">
-        Insira o código que voce recebeu em seu E-mail para finalizar a validação de sua conta.
+        {t('profile.validate_mail_placeholder')}
       </Text>
       <Space my={2} />
       <CodeInputContainer
@@ -129,7 +131,7 @@ const InsertCodeScreen = ({ navigation }): React.ReactElement => {
           category="s1"
           style={{ textAlign: 'center' }}
         >
-          Insira o código presente no corpo do E-mail:
+          {t('profile.validate_mail_label')}
         </Text>
         <Space my={2} />
         <CodeInputInnerContainer>
@@ -159,7 +161,7 @@ const InsertCodeScreen = ({ navigation }): React.ReactElement => {
         disabled={isLoadingEmail || isLoading}
         onPress={() => resendEmail()}
       >
-        Reenviar E-mail de validação      
+        {t('profile.resend_email')}     
       </Button>
       <Space my={2} />
     </BaseContent>

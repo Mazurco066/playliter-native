@@ -1,5 +1,6 @@
 // Dependencies
 import React, { useState } from 'react'
+import { useTranslation } from 'react-i18next'
 import styled from 'styled-components'
 
 // Components
@@ -46,6 +47,7 @@ const CloneModal = ({
 }: ICloneModal): React.ReactElement => {
   // Hooks
   const [ date, setDate ] = useState<Date>(new Date())
+  const { t } = useTranslation()
 
   // TSX
   return (
@@ -61,12 +63,12 @@ const CloneModal = ({
             fontWeight: 'bold'
           }}
         >
-          Selecione uma data para duplicar
+          {t('concert_screen.duplicate_heading')}
         </Text>
         <Space my={1} />
         <Datepicker
-          label="Data da apresentação"
-          placeholder="Seclecione uma data para clonar"
+          label={t('concert_screen.duplicate_label')}
+          placeholder={t('concert_screen.duplicate_placeholder')}
           date={date}
           onSelect={nextDate => setDate(nextDate)}
           accessoryRight={CalendarIcon}
@@ -77,7 +79,7 @@ const CloneModal = ({
           onPress={() => setVisible(false)}
           size='small'
         >
-          Duplicar apresentação
+          {t('concert_screen.duplicate_action')}
         </Button>
         <Space my={1} />
         <Button
@@ -86,7 +88,7 @@ const CloneModal = ({
           size="small"
           status="danger"
         >
-          Cancelar
+          {t('concert_screen.cancel_action')}
         </Button>
       </ModalContainer>
     </Modal>

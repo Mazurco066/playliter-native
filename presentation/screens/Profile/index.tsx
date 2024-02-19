@@ -1,5 +1,6 @@
 // Dependencies
 import React, { useEffect, useCallback, useState } from 'react'
+import { useTranslation } from 'react-i18next'
 import styled from 'styled-components'
 import { color } from 'styled-system'
 import { useQuery, useMutation } from '@tanstack/react-query'
@@ -64,6 +65,7 @@ const ProfileScreen = ({ navigation }) => {
   const { getUserData, hydrateAuthData, logoff } = useAuthStore()
   const [ isConfirmDialogOpen, setConfirmDialogState ] = useState<boolean>(false)
   const { navigate } = useNavigation<NativeStackNavigationProp<MainStackParamList>>()
+  const { t } = useTranslation()
 
   // HTTP Requests
   const {
@@ -104,7 +106,7 @@ const ProfileScreen = ({ navigation }) => {
     const response = await deleteAccount()
     if (response.status < 400) {
       showMessage({
-        message: 'Todos os dados de sua conta foram deletados com sucesso dos servidores do applicativo!',
+        message: t('success_msgs.wipe_msg'),
         duration: 3000,
         type: 'success'
       })
@@ -112,7 +114,7 @@ const ProfileScreen = ({ navigation }) => {
       navigation.replace('Auth')
     } else {
       showMessage({
-        message: 'Ocorreu um erro ao remover os dados da sua conta, os servidores devem estar ocupados no momento. Tente novamente mais tarde.',
+        message: t('error_msgs.wipe_error_msg'),
         duration: 2000,
         type: 'warning'
       })
@@ -165,7 +167,7 @@ const ProfileScreen = ({ navigation }) => {
         size="small"
         onPress={() => navigation.navigate("SaveProfile")}
       >
-        Editar dados da conta
+        {t('profile.edit_account')}
       </Button>
       <Space my={1} />
       <Button
@@ -176,7 +178,7 @@ const ProfileScreen = ({ navigation }) => {
           setConfirmDialogState(true)
         }}
       >
-        Excluir minha conta
+        {t('profile.delete_account')}
       </Button>
       <Space my={1} />
       <Button
@@ -191,7 +193,7 @@ const ProfileScreen = ({ navigation }) => {
           }
         }}
       >
-        Logoff
+        {t('profile.logoff')}
       </Button>
       <Space my={2} />
       {
@@ -217,8 +219,7 @@ const ProfileScreen = ({ navigation }) => {
                 color: "#212121"
               }}
             >
-              Por favor valide o E-mail de sua conta. No caso de voce não ter recebido o E-mail clique 
-              no botão abaixo para soliciar o reenvio do E-mail de validação de conta.
+              {t('profile.peding_confirmation')}
             </Text>
             <Space my={2} />
             <Button
@@ -231,7 +232,7 @@ const ProfileScreen = ({ navigation }) => {
                 width: '100%'
               }}
             >
-              Reenviar E-mail de validação
+              {t('profile.resend_email')}
             </Button>
             <Space my={1} />
             <Button
@@ -244,15 +245,13 @@ const ProfileScreen = ({ navigation }) => {
                 width: '100%'
               }}
             >
-              Inserir código de validação
+              {t('profile.insert_code')}
             </Button>
           </ConfirmEmailContainer>
         ) : null
       }
-      <Text
-        category="h6"
-      >
-        Notificações
+      <Text category="h6">
+        {t('profile.notifications_heading')}
       </Text>
       {
         isLoadingInvites ? (
@@ -274,10 +273,8 @@ const ProfileScreen = ({ navigation }) => {
         ) : (
           <>
             <Space my={1} />
-            <Text
-              category="s1"
-            >
-              Não há notificações pendentes para sua conta.
+            <Text category="s1">
+              {t('profile.no_notifications')}
             </Text>
             <Space my={3} />
           </>
@@ -288,7 +285,7 @@ const ProfileScreen = ({ navigation }) => {
         isVisible={isConfirmDialogOpen}
         onClose={() => setConfirmDialogState(false)}
         onConfirm={deleteAccountHandler}
-        message="Certifique-se de verificar se você não está como lider de alguma banda. Caso estiver transfira a liderança para outro membro pois caso contrário a banda e as músicas salvas nessa banda serão removidas e pode ocorrer de ter terceiros utilizando as músicas públicas de sua banda nas suas apresentações."
+        message={t('profile.confirm_wipe')}
       />
     </BaseContent>
   )

@@ -1,6 +1,7 @@
 // Dependencies
 import React, { useCallback } from 'react'
 import styled from 'styled-components'
+import { useTranslation } from 'react-i18next'
 import { useQuery } from '@tanstack/react-query'
 import { useNavigation } from '@react-navigation/native'
 import { NativeStackNavigationProp } from '@react-navigation/native-stack'
@@ -34,6 +35,7 @@ const MainScreen = (): React.ReactElement => {
   // Hooks
   const { account } = useAuthStore()
   const { navigate } = useNavigation<NativeStackNavigationProp<MainStackParamList>>()
+  const { t } = useTranslation()
 
   // HTTP Requests
   const {
@@ -80,7 +82,7 @@ const MainScreen = (): React.ReactElement => {
   return (
     <BaseContent>
       <Text category="h5">
-        Bem vindo {account?.name}!
+        {t('main_screen.greeting')}{account?.name}!
       </Text>
       <Space my={1} />
       {
@@ -94,7 +96,7 @@ const MainScreen = (): React.ReactElement => {
               futureConcerts?.data?.data.length > 0 ? (
                 <>
                   <Text category="s1">
-                    Você tem {futureConcerts?.data?.data.length} apresentações agendadas.
+                    { t('main_screen.pending_concerts', { count: futureConcerts?.data?.data.length }) }
                   </Text>
                   <Space my={2} />
                   <FlatList
@@ -108,7 +110,7 @@ const MainScreen = (): React.ReactElement => {
                 </>
               ) : (
                 <Text category="s1">
-                  Você não possui apresentações futuras agendadas.
+                  {t('main_screen.no_pending_concerts')}
                 </Text>
               )
             }
@@ -117,7 +119,7 @@ const MainScreen = (): React.ReactElement => {
       }
       <Space my={2} />
       <Text category="h5">
-        Minhas bandas
+        {t('main_screen.band_title')}
       </Text>
       {
         isBandsLoading ? (
@@ -144,7 +146,7 @@ const MainScreen = (): React.ReactElement => {
               <>
                 <Space my={1} />
                 <Text category="s1">
-                  Você não participa de nenhuma banda no momento.
+                  {t('main_screen.no_bands')}
                 </Text>
               </>
             )

@@ -1,5 +1,6 @@
 // Dependencies
 import React, { useCallback, useEffect, useState } from 'react'
+import { useTranslation } from 'react-i18next'
 import styled from 'styled-components'
 import { color } from 'styled-system'
 import { getIcon } from '../../utils'
@@ -43,8 +44,8 @@ interface IConfirmDialog {
 // Confirm dialog component
 const ConfirmDialog = ({
   action = { name: 'generic' },
-  title = 'Tem certeza?',
-  message = 'Essa ação é permanente!',
+  title = '',
+  message = '',
   enableTimer = false,
   isVisible,
   onClose,
@@ -54,6 +55,7 @@ const ConfirmDialog = ({
   // Hooks
   const theme = useTheme()
   const [ canConfirm, setCanconfirm ] = useState<boolean>(true)
+  const { t } = useTranslation()
 
   // Effects
   useEffect(() => {
@@ -102,11 +104,11 @@ const ConfirmDialog = ({
           category="label"
           style={{ fontSize: 16 }}
         >
-          {title}
+          {title || t('components.confirm_title')}
         </Text>
         <Space my={1} />
         <Text>
-          {message}
+          {message || t('components.confirm_message')}
         </Text>
         <Space my={2} />
         <ButtonsContainer>

@@ -1,5 +1,6 @@
 // Dependencies
 import React, { useCallback } from 'react'
+import { useTranslation } from 'react-i18next'
 import styled from 'styled-components'
 import { useQuery } from '@tanstack/react-query'
 import { useNavigation } from '@react-navigation/native'
@@ -35,6 +36,7 @@ const BandCategories = ({ route }): React.ReactElement => {
 
   // Hooks
   const { navigate } = useNavigation<NativeStackNavigationProp<MainStackParamList>>()
+  const { t } = useTranslation()
 
   // Http requests
   const {
@@ -71,10 +73,10 @@ const BandCategories = ({ route }): React.ReactElement => {
   const renderListEmptyComponent = useCallback(() => (
     isFetching ? null : (
       <Text category="s1">
-        Não há categorias registradas nessa banda
+        {t('band_screen.no_categories')}
       </Text>
     )
-  ), [isFetching])
+  ), [isFetching, t])
 
   // TSX
   return (
@@ -84,12 +86,12 @@ const BandCategories = ({ route }): React.ReactElement => {
       onFloatingButtonPress={() => navigate("SaveCategory", { bandId: itemId })}
     >
       <Text category="h5">
-        Categorias registradas
+        {t('band_screen.category_heading')}
       </Text>
       <Space my={1} />
       {bandCategories?.data?.data?.data.length >= 1 ? (
         <Text category="s1">
-          Clique na categoria para visualizar e gerencia-la.
+          {t('band_screen.category_placeholder')}
         </Text>
       ) : null}
       <FlatList

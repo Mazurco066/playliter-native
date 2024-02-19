@@ -1,5 +1,6 @@
 // Dependencies
 import React, { useCallback } from 'react'
+import { useTranslation } from 'react-i18next'
 import styled from 'styled-components'
 import { useNavigation } from '@react-navigation/native'
 import { NativeStackNavigationProp } from '@react-navigation/native-stack'
@@ -32,6 +33,9 @@ const LoadingContainer = styled(View)`
 
 // Page Main JSX
 const BandsScreen = () => {
+  // Hooks
+  const { t } = useTranslation()
+
   // HTTP Requests
   const {
     data: bands,
@@ -60,16 +64,16 @@ const BandsScreen = () => {
   const renderListEmptyComponent = useCallback(() => (
     isBandsLoading ? null : (
       <Text category="s1">
-        Você não participa de nenhuma banda no momento
+        {t('main_screen.no_bands')}
       </Text>
     )
-  ), [isBandsLoading])
+  ), [isBandsLoading, t])
 
   // TSX
   return (
     <BaseContent>
       <Text category="h5">
-        Minhas bandas
+        {t('main_screen.band_title')}
       </Text>
       <Space my={1} />      
       {
@@ -83,7 +87,7 @@ const BandsScreen = () => {
               bands?.data?.data.length > 0 ? (
                 <>
                   <Text category="s1">
-                    Lista das bandas que você faz parte.
+                    {t('bands_screen.description')}
                   </Text>
                   <Space my={1} />
                   <Button
@@ -92,7 +96,7 @@ const BandsScreen = () => {
                     onPress={() => navigate("SaveBand", { item: null })}
                     disabled={isBandsLoading}
                   >
-                    Criar uma banda
+                    {t('bands_screen.add_band')}
                   </Button>
                   <FlatList
                     ItemSeparatorComponent={() => <Space my={1} />}
@@ -109,7 +113,7 @@ const BandsScreen = () => {
               ) : (
                 <>
                   <Text category="s1">
-                    Você não participa de nenhuma banda no momento.
+                    {t('main_screen.no_bands')}
                   </Text>
                   <Space my={1} />
                   <Button
@@ -118,7 +122,7 @@ const BandsScreen = () => {
                     onPress={() => navigate("SaveBand", { item: null })}
                     disabled={isBandsLoading}
                   >
-                    Criar uma banda
+                    {t('bands_screen.add_band')}
                   </Button>
                 </>
               )

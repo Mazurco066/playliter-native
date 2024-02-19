@@ -1,5 +1,6 @@
 // Dependencies
 import React, { useState } from 'react'
+import { useTranslation } from 'react-i18next'
 import { Controller, FieldError, useForm } from 'react-hook-form'
 import { useMutation } from '@tanstack/react-query'
 import styled from 'styled-components'
@@ -77,6 +78,7 @@ const AuthScreen = ({ navigation }): React.ReactElement => {
   const [ secureTextEntry, setSecureTextEntry ] = useState<boolean>(true)
   const { control, handleSubmit, formState: { errors } } = useForm()
   const { hydrateAuthData } = useAuthStore()
+  const { t } = useTranslation()
 
   // Mutations
   const { isLoading, mutateAsync } = useMutation(
@@ -102,14 +104,14 @@ const AuthScreen = ({ navigation }): React.ReactElement => {
       const { data: { account, token } } = response.data
       hydrateAuthData(account as UserAccount, token)
       showMessage({
-        message: `Bem vindo(a) ${account.name}`,
+        message: t('auth.welcome', { name: account.name }),
         type: 'success',
         duration: 2000
       })
       navigation.replace('Main')
     } else {
       showMessage({
-        message: 'Usuário ou senha incorreto(s)',
+        message: t('error_msgs.incorrect_user'),
         type: 'danger',
         duration: 2500
       })
@@ -158,8 +160,8 @@ const AuthScreen = ({ navigation }): React.ReactElement => {
               rules={{ required: true, minLength: 2 }}
               render={({ field: { onBlur, onChange, value } }) => (
                 <Input
-                  label="Usuário ou E-mail"
-                  placeholder="Insira seu usuário ou E-mail"
+                  label={t('auth.username_label')}
+                  placeholder={t('auth.username_placeholder')}
                   keyboardType="ascii-capable"
                   accessoryLeft={props => <Icon {...props} name="person-outline" />}
                   value={value}
@@ -179,7 +181,7 @@ const AuthScreen = ({ navigation }): React.ReactElement => {
               rules={{ required: true, minLength: 8 }}
               render={({ field: { onBlur, onChange, value } }) => (
                 <Input
-                  label="Senha"
+                  label={t('auth.password_label')}
                   placeholder="••••••••"
                   keyboardType="ascii-capable"
                   secureTextEntry={secureTextEntry}
@@ -206,7 +208,7 @@ const AuthScreen = ({ navigation }): React.ReactElement => {
                 status="primary"
                 category="s1"
               >
-                Esqueci minha senha
+                {t('auth.forgot_password_link')}
               </Text>
             </TouchableOpacity>
             <Space my={2} />
@@ -214,7 +216,7 @@ const AuthScreen = ({ navigation }): React.ReactElement => {
               disabled={isLoading}
               onPress={handleSubmit(submitLogin)}
             >
-              Acessar
+              {t('auth.login_action')}
             </Button>
             <Space my={1} />
             <TouchableOpacity
@@ -226,12 +228,12 @@ const AuthScreen = ({ navigation }): React.ReactElement => {
                 style={{ textAlign: 'center' }}
                 category='s2'
               >
-                Não possui conta? <Text
+                {t('auth.has_no_account')}<Text
                   style={{ fontWeight: '700' }}
                   status="primary"
                   category="s2"
                 >
-                  Criar uma agora!
+                  {t('auth.create_now')}
                 </Text>
               </Text>
             </TouchableOpacity>

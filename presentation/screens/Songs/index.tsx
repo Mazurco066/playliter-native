@@ -1,5 +1,6 @@
 // Dependencies
 import React, { useState, useCallback } from 'react'
+import { useTranslation } from 'react-i18next'
 import styled from 'styled-components'
 import { useNavigation } from '@react-navigation/native'
 import { NativeStackNavigationProp } from '@react-navigation/native-stack'
@@ -58,6 +59,7 @@ const SongsScreen = (): React.ReactElement => {
   const theme = useTheme()
   const [ filterSearch, setFilterSearch ] = useState<string>('')
   const { navigate } = useNavigation<NativeStackNavigationProp<MainStackParamList>>()
+  const { t } = useTranslation()
 
   // Api request function
   const fetchPublicSongs = async ({ pageParam = 0 }) => {
@@ -132,10 +134,10 @@ const SongsScreen = (): React.ReactElement => {
   const renderEmptyListComponent = useCallback(() => (
     isLoading ? null : (
       <Text category="s1">
-        Nãõ há músicas públicas publicada no app atualmente.
+        {t('songs_screen.no_public_songs')}
       </Text>
     )
-  ), [isLoading])
+  ), [isLoading, t])
 
   //TSX
   return (
@@ -147,16 +149,16 @@ const SongsScreen = (): React.ReactElement => {
       }}
     >
       <Text category="h5">
-        Repertório público
+        {t('songs_screen.public_title')}
       </Text>
       <Space my={1} />
       <Text category="s1">
-        Pequise por músicas pulbicadas no app:
+        {t('songs_screen.public_search_placeholder')}
       </Text>
       <Space my={1} />
       <SearchContainer>
         <SearchInput 
-          placeholder="Pesquisar..."
+          placeholder={t('songs_screen.search_placeholder')}
           keyboardType="default"
           size="small"
           value={filterSearch}
@@ -179,7 +181,7 @@ const SongsScreen = (): React.ReactElement => {
               }
             }}
           >
-            Limpar Filtros
+            {t('songs_screen.clear_filters')}
           </SearchButton>
           <SearchButton
             status="primary"
@@ -192,7 +194,7 @@ const SongsScreen = (): React.ReactElement => {
               }
             }}
           >
-            Pesquisar
+            {t('songs_screen.search_btn')}
           </SearchButton>
         </ButtonContainer>
       </SearchContainer>

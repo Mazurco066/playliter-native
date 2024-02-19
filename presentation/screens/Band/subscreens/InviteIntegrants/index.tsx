@@ -1,5 +1,6 @@
 // Dependencies
 import React, { useCallback, useState } from 'react'
+import { useTranslation } from 'react-i18next'
 import styled from 'styled-components'
 import { useMutation, useQuery } from '@tanstack/react-query'
 import { useRefreshOnFocus } from '../../../../hooks'
@@ -48,6 +49,7 @@ const InviteIntegrants = ({ route }): React.ReactElement => {
   // Hooks
   const { band } = useBandStore()
   const [ searchFilter, setSearchFilter ] = useState<string>('')
+  const { t } = useTranslation()
 
   // Http requests
   const {
@@ -88,35 +90,35 @@ const InviteIntegrants = ({ route }): React.ReactElement => {
   const renderListEmptyComponent = useCallback(() => (
     isFetching ? null : (
       <Text category="s1">
-        Não há usuários elegíveis para integrar a sua banda com o filtro selecionado.
+        {t('band_screen.no_members')}
       </Text>
     )
-  ), [isFetching])
+  ), [isFetching, t])
 
   // Actions
   const submitInvitation = async (itemId: string) => {
     const response = await inviteIntegrant({ id: itemId, bandId: band.id })
     if ([200, 201].includes(response.status)) {
       showMessage({
-        message: `O músico selecionado foi convidado a se juntar a banda!`,
+        message: t('success_msgs.invite_msg'),
         type: 'success',
         duration: 2000
       })
     } else if ([400].includes(response.status)) {
       showMessage({
-        message: `Esse músico já foi convidado a participar da banda. Aguarde a resposta dele(a)!`,
+        message: t('error_msgs.invited_already_msg'),
         type: 'warning',
         duration: 2000
       })
     } else if ([401, 403].includes(response.status)) {
       showMessage({
-        message: `Você não tem permissão para convidar músicos para banda!`,
+        message: t('error_msgs.invited_denied_msg'),
         type: 'warning',
         duration: 2000
       })
     } else {
       showMessage({
-        message: `Ocorreu um erro ao convidar o músico selecionado! Tente novamente mais tarde.`,
+        message: t('error_msgs.invited_error_msg'),
         type: 'danger',
         duration: 2000
       })
@@ -132,21 +134,21 @@ const InviteIntegrants = ({ route }): React.ReactElement => {
   return (
     <BaseContent hideCardsNavigation>
       <Text category="h5">
-        Convidar músicos
+        {t('band_screen.invite_heading')}
       </Text>
       <Space my={1} />
       {filteredData?.length >= 1 ? (
         <>
           <Text category="s1">
-            Clique no músico para convida-lo(a) para sua banda.
+            {t('band_screen.invite_placeholder')}
           </Text>
           <Space my={1} />
         </>
       ) : null}
       {unafiliadedData?.length >= 1 ? (
         <Input
-          label="Filtro"
-          placeholder="Pesquise por músicos..."
+          label={t('band_screen.filter_label')}
+          placeholder={t('band_screen.search_musicians_placeholder')}
           keyboardType="ascii-capable"
           accessoryLeft={props => <Icon {...props} name="funnel-outline" />}
           value={searchFilter}

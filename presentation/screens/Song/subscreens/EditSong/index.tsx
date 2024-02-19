@@ -1,5 +1,6 @@
 // Dependencies
 import React, { useState, useEffect } from 'react'
+import { useTranslation } from 'react-i18next'
 import styled from 'styled-components'
 import { color } from 'styled-system'
 import { useQuery, useMutation } from '@tanstack/react-query'
@@ -86,6 +87,7 @@ const EditSongScreen = ({ route }): React.ReactElement => {
   const [ transpositions, setTranspositions ] = useState<Array<any>>([])
   const [ selectedToneIndex, setSelectedToneIndex ] = React.useState<IndexPath | IndexPath[]>(new IndexPath(0))
   const [ selectedCategoryIndex, setSelectedCategoryIndex ] = React.useState<IndexPath | IndexPath[]>(new IndexPath(0))
+  const { t } = useTranslation()
 
   // Http requests
   const {
@@ -215,26 +217,26 @@ const EditSongScreen = ({ route }): React.ReactElement => {
 
     if ([200, 201].includes(response.status)) {
       showMessage({
-        message: 'Músicas salva com sucesso.',
+        message: t('success_msgs.save_song_msg'),
         type: 'success',
         duration: 2000
       })
       goBack()
     } else if ([400].includes(response.status)) {
       showMessage({
-        message: 'Há dados invalidos no preenchimento de seu formulário. Por favor verifique o preenchimento do mesmo.',
+        message: t('error_msgs.invalid_form_msg'),
         type: 'warning',
         duration: 2000
       })
     } else if ([404].includes(response.status)) {
       showMessage({
-        message: `Músicas de id ${item.id} não encontrada!`,
+        message: t('error_msgs.song_not_found_msg'),
         type: 'info',
         duration: 2000
       })
     } else {
       showMessage({
-        message: `Ocorreu um erro ao salvar a música! Tente novamente mais tarde.`,
+        message: t('error_msgs.save_song_error_msg'),
         type: 'danger',
         duration: 2000
       })
@@ -245,14 +247,14 @@ const EditSongScreen = ({ route }): React.ReactElement => {
     // Validate url
     if (!songUrl) {
       return showMessage({
-        message: 'Nenhuma URL foi inserida.!',
+        message: t('error_msgs.no_url_msg'),
         type: 'warning',
         duration: 2000
       })
     }
     if (!isValidUrl(songUrl)) {
       return showMessage({
-        message: 'A URL inserida não é válida!',
+        message: t('error_msgs.invalid_url_msg'),
         type: 'warning',
         duration: 2000
       })
@@ -262,7 +264,7 @@ const EditSongScreen = ({ route }): React.ReactElement => {
       && !songUrl.includes('cifraclub.com.br')
     ) {
       return showMessage({
-        message: 'A URL inserida deve ser do cifraclub ou cifras.com!',
+        message: t('error_msgs.type_url_msg'),
         type: 'info',
         duration: 2000
       })
@@ -290,7 +292,7 @@ const EditSongScreen = ({ route }): React.ReactElement => {
 
       // User feedback
       showMessage({
-        message: `Música importada com sucesso de: ${songUrl}`,
+        message: t('success_msgs.song_import_msg', { name: songUrl }),
         type: 'success',
         duration: 2000
       })
@@ -298,7 +300,7 @@ const EditSongScreen = ({ route }): React.ReactElement => {
 
     } else {
       return showMessage({
-        message: 'Não foi possível importar a música da url informada!',
+        message: t('error_msgs.song_import_error_msg'),
         type: 'danger',
         duration: 2000
       })
@@ -309,14 +311,14 @@ const EditSongScreen = ({ route }): React.ReactElement => {
   return (
     <BaseContent hideCardsNavigation>
       <Text category="h5">
-        Salvar música
+        {t('song_screen.save_song_heading')}
       </Text>
       <Space my={1} />
       <Text category="s1">
         {
           item
-            ? 'Atualize os dados da música:'
-            : 'Insira os dados para salvar uma nova música'
+            ? t('song_screen.update_song_placeholder')
+            : t('song_screen.save_song_placeholder')
         }
       </Text>
       <Space my={2} />
@@ -325,12 +327,11 @@ const EditSongScreen = ({ route }): React.ReactElement => {
           <Text
             style={{ fontWeight: 'bold' }}
           >
-            Importar música
+            {t('song_screen.import_heading')}
           </Text>
           <Space my={1} />
           <Text>
-            Se a música estiver disponível no Cifra Club ou no Cifras.com 
-            insira o link da música que a formataremos por você.
+            {t('song_screen.import_placeholder')}
           </Text>
           <Space my={1} />
           <Input
@@ -346,7 +347,7 @@ const EditSongScreen = ({ route }): React.ReactElement => {
             disabled={isLoading}
             onPress={submitImportSong}
           >
-            Importar música
+            {t('song_screen.import_action')}
           </Button>
         </CustomKeyboardAvoidingView>
       </ImportContainer>
@@ -374,7 +375,7 @@ const EditSongScreen = ({ route }): React.ReactElement => {
                 onChange={onChange}
                 onBlur={onBlur}
               >
-                A música é pública?
+                {t('song_screen.public_label')}
               </Toggle>
             )}
             defaultValue=""
@@ -386,9 +387,9 @@ const EditSongScreen = ({ route }): React.ReactElement => {
             rules={{ required: true, minLength: 2 }}
             render={({ field: { onBlur, onChange, value } }) => (
               <Input
-                label="Título"
+                label={t('song_screen.title_label')}
                 size="small"
-                placeholder="Insira um título"
+                placeholder={t('song_screen.title_placeholder')}
                 keyboardType="default"
                 accessoryLeft={props => <Icon {...props} name="mic-outline" />}
                 value={value}
@@ -408,9 +409,9 @@ const EditSongScreen = ({ route }): React.ReactElement => {
             rules={{ required: true, minLength: 2 }}
             render={({ field: { onBlur, onChange, value } }) => (
               <Input
-                label="Autor"
+                label={t('song_screen.writter_label')}
                 size="small"
-                placeholder="Insira o autor da música"
+                placeholder={t('song_screen.writter_placeholder')}
                 keyboardType="default"
                 accessoryLeft={props => <Icon {...props} name="person-outline" />}
                 value={value}
@@ -430,9 +431,9 @@ const EditSongScreen = ({ route }): React.ReactElement => {
             rules={{ required: false, minLength: 7 }}
             render={({ field: { onBlur, onChange, value } }) => (
               <Input
-                label="URL da música (opcional)"
+                label={t('song_screen.url_label')}
                 size="small"
-                placeholder="Url embeeded youtube ou spotify"
+                placeholder={t('song_screen.url_placeholder')}
                 keyboardType="default"
                 accessoryLeft={props => <Icon {...props} name="globe-outline" />}
                 value={value}
@@ -447,7 +448,7 @@ const EditSongScreen = ({ route }): React.ReactElement => {
           />
           <Space my={1} />
           <Select
-            label="Tom base"
+            label={t('song_screen.tone_label')}
             selectedIndex={selectedToneIndex}
             onSelect={index => setSelectedToneIndex(index)}
             accessoryLeft={props => <Icon {...props} name="text-outline" />}
@@ -470,7 +471,7 @@ const EditSongScreen = ({ route }): React.ReactElement => {
             !isFetchingCategories ? (
               <>
                 <Select
-                  label="Categoria da música"
+                  label={t('song_screen.category_label')}
                   selectedIndex={selectedCategoryIndex}
                   onSelect={index => setSelectedCategoryIndex(index)}
                   accessoryLeft={props => <Icon {...props} name="text-outline" />}
@@ -500,8 +501,7 @@ const EditSongScreen = ({ route }): React.ReactElement => {
               width: '100%'
             }}
           >
-            OBS: É recomendado editar a música e suas notas no formato chordpro utilizando a versão WEB 
-            do aplicativo pois sua expêriencia com o editor de música será melhor.
+            {t('song_screen.web_warning')}
           </Text>
           <TouchableOpacity
             onPress={() => {
@@ -516,7 +516,7 @@ const EditSongScreen = ({ route }): React.ReactElement => {
                 textAlign: 'left'
               }}
             >
-              Link para versão web
+              {t('song_screen.web_link')}
             </Text>
           </TouchableOpacity>
           <TouchableOpacity
@@ -532,7 +532,7 @@ const EditSongScreen = ({ route }): React.ReactElement => {
                 textAlign: 'left'
               }}
             >
-              Documentação do chordpro
+              {t('song_screen.chordpro_link')}
             </Text>
           </TouchableOpacity>
           <Space my={1} />
@@ -543,9 +543,9 @@ const EditSongScreen = ({ route }): React.ReactElement => {
             render={({ field: { onBlur, onChange, value } }) => (
               <Input
                 multiline
-                label="Corpo da música (Chordpro)"
+                label={t('song_screen.song_label')}
                 size="small"
-                placeholder="Insira a música em formato chordpro"
+                placeholder={t('song_screen.song_placeholder')}
                 keyboardType="default"
                 value={value}
                 onBlur={onBlur}
@@ -563,7 +563,7 @@ const EditSongScreen = ({ route }): React.ReactElement => {
             onPress={handleSubmit(submitSong)}
             style={{ width: '100%' }}
           >
-            Salvar
+            {t('song_screen.save_action')}
           </Button>
         </CustomKeyboardAvoidingView>
       </Container>

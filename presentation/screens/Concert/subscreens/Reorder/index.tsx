@@ -1,5 +1,6 @@
 // Dependencies
 import React, { useCallback, useState } from 'react'
+import { useTranslation } from 'react-i18next'
 import { useMutation } from '@tanstack/react-query'
 import { useNavigation } from '@react-navigation/native'
 import { NativeStackNavigationProp } from '@react-navigation/native-stack'
@@ -79,6 +80,7 @@ const ReorderConcert = ({ route }): React.ReactElement => {
   const { goBack } = useNavigation<NativeStackNavigationProp<MainStackParamList>>()
   const [ songsData, setSongsData ] = useState<IConcertSongDto[]>(item.songs)
   const [ scrollEnabled, setScrollEnabled ] = useState<boolean>(true)
+  const { t } = useTranslation()
 
   // Reordable list actions
   const renderItem = useCallback(({ item, drag, isActive }: RenderItemParams<IConcertSongDto>) => {
@@ -110,20 +112,20 @@ const ReorderConcert = ({ route }): React.ReactElement => {
     })
     if ([200, 201].includes(response.status)) {
       showMessage({
-        message: `As músicas dessa apresentação foram reordenadas com sucesso!`,
+        message: t('success_msgs.reorder_msg'),
         type: 'success',
         duration: 2000
       })
       goBack()
     } else if ([401, 403].includes(response.status)) {
       showMessage({
-        message: `Você não tem permissão para reordenar as músicas dessa apresentação!`,
+        message: t('error_msgs.reorder_denied_msg'),
         type: 'warning',
         duration: 2000
       })
     } else {
       showMessage({
-        message: `Ocorreu um erro ao reordenar as músicas da apresentação! Tente novamente mais tarde.`,
+        message: t('error_msgs.reorder_error_msg'),
         type: 'danger',
         duration: 2000
       })
@@ -138,7 +140,7 @@ const ReorderConcert = ({ route }): React.ReactElement => {
       >
         <HeaderConteiner>
           <Text category="h5">
-            Reordenar músicas
+            {t('concert_screen.reorder_heading')}
           </Text>
         </HeaderConteiner>
         <DataContainer
@@ -150,7 +152,7 @@ const ReorderConcert = ({ route }): React.ReactElement => {
             category="s1"
             style={{ textAlign: 'center' }}
           >
-            Ordene as músicas simplesmente clicando e arrastando as mesmas. Quando estiver terminado clique em reordenar para salvar.
+            {t('concert_screen.reorder_placeholder')}
           </Text>
         </DataContainer>
       </Container>
@@ -164,7 +166,7 @@ const ReorderConcert = ({ route }): React.ReactElement => {
           style={{ flex: 1 }}
           accessoryLeft={getIcon('close-outline')}
         >
-          Cancelar
+          {t('concert_screen.cancel_action')}
         </Button>
         <Button
           status="primary"
@@ -174,7 +176,7 @@ const ReorderConcert = ({ route }): React.ReactElement => {
           style={{ flex: 1 }}
           accessoryLeft={getIcon('checkmark-outline')}
         >
-          Reordernar
+          {t('concert_screen.reorder_action')}
         </Button>
       </ButtonGroup>
       <DraggableFlatList
@@ -198,7 +200,7 @@ const ReorderConcert = ({ route }): React.ReactElement => {
           style={{ flex: 1 }}
           accessoryLeft={getIcon('close-outline')}
         >
-          Cancelar
+          {t('concert_screen.cancel_action')}
         </Button>
         <Button
           status="primary"
@@ -208,7 +210,7 @@ const ReorderConcert = ({ route }): React.ReactElement => {
           style={{ flex: 1 }}
           accessoryLeft={getIcon('checkmark-outline')}
         >
-          Reordernar
+          {t('concert_screen.reorder_action')}
         </Button>
       </ButtonGroup>
     </BaseContent>

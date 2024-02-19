@@ -1,5 +1,6 @@
 // Dependencies
 import React, { useEffect } from 'react'
+import { useTranslation } from 'react-i18next'
 import styled from 'styled-components'
 import { color } from 'styled-system'
 import { useMutation } from '@tanstack/react-query'
@@ -54,6 +55,7 @@ const SaveConcert = ({ route }): React.ReactElement => {
   // Hooks
   const theme = useTheme()
   const { goBack } = useNavigation<NativeStackNavigationProp<MainStackParamList>>()
+  const { t } = useTranslation()
   const {
     control,
     handleSubmit,
@@ -101,26 +103,26 @@ const SaveConcert = ({ route }): React.ReactElement => {
     })
     if ([200, 201].includes(response.status)) {
       showMessage({
-        message: 'Apresentação salva com sucesso.',
+        message: t('success_msgs.save_concert_msg'),
         type: 'success',
         duration: 2000
       })
       goBack()
     } else if ([400].includes(response.status)) {
       showMessage({
-        message: 'Há dados invalidos no preenchimento de seu formulário. Por favor verifique o preenchimento do mesmo.',
+        message: t('error_msgs.invalid_form_msg'),
         type: 'warning',
         duration: 2000
       })
     } else if ([404].includes(response.status)) {
       showMessage({
-        message: `Apresentação de id ${item.id} não encontrada!`,
+        message: t('error_msgs.concert_not_found_msg'),
         type: 'info',
         duration: 2000
       })
     } else {
       showMessage({
-        message: `Ocorreu um erro ao salvar a apresentação! Tente novamente mais tarde.`,
+        message: t('error_msgs.save_concert_error_msg'),
         type: 'danger',
         duration: 2000
       })
@@ -131,14 +133,14 @@ const SaveConcert = ({ route }): React.ReactElement => {
   return (
     <BaseContent hideCardsNavigation>
       <Text category="h5">
-        Salvar apresentação
+        {t('concert_screen.save_concert_heading')}
       </Text>
       <Space my={1} />
       <Text category="s1">
         {
           item
-            ? 'Atualize os dados de sua apresentação:'
-            : 'Insira os dados para criar sua apresentação'
+            ? t('concert_screen.update_concert_placeholder')
+            : t('concert_screen.new_concert_placeholder')
         }
       </Text>
       <Space my={2} />
@@ -159,7 +161,7 @@ const SaveConcert = ({ route }): React.ReactElement => {
             rules={{ required: true, minLength: 2 }}
             render={({ field: { onBlur, onChange, value } }) => (
               <Datepicker
-                label="Data da apresentação"
+                label={t('concert_screen.date_label')}
                 placeholder="yyyy-mm-dd"
                 date={value}
                 onBlur={onBlur}
@@ -179,8 +181,8 @@ const SaveConcert = ({ route }): React.ReactElement => {
             rules={{ required: true, minLength: 2 }}
             render={({ field: { onBlur, onChange, value } }) => (
               <Input
-                label="Título"
-                placeholder="Insira um título"
+                label={t('concert_screen.title_label')}
+                placeholder={t('concert_screen.title_placeholder')}
                 keyboardType="default"
                 accessoryLeft={props => <Icon {...props} name="book-open-outline" />}
                 value={value}
@@ -201,8 +203,8 @@ const SaveConcert = ({ route }): React.ReactElement => {
             render={({ field: { onBlur, onChange, value } }) => (
               <Input
                 multiline
-                label="Descrição"
-                placeholder="Insira uma descrição para apresentação"
+                label={t('concert_screen.description_label')}
+                placeholder={t('concert_screen.description_placeholder')}
                 keyboardType="default"
                 accessoryLeft={props => <Icon {...props} name="menu-2-outline" />}
                 value={value}
@@ -221,7 +223,7 @@ const SaveConcert = ({ route }): React.ReactElement => {
             onPress={handleSubmit(submitConcert)}
             style={{ width: '100%' }}
           >
-            Salvar
+            {t('concert_screen.save_action')}
           </Button>
         </CustomKeyboardAvoidingView>
       </Container>

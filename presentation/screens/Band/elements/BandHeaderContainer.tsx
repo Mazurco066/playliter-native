@@ -1,5 +1,6 @@
 // Dependencies
 import React, { useState } from 'react'
+import { useTranslation } from 'react-i18next'
 import styled from 'styled-components'
 import { color } from 'styled-system'
 import { getIcon } from '../../../utils'
@@ -82,6 +83,7 @@ const BandHeaderContainer = ({
   const theme = useTheme()
   const { account } = useAuthStore()
   const [ visible, setVisible ] = useState<boolean>(false)
+  const { t } = useTranslation()
 
   const onItemSelect = (_: IndexPath): void => {
     setVisible(false)
@@ -110,7 +112,7 @@ const BandHeaderContainer = ({
             onBackdropPress={() => setVisible(false)}
           >
             <MenuItem
-              title='Editar'
+              title={t('band_screen.edit_button')}
               accessoryLeft={getIcon('edit-2-outline')}
               disabled={isLoading}
               onPress={onEditPress}
@@ -119,7 +121,7 @@ const BandHeaderContainer = ({
               }}
             />
             <MenuItem
-              title='Excluir'
+              title={t('band_screen.delete_button')}
               accessoryLeft={getIcon('trash-2-outline')}
               disabled={isLoading}
               onPress={onDeletePress}

@@ -1,5 +1,6 @@
 // Dependencies
 import React, { useCallback, useState } from 'react'
+import { useTranslation } from 'react-i18next'
 import styled from 'styled-components'
 import { useNavigation } from '@react-navigation/native'
 import { NativeStackNavigationProp } from '@react-navigation/native-stack'
@@ -43,6 +44,7 @@ const SaveCategory = ({ route }): React.ReactElement => {
   const { goBack, navigate } = useNavigation<NativeStackNavigationProp<MainStackParamList>>()
   const [ isEditable, setEditableState ] = useState<boolean>(false)
   const [ isConfirmDialogOpen, setConfirmDialogState ] = useState<boolean>(false)
+  const { t } = useTranslation()
 
   // Api request function
   const fetchBandSongs = async ({ pageParam = 0 }) => {
@@ -102,10 +104,10 @@ const SaveCategory = ({ route }): React.ReactElement => {
   const renderEmptyListComponent = useCallback(() => (
     isLoadingSongs ? null : (
       <Text category="s1">
-        Não há músicas inclusas nessa categoria dentro do repertório da banda.
+        {t('band_screen.no_songs_category')}
       </Text>
     )
-  ), [isLoadingSongs])
+  ), [isLoadingSongs, t])
 
   // Actions
   const removeCategory = async () => {
@@ -113,20 +115,20 @@ const SaveCategory = ({ route }): React.ReactElement => {
     const response = await removeCategoryRequest(id)
     if ([200, 201].includes(response.status)) {
       showMessage({
-        message: `A categoria foi removida da banda com sucesso!`,
+        message: t('success_msgs.remove_category_msg'),
         type: 'success',
         duration: 2000
       })
       goBack()
     } else if ([401, 403].includes(response.status)) {
       showMessage({
-        message: `Você não tem permissão para remover essa categoria!`,
+        message: t('error_msgs.remove_category_denied_msg'),
         type: 'warning',
         duration: 2000
       })
     } else {
       showMessage({
-        message: `Ocorreu um erro ao remover a categoria! Tente novamente mais tarde.`,
+        message: t('error_msgs.remove_category_error_msg'),
         type: 'danger',
         duration: 2000
       })
@@ -152,7 +154,7 @@ const SaveCategory = ({ route }): React.ReactElement => {
               onGoBack={() => goBack()}
               onRemove={() => {
                 if (allPagesData.length > 0) return showMessage({
-                  message: `Essa categoria tem músicas vinculadas. Remova o vínculo com a(s) música(s) para remover essa categoria.`,
+                  message: t('band_screen.remove_category_warning'),
                   type: 'info',
                   duration: 2000
                 })
@@ -162,7 +164,7 @@ const SaveCategory = ({ route }): React.ReactElement => {
             />
             <Space my={2} />
             <Text category="h5">
-              Músicas inclusas
+              {t('band_screen.included_songs')}
             </Text>
             <FlashList
               estimatedItemSize={80}
