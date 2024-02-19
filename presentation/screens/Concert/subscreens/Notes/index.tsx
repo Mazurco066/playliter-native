@@ -1,5 +1,6 @@
 // Dependencies
 import React, { useCallback, useEffect, useState } from 'react'
+import { useTranslation } from 'react-i18next'
 import { useNavigation } from '@react-navigation/native'
 import { NativeStackNavigationProp } from '@react-navigation/native-stack'
 import styled from 'styled-components'
@@ -93,6 +94,7 @@ const ConcertNotes = ({ route }): React.ReactElement => {
   const [ isScrapLoading, setScrapLoading ] = useState<boolean>(false)
   const { concert, setConcert } = useConcertStore()
   const { navigate } = useNavigation<NativeStackNavigationProp<MainStackParamList>>()
+  const { t } = useTranslation()
   const theme = useTheme()
 
   // Effects
@@ -140,13 +142,13 @@ const ConcertNotes = ({ route }): React.ReactElement => {
       refetchItem()
       if (!hasImportErrors) {
         showMessage({
-          message: 'Liturgia referente ao dia da apresentação importada com sucesso!',
+          message: t('success_msgs.liturgy_import_msg'),
           duration: 2000,
           type: 'success'
         })
       } else {
         showMessage({
-          message: "Alguns items referentes a liturgia diária falharam a ser importadas do site 'Pocket Terço'!",
+          message: t('error_msgs.liturgy_import_error_msg'),
           duration: 2000,
           type: 'info'
         })
@@ -169,7 +171,7 @@ const ConcertNotes = ({ route }): React.ReactElement => {
       >
         <HeaderContainer>
           <Text category="h5">
-            Anotações
+            {t('concert_screen.notes_heading')}
           </Text>
         </HeaderContainer>
         <DataContainer
@@ -181,8 +183,7 @@ const ConcertNotes = ({ route }): React.ReactElement => {
             category="s1"
             style={{ textAlign: 'center' }}
           >
-            Salve anotações referentes a apresentação. Caso precise utilize a função importar liturgia 
-            para obter automaticamente os dados referentes ao dia informado.
+            {t('concert_screen.notes_placeholder')}
           </Text>
           <ActionContainer>
             <Button
@@ -195,7 +196,7 @@ const ConcertNotes = ({ route }): React.ReactElement => {
                 borderRadius: 8
               }}
             >
-              Importar liturgia
+              {t('concert_screen.liturgy_action')}
             </Button>
             <Button
               accessoryLeft={getIcon('plus-outline', theme['color-secondary-500'])}
@@ -213,7 +214,7 @@ const ConcertNotes = ({ route }): React.ReactElement => {
       </Container>
       <Space my={1} />
       <Text category="h5">
-        Anotações salvas
+        {t('concert_screen.saved_notes_heading')}
       </Text>
       {
         observations.length > 0 ? (
@@ -231,7 +232,7 @@ const ConcertNotes = ({ route }): React.ReactElement => {
           <>
             <Space my={2} />
             <Text category="s1">
-              Essa apresentação não tem nenhuma anotação no momento.
+              {t('concert_screen.no_notes')}
             </Text>
           </>
         )

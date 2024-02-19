@@ -1,5 +1,6 @@
 // Dependencies
 import React, { useState } from 'react'
+import { useTranslation } from 'react-i18next'
 import styled from 'styled-components'
 import { color } from 'styled-system'
 import { getIcon, formatISODate } from '../../../utils'
@@ -96,6 +97,7 @@ const ConcertHeaderContainer = ({
   // Hooks
   const theme = useTheme()
   const [visible, setVisible] = useState<boolean>(false)
+  const { t } = useTranslation()
 
   const onItemSelect = (_: IndexPath): void => {
     setVisible(false)
@@ -124,7 +126,7 @@ const ConcertHeaderContainer = ({
             onBackdropPress={() => setVisible(false)}
           >
             <MenuItem
-              title='Adicionar músicas públicas'
+              title={t('concert_screen.menu_add_public_songs')}
               accessoryLeft={getIcon('plus-outline')}
               disabled={isLoading}
               onPress={onAddPress}
@@ -133,7 +135,7 @@ const ConcertHeaderContainer = ({
               }}
             />
             <MenuItem
-              title='Editar'
+              title={t('concert_screen.menu_edit')}
               accessoryLeft={getIcon('edit-2-outline')}
               disabled={isLoading}
               onPress={onEditPress}
@@ -142,7 +144,7 @@ const ConcertHeaderContainer = ({
               }}
             />
             <MenuItem
-              title='Duplicar'
+              title={t('concert_screen.menu_duplicate')}
               accessoryLeft={getIcon('folder-add-outline')}
               disabled={isLoading}
               onPress={onDuplicatePress}
@@ -151,7 +153,7 @@ const ConcertHeaderContainer = ({
               }}
             />
             <MenuItem
-              title='Reordenar músicas'
+              title={t('concert_screen.menu_reorder')}
               accessoryLeft={getIcon('flip-outline')}
               disabled={isLoading}
               onPress={onReorderPress}
@@ -160,7 +162,7 @@ const ConcertHeaderContainer = ({
               }}
             />
             <MenuItem
-              title='Excluir'
+              title={t('concert_screen.menu_delete')}
               accessoryLeft={getIcon('trash-2-outline')}
               disabled={isLoading}
               onPress={onDeletePress}
@@ -240,7 +242,7 @@ const ConcertHeaderContainer = ({
               borderRadius: 8
             }}
           >
-            Visualização sequencial
+            {t('concert_screen.sequential_action')}
           </Button>
         </ButtonContainer>
       </DataContainer>

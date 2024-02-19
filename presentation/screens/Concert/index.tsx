@@ -1,6 +1,7 @@
 // Dependencies
-import styled from 'styled-components'
 import React, { useCallback, useState, useEffect } from 'react'
+import { useTranslation } from 'react-i18next'
+import styled from 'styled-components'
 import { useQuery, useMutation } from '@tanstack/react-query'
 import { useNavigation } from '@react-navigation/native'
 import { NativeStackNavigationProp } from '@react-navigation/native-stack'
@@ -41,6 +42,7 @@ const ConcertScreen = ({ route }): React.ReactElement => {
   const { goBack, navigate } = useNavigation<NativeStackNavigationProp<MainStackParamList>>()
   const [ isConfirmDialogOpen, setConfirmDialogState ] = useState<boolean>(false)
   const [ action, setAction ] = useState<ConfirmActions>({ name: 'delete_concert' })
+  const { t } = useTranslation()
 
   // Http requests
   const {
@@ -92,20 +94,20 @@ const ConcertScreen = ({ route }): React.ReactElement => {
         const deleteResponse = await deleteConcert(action.id)
         if ([200, 201].includes(deleteResponse.status)) {
           showMessage({
-            message: `A apresentação foi removida com sucesso!`,
+            message: t('success_msgs.delete_concert_msg'),
             type: 'success',
             duration: 2000
           })
           goBack()
         } else if ([401, 403].includes(deleteResponse.status)) {
           showMessage({
-            message: `Você não tem permissão para remover essa apresentação!`,
+            message: t('error_msgs.delete_concert_denied_msg'),
             type: 'warning',
             duration: 2000
           })
         } else {
           showMessage({
-            message: `Ocorreu um erro ao remover a apresentação! Tente novamente mais tarde.`,
+            message: t('error_msgs.delete_concert_error_msg'),
             type: 'danger',
             duration: 2000
           })
@@ -118,20 +120,20 @@ const ConcertScreen = ({ route }): React.ReactElement => {
         })
         if ([200, 201].includes(unlinkResponse.status)) {
           showMessage({
-            message: `A música selecionada foi removida da apresentação!`,
+            message: t('success_msgs.remove_concert_song_msg'),
             type: 'success',
             duration: 2000
           })
           refetchItem()
         } else if ([401, 403].includes(unlinkResponse.status)) {
           showMessage({
-            message: `Você não tem permissão para remover essa apresentação!`,
+            message: t('error_msgs.delete_concert_song_denied_msg'),
             type: 'warning',
             duration: 2000
           })
         } else {
           showMessage({
-            message: `Ocorreu um erro ao remover a música da apresentação! Tente novamente mais tarde.`,
+            message: t('error_msgs.delete_concert_song_error_msg'),
             type: 'danger',
             duration: 2000
           })
@@ -158,11 +160,11 @@ const ConcertScreen = ({ route }): React.ReactElement => {
     () => (
       isFetching ? null : (
         <Text category="s1">
-          Não há músicas adicionadas nessa apresentação no momento. 
+          {t('concert_screen.no_songs')}
         </Text>
       )
     ),
-    [isFetching]
+    [isFetching, t]
   )
 
   const renderListFooter = useCallback(
@@ -204,7 +206,7 @@ const ConcertScreen = ({ route }): React.ReactElement => {
             />
             <Space my={1} />
             <Text category="h5">
-              Músicas selecionadas
+              {t('concert_screen.selected_songs_heading')}
             </Text>
             <FlatList
               ItemSeparatorComponent={() => <Space my={1} />}

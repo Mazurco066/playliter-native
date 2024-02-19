@@ -1,5 +1,6 @@
 // Dependencies
 import React, { useCallback, useEffect, useState } from 'react'
+import { useTranslation } from 'react-i18next'
 import * as Print from 'expo-print'
 import styled from 'styled-components'
 import { useQuery } from '@tanstack/react-query'
@@ -39,6 +40,7 @@ const SongListScreen = ({ route }): React.ReactElement => {
   const { concert, setConcert } = useConcertStore()
   const [ songIndex, setSongIndex ] = useState<number>(0)
   const [ selectedPrinter, setSelectedPrinter ] = useState(null)
+  const { t } = useTranslation()
 
   // Http requests
   const {
@@ -153,7 +155,7 @@ const SongListScreen = ({ route }): React.ReactElement => {
           disabled={isFetching}
           onPress={onPrevPress}
         >
-          Anterior
+          {t('concert_screen.previous_action')}
         </Button>
         <Button
           accessoryLeft={getIcon('printer-outline')}
@@ -172,7 +174,7 @@ const SongListScreen = ({ route }): React.ReactElement => {
             }
           }}
         >
-          Exportar
+          {t('concert_screen.export_action')}
         </Button>
         <Button
           accessoryLeft={getIcon('rewind-right-outline')}
@@ -181,7 +183,7 @@ const SongListScreen = ({ route }): React.ReactElement => {
           disabled={isFetching}
           onPress={onNextPress}
         >
-          Próximo
+          {t('concert_screen.next_action')}
         </Button>
       </SongControlContainer>
       <Songsheet
