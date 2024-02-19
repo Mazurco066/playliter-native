@@ -1,5 +1,6 @@
 // Dependencies
 import React, { useCallback, useEffect, useState } from 'react'
+import { useTranslation } from 'react-i18next'
 import * as Print from 'expo-print'
 import styled from 'styled-components'
 import { useQuery } from '@tanstack/react-query'
@@ -39,6 +40,7 @@ const SongListScreen = ({ route }): React.ReactElement => {
   const { concert, setConcert } = useConcertStore()
   const [ songIndex, setSongIndex ] = useState<number>(0)
   const [ selectedPrinter, setSelectedPrinter ] = useState(null)
+  const { t } = useTranslation()
 
   // Http requests
   const {
@@ -97,7 +99,12 @@ const SongListScreen = ({ route }): React.ReactElement => {
       date: formatISODate(concert.date),
       description: concert.description,
       dailyMessage: concert.observations.find(obs => obs.title.includes('Evangelho'))?.data || null
-    })
+    }, [
+      t('components.print_generated'),
+      t('components.print_by'),
+      t('components.print_pitch'),
+      t('components.print_at')
+    ])
     // On iOS/android prints the given html. On web prints the HTML from the current page.
     await Print.printAsync({
       html: htmlContent,
@@ -121,7 +128,12 @@ const SongListScreen = ({ route }): React.ReactElement => {
       date: formatISODate(concert.date),
       description: concert.description,
       dailyMessage: concert.observations.find(obs => obs.title.includes('Evangelho'))?.data || null
-    })
+    }, [
+      t('components.print_generated'),
+      t('components.print_by'),
+      t('components.print_pitch'),
+      t('components.print_at')
+    ])
     const { uri } = await Print.printToFileAsync({
       html: htmlContent,
       width: 595, // A4 Size
@@ -153,7 +165,7 @@ const SongListScreen = ({ route }): React.ReactElement => {
           disabled={isFetching}
           onPress={onPrevPress}
         >
-          Anterior
+          {t('concert_screen.previous_action')}
         </Button>
         <Button
           accessoryLeft={getIcon('printer-outline')}
@@ -172,7 +184,7 @@ const SongListScreen = ({ route }): React.ReactElement => {
             }
           }}
         >
-          Exportar
+          {t('concert_screen.export_action')}
         </Button>
         <Button
           accessoryLeft={getIcon('rewind-right-outline')}
@@ -181,7 +193,7 @@ const SongListScreen = ({ route }): React.ReactElement => {
           disabled={isFetching}
           onPress={onNextPress}
         >
-          Próximo
+          {t('concert_screen.next_action')}
         </Button>
       </SongControlContainer>
       <Songsheet

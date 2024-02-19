@@ -1,5 +1,6 @@
 // Dependencies
 import React, { useState } from 'react'
+import { useTranslation } from 'react-i18next'
 import { Controller, FieldError, useForm } from 'react-hook-form'
 import { useMutation } from '@tanstack/react-query'
 import styled from 'styled-components'
@@ -78,6 +79,7 @@ const SignUpScreen = ({ navigation }): React.ReactElement => {
   const [secureTextEntry, setSecureTextEntry] = useState<boolean>(true)
   const { control, handleSubmit, formState: { errors } } = useForm()
   const { hydrateAuthData } = useAuthStore()
+  const { t } = useTranslation()
 
   // Mutations
   const { isLoading, mutateAsync } = useMutation(
@@ -121,14 +123,14 @@ const SignUpScreen = ({ navigation }): React.ReactElement => {
         const { data: { account, token } } = loginResponse.data
         hydrateAuthData(account as UserAccount, token)
         showMessage({
-          message: `Bem vindo(a) ${account.name}`,
+          message: t('auth.welcome', { name: account.name }),
           type: 'success',
           duration: 2000
         })
         navigation.replace('Main')
       } else {
         showMessage({
-          message: `Olá ${data.name}. Sua conta foi criada com sucesso!`,
+          message: t('success_msgs.account_created_msg', { name: data.name }),
           type: 'success',
           duration: 2000
         })
@@ -136,13 +138,13 @@ const SignUpScreen = ({ navigation }): React.ReactElement => {
       }
     } else if ([400].includes(response.status)) {
       showMessage({
-        message: 'Usuário ou E-mail já estão em uso por outro usuário!',
+        message: t('error_msgs.username_in_use_msg'),
         type: 'warning',
         duration: 2500
       })
     } else {
       showMessage({
-        message: 'Ocorreu um erro durante a criação de sua conta. Tente novamente mais tarde!',
+        message: t('error_msgs.username_error_msg'),
         type: 'danger',
         duration: 2500
       })
@@ -161,9 +163,7 @@ const SignUpScreen = ({ navigation }): React.ReactElement => {
 
   // TSX
   return (
-    <Wrapper
-      level="1"
-    >
+    <Wrapper level="1">
       <ScrollView
         centerContent
         contentContainerStyle={{
@@ -179,20 +179,16 @@ const SignUpScreen = ({ navigation }): React.ReactElement => {
             alignItems: 'center'
           }}
         >
-          <Logo
-            source={require('../../../assets/logo_white.png')}
-          />
-          <Form
-            style={{ backgroundColor: theme['color-basic-700'] }}
-          >
+          <Logo source={require('../../../assets/logo_white.png')} />
+          <Form style={{ backgroundColor: theme['color-basic-700'] }}>
             <Controller
               control={control}
               name="name"
               rules={{ required: true, minLength: 2 }}
               render={({ field: { onBlur, onChange, value } }) => (
                 <Input
-                  label="Nome"
-                  placeholder="Insira seu nome"
+                  label={t('auth.name_label')}
+                  placeholder={t('auth.name_placeholder')}
                   keyboardType="ascii-capable"
                   accessoryLeft={props => <Icon {...props} name="person-outline" />}
                   value={value}
@@ -212,8 +208,8 @@ const SignUpScreen = ({ navigation }): React.ReactElement => {
               rules={{ required: true, minLength: 2 }}
               render={({ field: { onBlur, onChange, value } }) => (
                 <Input
-                  label="Usuário"
-                  placeholder="Insira seu usuário"
+                  label={t('auth.create_username_label')}
+                  placeholder={t('auth.create_username_placeholder')}
                   keyboardType="ascii-capable"
                   accessoryLeft={props => <Icon {...props} name="person-outline" />}
                   value={value}
@@ -233,8 +229,8 @@ const SignUpScreen = ({ navigation }): React.ReactElement => {
               rules={{ required: true, minLength: 7 }}
               render={({ field: { onBlur, onChange, value } }) => (
                 <Input
-                  label="E-mail"
-                  placeholder="Insira seu email"
+                  label={t('auth.email_label')}
+                  placeholder={t('auth.email_placeholder')}
                   keyboardType="email-address"
                   accessoryLeft={props => <Icon {...props} name="email-outline" />}
                   value={value}
@@ -254,7 +250,7 @@ const SignUpScreen = ({ navigation }): React.ReactElement => {
               rules={{ required: true, minLength: 8 }}
               render={({ field: { onBlur, onChange, value } }) => (
                 <Input
-                  label="Senha"
+                  label={t('auth.password_label')}
                   placeholder="••••••••"
                   keyboardType="ascii-capable"
                   secureTextEntry={secureTextEntry}
@@ -275,7 +271,7 @@ const SignUpScreen = ({ navigation }): React.ReactElement => {
               disabled={isLoginLoading || isLoading}
               onPress={handleSubmit(submitLogin)}
             >
-              Criar Conta
+              {t('auth.create_action')}
             </Button>
             <Space my={1} />
             <TouchableOpacity
@@ -288,12 +284,12 @@ const SignUpScreen = ({ navigation }): React.ReactElement => {
                 style={{ textAlign: 'center' }}
                 category='s2'
               >
-                Já possui conta? <Text
+                {t('auth.already_has_account')}<Text
                   style={{ fontWeight: '700' }}
                   status="primary"
                   category="s2"
                 >
-                  Fazer login!
+                  {t('auth.login_now')}
                 </Text>
               </Text>
             </TouchableOpacity>

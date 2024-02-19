@@ -1,5 +1,6 @@
 // Dependencies
 import React, { useState, useCallback } from 'react'
+import { useTranslation } from 'react-i18next'
 import styled from 'styled-components'
 import { useNavigation } from '@react-navigation/native'
 import { NativeStackNavigationProp } from '@react-navigation/native-stack'
@@ -62,6 +63,7 @@ const BandSongs = ({ route }): React.ReactElement => {
   const theme = useTheme()
   const [ filterSearch, setFilterSearch ] = useState<string>('')
   const { navigate } = useNavigation<NativeStackNavigationProp<MainStackParamList>>()
+  const { t } = useTranslation()
 
   // Api request function
   const fetchBandSongs = async ({ pageParam = 0 }) => {
@@ -147,10 +149,10 @@ const BandSongs = ({ route }): React.ReactElement => {
   const renderListEmptyComponent = useCallback(() => (
     isLoading ? null : (
       <Text category="s1">
-        Não há músicas registradas nessa banda
+        {t('band_screen.no_songs')}
       </Text>
     )
-  ), [isLoading])
+  ), [isLoading, t])
 
   //TSX
   return (
@@ -169,7 +171,7 @@ const BandSongs = ({ route }): React.ReactElement => {
           navigate("SaveSong", { bandId: item.id })
         } else {
           showMessage({
-            message: 'A banda atual não tem categorias registradas. Crie ao menos uma para conseguir salvar músicas!',
+            message: t('band_screen.category_warning'),
             duration: 2000,
             type: 'info'
           })
@@ -177,16 +179,16 @@ const BandSongs = ({ route }): React.ReactElement => {
       }}
     >
       <Text category="h5">
-        Músicas publicadas
+        {t('band_screen.song_heading')}
       </Text>
       <Space my={1} />
       <Text category="s1">
-        Pequise por músicas publicadas nessa banda:
+        {t('band_screen.song_placeholder')}
       </Text>
       <Space my={1} />
       <SearchContainer>
         <SearchInput 
-          placeholder="Pesquisar..."
+          placeholder={t('band_screen.search_placeholder')}
           keyboardType="default"
           size="small"
           value={filterSearch}
@@ -209,7 +211,7 @@ const BandSongs = ({ route }): React.ReactElement => {
               }
             }}
           >
-            Limpar Filtros
+            {t('band_screen.clear_filter_btn')}
           </SearchButton>
           <SearchButton
             status="primary"
@@ -222,7 +224,7 @@ const BandSongs = ({ route }): React.ReactElement => {
               }
             }}
           >
-            Pesquisar
+            {t('band_screen.search_button')}
           </SearchButton>
         </ButtonContainer>
       </SearchContainer>

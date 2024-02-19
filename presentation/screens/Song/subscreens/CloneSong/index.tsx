@@ -1,5 +1,6 @@
 // Dependencies
 import React, { useCallback, useState } from 'react'
+import { useTranslation } from 'react-i18next'
 import { useQuery, useMutation } from '@tanstack/react-query'
 import { useNavigation } from '@react-navigation/native'
 import { NativeStackNavigationProp } from '@react-navigation/native-stack'
@@ -33,6 +34,7 @@ const CloneSongScreen = ({ route }): React.ReactElement => {
   const { replace } = useNavigation<NativeStackNavigationProp<MainStackParamList>>()
   const [ isConfirmDialogOpen, setConfirmDialogState ] = useState<boolean>(false)
   const [ action, setAction ] = useState<ConfirmActions>({ name: 'clone_song' })
+  const { t } = useTranslation()
 
   // HTTP Requests
   const {
@@ -86,14 +88,14 @@ const CloneSongScreen = ({ route }): React.ReactElement => {
         // Verify response
         if (response.status < 400) {
           showMessage({
-            message: 'A música foi clonada com sucesso para banda selecionada!',
+            message: t('success_msgs.clone_song_msg'),
             duration: 2000,
             type: 'success'
           })
           replace("Song", { itemId: response.data.data.id })
         } else {
           showMessage({
-            message: 'Ocorreu um erro ao clonar a música para banda selecionada. Tente novamente mais tarde',
+            message: t('error_msgs.clone_song_error_msg'),
             duration: 2000,
             type: 'danger'
           })
@@ -101,14 +103,14 @@ const CloneSongScreen = ({ route }): React.ReactElement => {
 
       } else {
         showMessage({
-          message: 'A banda selecionada não possui categorias registradas. Cadastre ao menos uma para clonar a música para essa banda.',
+          message: t('error_msgs.clone_song_nc_msg'),
           duration: 2500,
           type: 'info'
         })
       }
     } else {
       showMessage({
-        message: 'Ocorreu um erro ao listar as categorias da banda selecionada. Tente novamente mais tarde.',
+        message: t('error_msgs.clone_song_cl_msg'),
         duration: 2000,
         type: 'danger'
       })
@@ -131,20 +133,20 @@ const CloneSongScreen = ({ route }): React.ReactElement => {
   const renderListEmptyComponent = useCallback(() => (
     isBandsLoading ? null : (
       <Text category="s1">
-        Você não participa de nenhuma banda no momento
+        {t('song_screen.no_bands')}
       </Text>
     )
-  ), [isBandsLoading])
+  ), [isBandsLoading, t])
 
   // TSX
   return (
     <BaseContent hideCardsNavigation>
       <Text category="h5">
-        Clonar música
+        {t('song_screen.clone_heading')}
       </Text>
       <Space my={1} />
       <Text category="s1">
-        Selecione a banda na qual você deseja clonar essa música.
+        {t('song_screen.clone_placeholder')}
       </Text>
       <FlatList
         ItemSeparatorComponent={() => <Space my={1} />}
@@ -162,7 +164,7 @@ const CloneSongScreen = ({ route }): React.ReactElement => {
         isVisible={isConfirmDialogOpen}
         onClose={() => setConfirmDialogState(false)}
         onConfirmAction={confirmDialogActions}
-        message='Deseja clonar a música para a banda selecionada?'
+        message={t('song_screen.confirm_clone')}
       />
     </BaseContent>
   )

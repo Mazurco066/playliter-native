@@ -1,5 +1,6 @@
 // React
 import React, { useState, useEffect } from 'react'
+import { useTranslation } from 'react-i18next'
 import styled from 'styled-components'
 import { color } from 'styled-system'
 import { useMutation } from '@tanstack/react-query'
@@ -38,6 +39,7 @@ const RespondInviteScreen = ({ route, navigation }): React.ReactElement => {
   // Hooks
   const theme = useTheme()
   const [ currentInvite, setCurrentInvite ] = useState<IBandInvitation>(item)
+  const { t } = useTranslation()
 
   // Http requests
   const { isLoading, mutateAsync: respondInvite } = useMutation(
@@ -58,14 +60,14 @@ const RespondInviteScreen = ({ route, navigation }): React.ReactElement => {
       navigation.goBack()
       showMessage({
         message: response === 'accepted'
-          ? 'O convite foi aceito com sucesso!'
-          : 'O convite foi recusado com sucesso!',
+          ? t('success_msgs.invite_accepted_msg')
+          : t('success_msgs.invite_denied_msg'),
         type: 'success',
         duration: 2000
       })
     } else {
       showMessage({
-        message: 'Ocorreu um erro ao responder o convite! Por favor tente novamente mais tarde.',
+        message: t('error_msgs.respond_invite_error_msg'),
         type: 'danger',
         duration: 2000
       })
@@ -74,11 +76,9 @@ const RespondInviteScreen = ({ route, navigation }): React.ReactElement => {
 
   // TSX
   return (
-    <BaseContent
-			hideCardsNavigation
-		>
+    <BaseContent hideCardsNavigation>
       <Text category="h5">
-        Responder convite
+        {t('profile.respond_invite_heading')}
       </Text>
       <Space my={1} />
       <Text
@@ -87,7 +87,7 @@ const RespondInviteScreen = ({ route, navigation }): React.ReactElement => {
           textAlign: "justify"
         }}
       >
-        Voce foi convidado a se juntar a uma banda. Visualize os detalhes da banda abaixo e decida se irá aceitar ou recusar.
+        {t('profile.you_were_invited')}
       </Text>
       <Space my={2} />
       <InviteContainer
@@ -130,7 +130,7 @@ const RespondInviteScreen = ({ route, navigation }): React.ReactElement => {
         disabled={isLoading}
         onPress={() => respondInviteAction('accepted')}
       >
-        Aceitar
+        {t('profile.accept_action')}
       </Button>
       <Space my={1} />
       <Button
@@ -140,7 +140,7 @@ const RespondInviteScreen = ({ route, navigation }): React.ReactElement => {
         disabled={isLoading}
         onPress={() => respondInviteAction('denied')}
       >
-        Recusar
+        {t('profile.deny_action')}
       </Button>
       <Space my={2} />
     </BaseContent>

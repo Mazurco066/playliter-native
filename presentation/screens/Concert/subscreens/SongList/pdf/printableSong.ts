@@ -19,6 +19,12 @@ export async function chordProSongtoHtml(
   songs: ISong[],
   color: string,
   pdfPreview?: IPreviewData,
+  pdfTranslations: string[] = [
+    'PDF gerado pelo app ',
+    'Por: ',
+    'Tom: ',
+    ' em'
+  ]
 ): Promise<string> {
   let previewHtml = ''
   let songsHtml = ''
@@ -36,7 +42,7 @@ export async function chordProSongtoHtml(
     if (pdfPreview.dailyMessage) {
       previewHtml += `<p class="show-add-text">${pdfPreview.dailyMessage}</p>`
     }
-    previewHtml += `</div><div class="credits-container"><p class="credits">PDF gerado pelo app <strong>Playliter</strong> em<strong> ${formatISODate(new Date().toISOString())}</strong></p></div></div>`        
+    previewHtml += `</div><div class="credits-container"><p class="credits">${pdfTranslations[0]}<strong>Playliter</strong>${pdfTranslations[3]}<strong> ${formatISODate(new Date().toISOString())}</strong></p></div></div>`        
   }
 
   // Mapping songs
@@ -56,7 +62,7 @@ export async function chordProSongtoHtml(
 
     // Html data
     if (transposed) {
-      songsHtml += `<div class="printable-songsheet"><div class="song-info" style="margin-bottom:1rem;"><h1 class="song-title">${transposed.title}</h1><span class="song-artist">Por: ${transposed.artist}</span><span class="song-tone"><small>Tom: <strong>${steps.find(t => t.step === 0)?.label}</strong></small></span></div><div class="song-section">`
+      songsHtml += `<div class="printable-songsheet"><div class="song-info" style="margin-bottom:1rem;"><h1 class="song-title">${transposed.title}</h1><span class="song-artist">${pdfTranslations[1]}${transposed.artist}</span><span class="song-tone"><small>${pdfTranslations[2]}<strong>${steps.find(t => t.step === 0)?.label}</strong></small></span></div><div class="song-section">`
       songsHtml += transposed.paragraphs.map(function (paragraph: any) {
         var paragraphHtml = '<div class="paragraph ' + paragraph.type + '">'
         paragraphHtml += paragraph.lines.map(function (line: any) {

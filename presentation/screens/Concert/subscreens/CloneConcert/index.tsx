@@ -1,5 +1,6 @@
 // Dependencies
 import React, { useState } from 'react'
+import { useTranslation } from 'react-i18next'
 import { useMutation } from '@tanstack/react-query'
 import { useNavigation } from '@react-navigation/native'
 import { NativeStackNavigationProp } from '@react-navigation/native-stack'
@@ -29,6 +30,7 @@ const CloneConcertScreen = ({ route }): React.ReactElement => {
   // Hooks
   const { goBack, replace } = useNavigation<NativeStackNavigationProp<MainStackParamList>>()
   const [ date, setDate ] = useState<Date>(new Date())
+  const { t } = useTranslation()
 
   // Http requests
   const {
@@ -46,7 +48,7 @@ const CloneConcertScreen = ({ route }): React.ReactElement => {
     // Verify if date is filled
     if (!date) {
       showMessage({
-        message: 'Por favor selecione uma data.',
+        message: t('error_msgs.empty_date_msg'),
         duration: 2000,
         type: 'info'
       })
@@ -57,27 +59,27 @@ const CloneConcertScreen = ({ route }): React.ReactElement => {
     const result = await cloneConcert({ concertId, date: date.toISOString().split('T')[0] })
     if ([200, 201].includes(result.status)) {
       showMessage({
-        message: 'Apresentação duplicada com sucesso!.',
+        message: t('success_msgs.clone_concert_msg'),
         duration: 2000,
         type: 'success'
       })
       replace("Concert", { itemId: result.data.data.id })
     } else if ([400].includes(result.status)) {
       showMessage({
-        message: 'Há dados inválidos em sua requisição. Por favor revise o preenchimento da data.',
+        message: t('error_msgs.clone_concert_invalid_msg'),
         duration: 2000,
         type: 'warning'
       })
     } else if ([404].includes(result.status)) {
       showMessage({
-        message: 'Apresentação não encontrada.',
+        message: t('error_msgs.concert_not_found_msg'),
         duration: 2000,
         type: 'warning'
       })
       goBack()
     } else {
       showMessage({
-        message: 'Ops... ocorreu um erro ao duplicar a apresentação. Tente novamente mais tarde.',
+        message: t('error_msgs.clone_concert_error_msg'),
         duration: 2000,
         type: 'danger'
       })
@@ -88,11 +90,11 @@ const CloneConcertScreen = ({ route }): React.ReactElement => {
   return (
     <BaseContent hideCardsNavigation>
       <Text category="h5">
-        Clonar apresentação
+        {t('concert_screen.clone_heading')}
       </Text>
       <Space my={1} />
       <Text category="s1">
-        Duplique uma apresentação existente para manter as músicas na ordenação atual.
+        {t('concert_screen.clone_placeholder')}
       </Text>
       <Space my={2} />
       <Datepicker
@@ -106,7 +108,7 @@ const CloneConcertScreen = ({ route }): React.ReactElement => {
         onPress={() => cloneConcertAction(date)}
         size='small'
       >
-        Duplicar apresentação
+        {t('concert_screen.duplicate_action')}
       </Button>
       <Space my={1} />
       <Button
@@ -115,7 +117,7 @@ const CloneConcertScreen = ({ route }): React.ReactElement => {
         size="small"
         status="danger"
       >
-        Cancelar
+        {t('concert_screen.cancel_action')}
       </Button>
     </BaseContent>
   )

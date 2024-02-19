@@ -1,5 +1,6 @@
 // Dependencies
 import React, { useEffect } from 'react'
+import { useTranslation } from 'react-i18next'
 import { Controller, FieldError, useForm } from 'react-hook-form'
 import styled from 'styled-components'
 import { color } from 'styled-system'
@@ -65,6 +66,7 @@ const EditNote = ({
   // Hooks
   const theme = useTheme()
   const { concert } = useConcertStore()
+  const { t } = useTranslation()
   const {
     control,
     handleSubmit,
@@ -100,20 +102,20 @@ const EditNote = ({
     })
     if ([200, 201].includes(response.status)) {
       showMessage({
-        message: `A anotação foi salva com sucesso!`,
+        message: t('success_msgs.remove_note_msg'),
         type: 'success',
         duration: 2000
       })
       onGoBack()
     } else if ([401, 403].includes(response.status)) {
       showMessage({
-        message: `Você não tem permissão para salvar anotações!`,
+        message: t('error_msgs.remove_note_denied_msg'),
         type: 'warning',
         duration: 2000
       })
     } else {
       showMessage({
-        message: `Ocorreu um erro ao salvar a anotação! Tente novamente mais tarde.`,
+        message: t('error_msgs.remove_note_error_msg'),
         type: 'danger',
         duration: 2000
       })
@@ -139,8 +141,8 @@ const EditNote = ({
           rules={{ required: true, minLength: 2 }}
           render={({ field: { onBlur, onChange, value } }) => (
             <Input
-              label="Título"
-              placeholder="Insira um título"
+              label={t('concert_screen.title_label')}
+              placeholder={t('concert_screen.title_placeholder')}
               keyboardType="default"
               accessoryLeft={props => <Icon {...props} name="bookmark-outline" />}
               value={value}
@@ -161,8 +163,8 @@ const EditNote = ({
           render={({ field: { onBlur, onChange, value } }) => (
             <Input
               multiline
-              label="Conteúdo"
-              placeholder="Digite o conteúdo"
+              label={t('concert_screen.content_label')}
+              placeholder={t('concert_screen.content_placeholder')}
               keyboardType="default"
               accessoryLeft={props => <Icon {...props} name="book-open-outline" />}
               value={value}
@@ -183,14 +185,14 @@ const EditNote = ({
             style={{ flex: 1 }}
             disabled={isLoading || isSavingNote}
           >
-            Cancelar
+            {t('concert_screen.cancel_action')}
           </Button>
           <Button
             style={{ flex: 1 }}
             onPress={handleSubmit(submitNote)}
             disabled={isLoading || isSavingNote}
           >
-            Salvar
+            {t('concert_screen.save_action')}
           </Button>
         </ButtonGroup>
       </CustomKeyboardAvoidingView>

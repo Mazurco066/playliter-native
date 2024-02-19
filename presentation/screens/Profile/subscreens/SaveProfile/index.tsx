@@ -1,6 +1,7 @@
 // Dependencies
 import mime from 'mime'
 import React, { useEffect, useState } from 'react'
+import { useTranslation } from 'react-i18next'
 import styled from 'styled-components'
 import { useMutation } from '@tanstack/react-query'
 import { Controller, FieldError, useForm } from 'react-hook-form'
@@ -54,6 +55,7 @@ const SaveProfileScreen = ({ navigation }) => {
   const { getUserData, hydrateAuthData } = useAuthStore()
   const currentAccount = getUserData()
   const [ imageUri, setImageUri ] = useState<string>(currentAccount.avatar)
+  const { t } = useTranslation()
   const {
     control,
     handleSubmit,
@@ -118,26 +120,26 @@ const SaveProfileScreen = ({ navigation }) => {
     if ([200, 201].includes(response.status)) {
       hydrateAuthData(response.data.data)
       showMessage({
-        message: uploadError ? 'Sua conta foi atualizada com sucesso porem ocorreu um erro ao fazer o upload  de seu avatar.' : 'Sua conta foi atualizada com sucesso.',
+        message: uploadError ? t('success_msgs.save_profile_without_avatar_msg') : t('success_msgs.save_profile_msg'),
         type: uploadError ? 'info' : 'success',
         duration: 2000
       })
       navigation.goBack()
     } else if ([400].includes(response.status)) {
       showMessage({
-        message: 'Há dados invalidos no preenchimento de seu formulário. Por favor verifique o preenchimento do mesmo.',
+        message: t('error_msgs.invalid_form_msg'),
         type: 'warning',
         duration: 2000
       })
     } else if ([404].includes(response.status)) {
       showMessage({
-        message: `Conta de id ${currentAccount.id} não encontrada!`,
+        message: t('error_msgs.account_not_found_msg'),
         type: 'info',
         duration: 2000
       })
     } else {
       showMessage({
-        message: `Ocorreu um erro ao atualizar sua conta! Tente novamente mais tarde.`,
+        message: t('error_msgs.save_profile_error_msg'),
         type: 'danger',
         duration: 2000
       })
@@ -148,11 +150,11 @@ const SaveProfileScreen = ({ navigation }) => {
   return (
     <BaseContent hideCardsNavigation>
       <Text category="h5">
-        Atualizar perfil
+        {t('profile.save_profile_heading')}
       </Text>
       <Space my={1} />
       <Text category="s1">
-        Atualize os dados de seu perfil no app.
+        {t('profile.save_profile_placeholder')}
       </Text>
       <Space my={2} />
       <Container
@@ -184,8 +186,8 @@ const SaveProfileScreen = ({ navigation }) => {
             rules={{ required: true, minLength: 2 }}
             render={({ field: { onBlur, onChange, value } }) => (
               <Input
-                label="Nome"
-                placeholder="Insira seu nome"
+                label={t('profile.name_label')}
+                placeholder={t('profile.name_placeholder')}
                 keyboardType="default"
                 accessoryLeft={props => <Icon {...props} name="person-outline" />}
                 value={value}
@@ -206,8 +208,8 @@ const SaveProfileScreen = ({ navigation }) => {
             render={({ field: { onBlur, onChange, value } }) => (
               <Input
                 multiline
-                label="E-mail"
-                placeholder="Insira seu E-mail"
+                label={t('profile.email_label')}
+                placeholder={t('profile.email_placeholder')}
                 keyboardType="email-address"
                 accessoryLeft={props => <Icon {...props} name="email-outline" />}
                 value={value}
@@ -226,7 +228,7 @@ const SaveProfileScreen = ({ navigation }) => {
             onPress={handleSubmit(submitProfile)}
             style={{ width: '100%' }}
           >
-            Salvar
+            {t('profile.save_button')}
           </Button>
         </CustomKeyboardAvoidingView>
       </Container>

@@ -1,6 +1,7 @@
 // Dependencies
 import styled from 'styled-components'
 import React, { useState, useEffect }  from 'react'
+import { useTranslation } from 'react-i18next'
 import { useNavigation } from '@react-navigation/native'
 import { NativeStackNavigationProp } from '@react-navigation/native-stack'
 import { useQuery, useMutation } from '@tanstack/react-query'
@@ -40,6 +41,7 @@ const SongScreen = ({ route }): React.ReactElement => {
   const [ isConfirmDialogOpen, setConfirmDialogState ] = useState<boolean>(false)
   const [ song, setSong ] = useState<ISong | null>(item ?? null)
   const [ visible, setVisible ] = useState<boolean>(false)
+  const { t } = useTranslation()
 
   // Http requests
   const {
@@ -78,27 +80,27 @@ const SongScreen = ({ route }): React.ReactElement => {
     const response = await deleteSong(song.id)
     if (response.status < 400) {
       showMessage({
-        message: 'Música removida com sucesso!.',
+        message: t('success_msgs.delete_song_msg'),
         duration: 2000,
         type: 'success'
       })
       goBack()
     } else if ([400, 404].includes(response.status)) {
       showMessage({
-        message: 'Música não encontrada!.',
+        message: t('error_msgs.song_not_found_msg'),
         duration: 2000,
         type: 'warning'
       })
       goBack()
     } else if ([401, 403].includes(response.status)) {
       showMessage({
-        message: 'Você não tem permissões para remover essa música!.',
+        message: t('error_msgs.song_delete_denied_msg'),
         duration: 2000,
         type: 'info'
       })
     } else {
       showMessage({
-        message: 'Ocorreu um erro ao remover essa música. Tente novamente mais tarde.',
+        message: t('error_msgs.song_delete_error_msg'),
         duration: 2000,
         type: 'danger'
       })
@@ -134,21 +136,21 @@ const SongScreen = ({ route }): React.ReactElement => {
               onBackdropPress={() => setVisible(false)}
             >
               <MenuItem
-                title='Duplicar'
+                title={t('song_screen.duplicate_action')}
                 accessoryLeft={getIcon('file-add-outline')}
                 disabled={isFetching || isDeletingSong}
                 onPress={() => navigate("CloneSong", { item: song })}
                 style={{ backgroundColor: theme['color-basic-700'] }}
               />
               <MenuItem
-                title='Editar'
+                title={t('song_screen.edit_action')}
                 accessoryLeft={getIcon('edit-2-outline')}
                 disabled={isFetching || isDeletingSong}
                 onPress={() => navigate("SaveSong", { item: song, bandId: song.band.id })}
                 style={{ backgroundColor: theme['color-basic-700'] }}
               />
               <MenuItem
-                title='Excluir'
+                title={t('song_screen.delete_action')}
                 accessoryLeft={getIcon('trash-2-outline')}
                 disabled={isFetching || isDeletingSong}
                 onPress={() => setConfirmDialogState(true)}

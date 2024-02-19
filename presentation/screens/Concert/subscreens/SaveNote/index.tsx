@@ -1,5 +1,6 @@
 // Dependencies
 import React, { useState } from 'react'
+import { useTranslation } from 'react-i18next'
 import { useNavigation } from '@react-navigation/native'
 import { NativeStackNavigationProp } from '@react-navigation/native-stack'
 import { useConcertStore } from '../../../../../main/store'
@@ -31,6 +32,7 @@ const SaveNote = ({ route }): React.ReactElement => {
   const { goBack } = useNavigation<NativeStackNavigationProp<MainStackParamList>>()
   const [ isEditable, setEditableState ] = useState<boolean>(false)
   const [ isConfirmDialogOpen, setConfirmDialogState ] = useState<boolean>(false)
+  const { t } = useTranslation()
 
   // Loading state
   const isLoading = isRemovingNote
@@ -41,7 +43,7 @@ const SaveNote = ({ route }): React.ReactElement => {
     const response = await removeNoteRequest(id)
     if ([200, 201].includes(response.status)) {
       showMessage({
-        message: `A anotação foi removida da apresentação com sucesso!`,
+        message: t('success_msgs.save_note_msg'),
         type: 'success',
         duration: 2000
       })
@@ -49,13 +51,13 @@ const SaveNote = ({ route }): React.ReactElement => {
       goBack()
     } else if ([401, 403].includes(response.status)) {
       showMessage({
-        message: `Você não tem permissão para remover essa anotação!`,
+        message: t('error_msgs.save_note_denied_msg'),
         type: 'warning',
         duration: 2000
       })
     } else {
       showMessage({
-        message: `Ocorreu um erro ao remover a anotação! Tente novamente mais tarde.`,
+        message: t('error_msgs.save_note_error_msg'),
         type: 'danger',
         duration: 2000
       })

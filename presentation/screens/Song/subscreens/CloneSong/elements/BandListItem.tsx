@@ -1,5 +1,6 @@
 // Dependencies
 import React, { memo } from 'react'
+import { useTranslation } from 'react-i18next'
 import styled from 'styled-components'
 import { color } from 'styled-system'
 import { useAuthStore } from '../../../../../../main/store'
@@ -59,6 +60,7 @@ const BandListItem = ({
   // Hooks
   const theme = useTheme()
   const { account } = useAuthStore()
+  const { t } = useTranslation()
 
   // TSX
   return (
@@ -89,7 +91,12 @@ const BandListItem = ({
               color: theme['color-secondary-500']
             }}
           >
-            {getBandRole(account?.id, item)}
+            {getBandRole(account?.id, item, [
+              t('roles.founder'),
+              t('roles.admin'),
+              t('roles.member'),
+              t('roles.no_filiation')
+            ])}
           </Text>
         </ItemData>
       </ItemLayout>

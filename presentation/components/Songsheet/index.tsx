@@ -1,5 +1,6 @@
 // Dependencies
 import React, { useCallback, useEffect, useState } from 'react'
+import { useTranslation } from 'react-i18next'
 import styled from 'styled-components'
 import { color } from 'styled-system'
 import { getTransposedSong, getUniqueChords, overwriteBaseTone } from '../../utils'
@@ -136,6 +137,7 @@ const Songsheet = ({
   const [ uniqueChords, setUniqueChords ] = useState<string[]>([])
   const [ chordsheet, setChordsheet ] = useState<any | null>(null)
   const [ selectedIndex, setSelectedIndex ] = React.useState<IndexPath | IndexPath[]>(new IndexPath(0))
+  const { t } = useTranslation()
   const [ uniqueChordsData, setUniqueChordsData ] = useState<{
     positions: string[],
     key: string
@@ -223,7 +225,7 @@ const Songsheet = ({
       // Notify user about response success
       onToneUpdateSuccess()
       showMessage({
-        message: `Tom base da música alterado com sucesso!`,
+        message: t('success_msgs.pitch_change_msg'),
         type: 'success',
         duration: 2000
       })
@@ -245,19 +247,19 @@ const Songsheet = ({
     } else {
       if ([400, 404].includes(response.status)) {
         showMessage({
-          message: `Verifique se os parâmetros enviados para mudança de tom base estão corretos!`,
+          message: t('error_msgs.pitch_change_invalid_msg'),
           type: 'warning',
           duration: 2000
         })
       } else if ([401, 403].includes(response.status)) {
         showMessage({
-          message: `Você não permissão para alterar o tom base dessa música!`,
+          message: t('error_msgs.pitch_change_denied_msg'),
           type: 'warning',
           duration: 2000
         })
       } else {
         showMessage({
-          message: `Ocorreu um erro ao alterar o tom base dessa música! Tente novamente mais tarde.`,
+          message: t('error_msgs.pitch_change_error_msg'),
           type: 'danger',
           duration: 2000
         })
@@ -344,7 +346,7 @@ const Songsheet = ({
                           onPress={onUpdateTone}
                           disabled={isMutateLoading || isLoading}
                         >
-                          Atualizar tom base
+                          {t('components.update_tone_action')}
                         </UpdateToneBtn>
                       </ButtonContainer>
                     ) : null
@@ -377,7 +379,7 @@ const Songsheet = ({
                   <Text
                     category="c1"
                   >
-                    Tom: <Text
+                    {t('components.tone_label')}<Text
                       style={{
                         color: theme['color-primary-500'],
                         fontWeight: 'bold'
@@ -419,8 +421,8 @@ const Songsheet = ({
                     >
                       {
                         isChartsVisible
-                          ? 'Ocultar acordes'
-                          : 'Mostrar acordes'
+                          ? t('components.hide_chords')
+                          : t('components.show_chords')
                       }
                     </Text>
                   </TouchableOpacity>

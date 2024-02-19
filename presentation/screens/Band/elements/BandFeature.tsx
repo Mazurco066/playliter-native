@@ -1,5 +1,6 @@
 // Dependencies
 import React from 'react'
+import { useTranslation } from 'react-i18next'
 import styled from 'styled-components'
 import { color } from 'styled-system'
 
@@ -60,6 +61,7 @@ const BandFeature = ({
 }: IBandFeature): React.ReactElement => {
   // Hooks
   const theme = useTheme()
+  const { t } = useTranslation()
 
   // TSX
   return (
@@ -110,7 +112,7 @@ const BandFeature = ({
               fontWeight: '600'
             }}
           >
-            Acessar
+            {t('band_screen.access_button')}
           </Text>
         </GradientAscent>
       </BandFeatureContainer>

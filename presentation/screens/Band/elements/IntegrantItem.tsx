@@ -1,5 +1,6 @@
 // Dependencies
 import React, { useState } from 'react'
+import { useTranslation } from 'react-i18next'
 import styled from 'styled-components'
 import { color } from 'styled-system'
 import { useBandStore, useAuthStore } from '../../../../main/store'
@@ -99,6 +100,7 @@ const IntegrantItem = ({
   const { account } = useAuthStore()
   const { band } = useBandStore()
   const [ visible, setVisible ] = useState<boolean>(false)
+  const { t } = useTranslation()
 
   //Actions
   const onItemSelect = (_: IndexPath): void => {
@@ -152,7 +154,12 @@ const IntegrantItem = ({
               color: theme['color-secondary-500']
             }}
           >
-            {getBandRole(item.id, band)}
+            {getBandRole(item.id, band, [
+              t('roles.founder'),
+              t('roles.admin'),
+              t('roles.member'),
+              t('roles.no_filiation')
+            ])}
           </SongTextInfo>
         </ItemData>
         {
@@ -167,7 +174,7 @@ const IntegrantItem = ({
                 {
                   band.owner.id === account.id ? (
                     <MenuItem
-                      title="Transferir liderança"
+                      title={t('band_screen.transfer_button')}
                       accessoryLeft={getIcon('trending-up-outline')}
                       disabled={isLoading}
                       onPress={onTransferPress}
@@ -180,7 +187,7 @@ const IntegrantItem = ({
                 {
                   band.admins.find((admin: UserAccount) => admin.id === item.id) ? (
                     <MenuItem
-                      title='Remover admin'
+                      title={t('band_screen.remove_admin_button')}
                       accessoryLeft={getIcon('arrowhead-down-outline')}
                       disabled={isLoading}
                       onPress={onDemotePress}
@@ -190,7 +197,7 @@ const IntegrantItem = ({
                     />
                   ) : (
                     <MenuItem
-                      title='Tornar admin'
+                      title={t('band_screen.promote_button')}
                       accessoryLeft={getIcon('arrowhead-up-outline')}
                       disabled={isLoading}
                       onPress={onPromotePress}
@@ -201,7 +208,7 @@ const IntegrantItem = ({
                   )
                 }
                 <MenuItem
-                  title='Remover'
+                  title={t('band_screen.remove_button')}
                   accessoryLeft={getIcon('person-remove-outline')}
                   disabled={isLoading}
                   onPress={onRemovePress}

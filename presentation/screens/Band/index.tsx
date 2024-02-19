@@ -1,6 +1,7 @@
 // Dependencies
 import styled from 'styled-components'
 import React, { useCallback, useEffect, useState }  from 'react'
+import { useTranslation } from 'react-i18next'
 import { useMutation, useQuery } from '@tanstack/react-query'
 import { useNavigation } from '@react-navigation/native'
 import { NativeStackNavigationProp } from '@react-navigation/native-stack'
@@ -42,6 +43,7 @@ type ConfirmActions = { name: 'delete_band' | 'remove_integrant' | 'transfer_own
 const BandScreen = ({ route }): React.ReactElement => {
   // Destruct params
   const { item, itemId } = route.params
+  const { t } = useTranslation()
 
   // Hooks
   const { band, setBand } = useBandStore()
@@ -162,20 +164,20 @@ const BandScreen = ({ route }): React.ReactElement => {
     const response = await demoteIntegrant({ id, bandId: band.id })
     if ([200, 201].includes(response.status)) {
       showMessage({
-        message: `A admin do integrante selecionado foi removido com sucesso!`,
+        message: t('success_msgs.demote_msg'),
         type: 'success',
         duration: 2000
       })
       refetchItem()
     } else if ([401, 403].includes(response.status)) {
       showMessage({
-        message: `Você não tem permissão para gerenciar níveis de permissão dos integrantes da banda!`,
+        message: t('error_msgs.demote_denied_msg'),
         type: 'warning',
         duration: 2000
       })
     } else {
       showMessage({
-        message: `Ocorreu um erro ao remover o admin do integrante selecionado! Tente novamente mais tarde.`,
+        message: t('error_msgs.demote_error_msg'),
         type: 'danger',
         duration: 2000
       })
@@ -186,20 +188,20 @@ const BandScreen = ({ route }): React.ReactElement => {
     const response = await promoteIntegrant({ id, bandId: band.id })
     if ([200, 201].includes(response.status)) {
       showMessage({
-        message: `O integrante selecionado agora é um admin da banda!`,
+        message: t('success_msgs.promote_msg'),
         type: 'success',
         duration: 2000
       })
       refetchItem()
     } else if ([401, 403].includes(response.status)) {
       showMessage({
-        message: `Você não tem permissão para gerenciar níveis de permissão dos integrantes da banda!`,
+        message: t('error_msgs.promote_denied_msg'),
         type: 'warning',
         duration: 2000
       })
     } else {
       showMessage({
-        message: `Ocorreu um erro ao promover o integrante selecionado! Tente novamente mais tarde.`,
+        message: t('error_msgs.promote_error_msg'),
         type: 'danger',
         duration: 2000
       })
@@ -212,20 +214,20 @@ const BandScreen = ({ route }): React.ReactElement => {
         const removeBandResponse = await removeBand(action.id)
         if ([200, 201].includes(removeBandResponse.status)) {
           showMessage({
-            message: `A banda foi removida com sucesso!`,
+            message: t('success_msgs.band_remove_msg'),
             type: 'success',
             duration: 2000
           })
           goBack()
         } else if ([401, 403].includes(removeBandResponse.status)) {
           showMessage({
-            message: `Você não tem permissão para remover essa banda!`,
+            message: t('error_msgs.band_remove_denied'),
             type: 'warning',
             duration: 2000
           })
         } else {
           showMessage({
-            message: `Ocorreu um erro ao remover a banda! Tente novamente mais tarde.`,
+            message: t('error_msgs.band_remove_error'),
             type: 'danger',
             duration: 2000
           })
@@ -238,20 +240,20 @@ const BandScreen = ({ route }): React.ReactElement => {
         })
         if ([200, 201].includes(removeIntegrantResponse.status)) {
           showMessage({
-            message: `O integrante selecionado foi removido da banda!`,
+            message: t('success_msgs.remove_member_msg'),
             type: 'success',
             duration: 2000
           })
           refetchItem()
         } else if ([401, 403].includes(removeIntegrantResponse.status)) {
           showMessage({
-            message: `Você não tem permissão para remover integrantes da banda!`,
+            message: t('error_msgs.remove_member_denied_msg'),
             type: 'warning',
             duration: 2000
           })
         } else {
           showMessage({
-            message: `Ocorreu um erro ao remover o integrante selecionado! Tente novamente mais tarde.`,
+            message: t('error_msgs.remove_member_error_msg'),
             type: 'danger',
             duration: 2000
           })
@@ -264,20 +266,20 @@ const BandScreen = ({ route }): React.ReactElement => {
         })
         if ([200, 201].includes(transferOwnershipResponse.status)) {
           showMessage({
-            message: `O integrante selecionado é o novo lider da banda!`,
+            message: t('success_msgs.owner_transfer_msg'),
             type: 'success',
             duration: 2000
           })
           refetchItem()
         } else if ([401, 403].includes(transferOwnershipResponse.status)) {
           showMessage({
-            message: `Você só pode transferir liderança se for o lider atual da banda!`,
+            message: t('error_msgs.owner_transfer_denied_msg'),
             type: 'warning',
             duration: 2000
           })
         } else {
           showMessage({
-            message: `Ocorreu um erro ao transferir a liderança! Tente novamente mais tarde.`,
+            message: t('error_msgs.owner_transfer_error_msg'),
             type: 'danger',
             duration: 2000
           })
@@ -312,25 +314,25 @@ const BandScreen = ({ route }): React.ReactElement => {
               <BandFeature
                 isLoading={isFetchingSongs}
                 amount={songAmount}
-                title="Músicas publicadas"
+                title={t('band_screen.songs_title')}
                 onPress={() => navigate('BandSongs', { item: band, itemId: band.id })}
               />
               <BandFeature
                 isLoading={isFetchingCategories}
                 amount={categoryAmount}
-                title="Categorias registradas"
+                title={t('band_screen.categories_title')}
                 onPress={() => navigate('BandCategories', { item: band, itemId: band.id })}
               />
               <BandFeature
                 isLoading={isFetchingConcerts}
                 amount={concertAmount}
-                title="Apresentações realizadas"
+                title={t('band_screen.concerts_title')}
                 onPress={() => navigate('BandConcerts', { item: band, itemId: band.id })}
               />
             </BandFeatureContainer>
             <Space my={2} />
             <Text category="h5">
-              Participantes
+              {t('band_screen.members_title')}
             </Text>
             <FlatList
               ItemSeparatorComponent={() => <Space my={1} />}

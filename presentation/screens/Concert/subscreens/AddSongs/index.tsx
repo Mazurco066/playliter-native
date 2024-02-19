@@ -1,5 +1,6 @@
 // Dependencies
 import React, { useState, useCallback } from 'react'
+import { useTranslation } from 'react-i18next'
 import styled from 'styled-components'
 import { useNavigation } from '@react-navigation/native'
 import { NativeStackNavigationProp } from '@react-navigation/native-stack'
@@ -61,6 +62,7 @@ const AddConcertSongs = ({ route }): React.ReactElement => {
   const theme = useTheme()
   const [ filterSearch, setFilterSearch ] = useState<string>('')
   const { navigate } = useNavigation<NativeStackNavigationProp<MainStackParamList>>()
+  const { t } = useTranslation()
 
   // Api request function
   const fetchBandSongs = async ({ pageParam = 0 }) => {
@@ -110,25 +112,25 @@ const AddConcertSongs = ({ route }): React.ReactElement => {
     const response = await linkSong({ id: item.id, songId })
     if ([200, 201].includes(response.status)) {
       showMessage({
-        message: `A música selecionada foi adicionada a apresentação!`,
+        message: t('success_msgs.add_concert_song_msg'),
         type: 'success',
         duration: 2000
       })
     } else if ([400].includes(response.status)) {
       showMessage({
-        message: `Essa música já está presente na apresentação!`,
+        message: t('error_msgs.add_concert_song_present_msg'),
         type: 'warning',
         duration: 2000
       })
     } else if ([401, 403].includes(response.status)) {
       showMessage({
-        message: `Você não tem permissão para adicionar músicas na apresentação!`,
+        message: t('error_msgs.add_concert_song_denied_msg'),
         type: 'warning',
         duration: 2000
       })
     } else {
       showMessage({
-        message: `Ocorreu um erro ao adicionar a música na apresentação! Tente novamente mais tarde.`,
+        message: t('error_msgs.add_concert_song_error_msg'),
         type: 'danger',
         duration: 2000
       })
@@ -179,16 +181,16 @@ const AddConcertSongs = ({ route }): React.ReactElement => {
       }}
     >
       <Text category="h5">
-        Adicionar músicas
+        {t('concert_screen.add_songs_heading')}
       </Text>
       <Space my={1} />
       <Text category="s1">
-        Pequise por músicas salvas nessa banda:
+        {t('concert_screen.add_band_songs_placeholder')}
       </Text>
       <Space my={1} />
       <SearchContainer>
         <SearchInput 
-          placeholder="Pesquisar..."
+          placeholder={t('concert_screen.add_songs_label')}
           keyboardType="default"
           size="small"
           value={filterSearch}
@@ -211,7 +213,7 @@ const AddConcertSongs = ({ route }): React.ReactElement => {
               }
             }}
           >
-            Limpar Filtros
+            {t('concert_screen.clear_filter_action')}
           </SearchButton>
           <SearchButton
             status="primary"
@@ -224,7 +226,7 @@ const AddConcertSongs = ({ route }): React.ReactElement => {
               }
             }}
           >
-            Pesquisar
+            {t('concert_screen.search_action')}
           </SearchButton>
         </ButtonContainer>
       </SearchContainer>
