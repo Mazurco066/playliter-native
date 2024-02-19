@@ -44,7 +44,7 @@ const AboutScreen = ({ navigation }) => {
         <Text
           category="c1"
         >
-          {t('about_screen.version')}1.1.1
+          {t('about_screen.version')}1.2.0
         </Text>
         <Space my={2} />
         <Text
