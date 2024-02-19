@@ -1,5 +1,6 @@
 // Dependencies
 import React from 'react'
+import { useTranslation } from 'react-i18next'
 import styled from 'styled-components'
 import { color } from 'styled-system'
 import { useAuthStore } from '../../../main/store'
@@ -49,6 +50,7 @@ const TopNavigation = ({ navigation }): React.ReactElement => {
   const theme = useTheme()
   const [ menuVisible, setMenuVisible ] = React.useState(false)
   const { account, logoff } = useAuthStore()
+  const { t } = useTranslation()
 
   // Actions
   const toggleMenu = (): void => {
@@ -83,7 +85,7 @@ const TopNavigation = ({ navigation }): React.ReactElement => {
     >
       <MenuItem
         accessoryLeft={getIcon('person-outline')}
-        title='Perfil'
+        title={t('components.menu_profile')}
         onPress={() => {
           toggleMenu()
           navigation.navigate('Profile')
@@ -94,7 +96,7 @@ const TopNavigation = ({ navigation }): React.ReactElement => {
       />
       <MenuItem
         accessoryLeft={getIcon('info')}
-        title='Sobre'
+        title={t('components.menu_about')}
         onPress={() => {
           toggleMenu()
           navigation.navigate('About')
@@ -105,7 +107,7 @@ const TopNavigation = ({ navigation }): React.ReactElement => {
       />
       <MenuItem
         accessoryLeft={getIcon('log-out')}
-        title='Logout'
+        title={t('components.menu_logout')}
         onPress={() => {
           logoff()
           navigation.replace('Auth')

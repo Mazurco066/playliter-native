@@ -1,8 +1,9 @@
 // Dependencies
 import React from 'react'
+import { useTranslation } from 'react-i18next'
 import { NativeStackNavigationProp } from '@react-navigation/native-stack'
 import { useNavigation } from '@react-navigation/native'
-import { navigationCards } from '../../utils'
+import { getNavigationCards } from '../../utils'
 import { MainStackParamList } from '../../../main/router'
 
 // Components
@@ -14,12 +15,21 @@ import { Space } from '../../components'
 const CardNavigation = ({ ...rest }): React.ReactElement => {
   // Hooks
   const { navigate } = useNavigation<NativeStackNavigationProp<MainStackParamList>>()
+  const { t } = useTranslation()
+
+  // Card translated data
+  const cardsData = getNavigationCards(
+    t('components.card_home'),
+    t('components.card_bands'),
+    t('components.card_songs'),
+    t('components.card_profile')
+  )
 
   // TSX
   return (
     <View {...rest}>
       <FlatList
-        data={navigationCards}
+        data={cardsData}
         renderItem={({ item: {
           icon,
           label,

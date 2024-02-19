@@ -51,6 +51,21 @@
     "export_action": "Export",
     "next_action": "Next"
   },
+  "components": {
+    "update_tone_action": "Update pitch",
+    "tone_label": "Pitch: ",
+    "hide_chords": "Hide chords diagrams",
+    "show_chords": "Show chords diagrams",
+    "confirm_title": "Are you sure?",
+    "confirm_message": "This action is permanent!",
+    "menu_profile": "Profile",
+    "menu_about": "About",
+    "menu_logout": "Logoff",
+    "card_home": "Home",
+    "card_bands": "Bands",
+    "card_songs": "Songs",
+    "card_profile": "My profile"
+  },
   "song_screen": {
     "duplicate_action": "Clone",
     "edit_action": "Edit",
@@ -236,7 +251,8 @@
     "reorder_msg": "Songs successfully reordered!",
     "save_concert_msg": "Concert successfully saved.",
     "save_note_msg": "The selected note was successfully removed from the concert!",
-    "remove_note_msg": "Note successfully saved!"
+    "remove_note_msg": "Note successfully saved!",
+    "pitch_change_msg": "The song base pitch was successfully updated!"
   },
   "error_msgs": {
     "demote_denied_msg": "You lack permissions to manage member roles!",
@@ -299,6 +315,9 @@
     "save_note_denied_msg": "You have no permission to delete this note!",
     "save_note_error_msg": "An error ocourred while removing the note! Try again later.",
     "remove_note_denied_msg": "You lack permissions to save notes in this concert!",
-    "remove_note_error_msg": "An error ocourred while saving the note! Try again later."
+    "remove_note_error_msg": "An error ocourred while saving the note! Try again later.",
+    "pitch_change_invalid_msg": "Verify if the pitch parameter is correct!",
+    "pitch_change_denied_msg": "You lack permissions to update the base pitch to this song! Clone to a band that you have permissions to update it.",
+    "pitch_change_error_msg": "An error ocourred while updating the song base pitch! Try again later."
   }
 }

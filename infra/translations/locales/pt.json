@@ -51,6 +51,21 @@
     "export_action": "Exportar",
     "next_action": "Próximo"
   },
+  "components": {
+    "update_tone_action": "Atualizar tom base",
+    "tone_label": "Tom: ",
+    "hide_chords": "Ocultar acordes",
+    "show_chords": "Mostrar acordes",
+    "confirm_title": "Tem certeza?",
+    "confirm_message": "Essa ação é permanente!",
+    "menu_profile": "Perfil",
+    "menu_about": "Sobre",
+    "menu_logout": "Logout",
+    "card_home": "Home",
+    "card_bands": "Bandas",
+    "card_songs": "Músicas",
+    "card_profile": "Meu perfil"
+  },
   "song_screen": {
     "duplicate_action": "Duplicar",
     "edit_action": "Editar",
@@ -236,7 +251,8 @@
     "reorder_msg": "As músicas dessa apresentação foram reordenadas com sucesso!",
     "save_concert_msg": "Apresentação salva com sucesso.",
     "save_note_msg": "A anotação foi removida da apresentação com sucesso!",
-    "remove_note_msg": "A anotação foi salva com sucesso!"
+    "remove_note_msg": "A anotação foi salva com sucesso!",
+    "pitch_change_msg": "Tom base da música alterado com sucesso!"
   },
   "error_msgs": {
     "demote_denied_msg": "Você não tem permissão para gerenciar níveis de permissão dos integrantes da banda!",
@@ -299,6 +315,9 @@
     "save_note_denied_msg": "Você não tem permissão para remover essa anotação!",
     "save_note_error_msg": "Ocorreu um erro ao remover a anotação! Tente novamente mais tarde.",
     "remove_note_denied_msg": "Você não tem permissão para salvar anotações!",
-    "remove_note_error_msg": "Ocorreu um erro ao salvar a anotação! Tente novamente mais tarde."
+    "remove_note_error_msg": "Ocorreu um erro ao salvar a anotação! Tente novamente mais tarde.",
+    "pitch_change_invalid_msg": "Verifique se os parâmetros enviados para mudança de tom base estão corretos!",
+    "pitch_change_denied_msg": "Você não permissão para alterar o tom base dessa música!",
+    "pitch_change_error_msg": "Ocorreu um erro ao alterar o tom base dessa música! Tente novamente mais tarde."
   }
 }
