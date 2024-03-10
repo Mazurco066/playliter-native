@@ -37,17 +37,13 @@ const BandsScreen = () => {
   const { t } = useTranslation()
 
   // HTTP Requests
-  const {
-    data: bands,
-    isLoading: isBandsLoading,
-    refetch
-  } = useQuery(
+  const reqBands = useQuery(
     ['bands'],
     () => api.bands.getBands()
   )
 
   // Refetch on focus
-  useRefreshOnFocus(refetch)
+  useRefreshOnFocus(reqBands.refetch)
 
   // Hooks
   const { navigate } = useNavigation<NativeStackNavigationProp<MainStackParamList>>()
@@ -62,12 +58,12 @@ const BandsScreen = () => {
 
   // Render list empty component
   const renderListEmptyComponent = useCallback(() => (
-    isBandsLoading ? null : (
+    reqBands.isLoading ? null : (
       <Text category="s1">
         {t('main_screen.no_bands')}
       </Text>
     )
-  ), [isBandsLoading, t])
+  ), [reqBands.isLoading, t])
 
   // TSX
   return (
@@ -77,14 +73,14 @@ const BandsScreen = () => {
       </Text>
       <Space my={1} />      
       {
-        isBandsLoading ? (
+        reqBands.isLoading ? (
           <LoadingContainer>
             <Spinner size="large" />
           </LoadingContainer>
         ) : (
           <>
             {
-              bands?.data?.data.length > 0 ? (
+              reqBands.data?.data?.data.length > 0 ? (
                 <>
                   <Text category="s1">
                     {t('bands_screen.description')}
@@ -94,7 +90,7 @@ const BandsScreen = () => {
                     size="small"
                     accessoryLeft={getIcon('plus-outline')}
                     onPress={() => navigate("SaveBand", { item: null })}
-                    disabled={isBandsLoading}
+                    disabled={reqBands.isLoading}
                   >
                     {t('bands_screen.add_band')}
                   </Button>
@@ -105,7 +101,7 @@ const BandsScreen = () => {
                     keyExtractor={(item) => item.id}
                     showsHorizontalScrollIndicator={false}
                     scrollEnabled={false}
-                    data={bands?.data?.data || []}
+                    data={reqBands.data?.data?.data || []}
                     renderItem={renderListItem}
                     ListEmptyComponent={renderListEmptyComponent}
                   />
@@ -120,7 +116,7 @@ const BandsScreen = () => {
                     size="small"
                     accessoryLeft={getIcon('plus-outline')}
                     onPress={() => navigate("SaveBand", { item: null })}
-                    disabled={isBandsLoading}
+                    disabled={reqBands.isLoading}
                   >
                     {t('bands_screen.add_band')}
                   </Button>

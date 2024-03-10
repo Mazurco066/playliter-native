@@ -67,18 +67,15 @@ const ActionContainer = styled(View)`
 const ConcertNotes = ({ route }): React.ReactElement => {
   // Http requests
   const { item: { id: concertId } } = route.params
-  const {
-    data: updatedItem,
-    refetch: refetchItem,
-    isLoading
-  } = useQuery(
+  const reqConcert = useQuery(
     [`get-concert-${concertId}`],
     () => api.concerts.getConcert(concertId)
   )
-  const { mutateAsync: fetchLiturgy } = useMutation((date: string) => {
+  const reqScrapLiturgy = useMutation((date: string) => {
     return api.helpers.scrapLiturgy(date)
   })
-  const { mutateAsync: addObservationRequest } = useMutation((data: {
+
+  const reqAddNote = useMutation((data: {
     concertId: string,
     title: string,
     content: string
@@ -88,7 +85,7 @@ const ConcertNotes = ({ route }): React.ReactElement => {
 
 
   // Refetch on focus
-  useRefreshOnFocus(refetchItem)
+  useRefreshOnFocus(reqConcert.refetch)
 
   // Hooks
   const [ isScrapLoading, setScrapLoading ] = useState<boolean>(false)
@@ -99,11 +96,11 @@ const ConcertNotes = ({ route }): React.ReactElement => {
 
   // Effects
   useEffect(() => {
-    if (updatedItem && updatedItem.data) {
-      const { data } = updatedItem.data
+    if (reqConcert.data && reqConcert.data.data) {
+      const { data } = reqConcert.data.data
       if (data) setConcert(data as IConcert)
     }
-  }, [updatedItem])
+  }, [reqConcert.data])
 
   // Render item
   const renderItem = useCallback(({ item }: ListRenderItemInfo<IObservationType>) => (
@@ -116,7 +113,9 @@ const ConcertNotes = ({ route }): React.ReactElement => {
   // Handlers
   const onImportLiturgy = async () => {
     setScrapLoading(true)
-    const liturgyResponse = await fetchLiturgy(concert.date.split('T')[0])
+    const liturgyResponse = await reqScrapLiturgy.mutateAsync(
+      concert.date.split('T')[0]
+    )
 
      // Verify if request was successfull
      if ([200, 201].includes(liturgyResponse.status)) {
@@ -126,7 +125,7 @@ const ConcertNotes = ({ route }): React.ReactElement => {
       const responses = []
       for (let i = 0; i < liturgyResponse.data.data.length; i++) {
         const liturgy = liturgyResponse.data.data[i]
-        const obsResponse = await addObservationRequest({
+        const obsResponse = await reqAddNote.mutateAsync({
           title: liturgy.title,
           content: liturgy.content,
           concertId: concert.id
@@ -139,7 +138,7 @@ const ConcertNotes = ({ route }): React.ReactElement => {
 
       // User feedback
       setScrapLoading(false)
-      refetchItem()
+      reqConcert.refetch()
       if (!hasImportErrors) {
         showMessage({
           message: t('success_msgs.liturgy_import_msg'),
@@ -190,7 +189,7 @@ const ConcertNotes = ({ route }): React.ReactElement => {
               status="primary"
               size="medium"
               onPress={onImportLiturgy}
-              disabled={isLoading || isScrapLoading}
+              disabled={reqConcert.isLoading || isScrapLoading}
               style={{
                 flex: 1,
                 borderRadius: 8

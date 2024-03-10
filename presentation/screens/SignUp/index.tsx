@@ -82,13 +82,13 @@ const SignUpScreen = ({ navigation }): React.ReactElement => {
   const { t } = useTranslation()
 
   // Mutations
-  const { isLoading, mutateAsync } = useMutation(
+  const reqCreateAccount = useMutation(
     (data: CreateAccountDTO) => {
       return api.accounts.createAccount({ ...data })
     }
   )
 
-  const { isLoading: isLoginLoading, mutateAsync: loginAction } = useMutation(
+  const reqLogin = useMutation(
     (data: { username: string, password: string }) => {
       return api.auth.login({
         username: data.username,
@@ -108,14 +108,14 @@ const SignUpScreen = ({ navigation }): React.ReactElement => {
     name: string,
     email: string
   }) => {
-    const response = await mutateAsync({
+    const response = await reqCreateAccount.mutateAsync({
      password: data.password,
      email: data.email,
      name: data.name,
      username: data.username
     })
     if ([200, 201].includes(response.status)) {
-      const loginResponse = await loginAction({
+      const loginResponse = await reqLogin.mutateAsync({
         username: data.username,
         password: data.password
       })
@@ -196,7 +196,7 @@ const SignUpScreen = ({ navigation }): React.ReactElement => {
                   onChangeText={nextValue => onChange(nextValue)}
                   caption={generateCaption(errors.username as FieldError)}
                   textStyle={textStyle}
-                  disabled={isLoginLoading || isLoading}
+                  disabled={reqLogin.isLoading || reqCreateAccount.isLoading}
                 />
               )}
               defaultValue=""
@@ -217,7 +217,7 @@ const SignUpScreen = ({ navigation }): React.ReactElement => {
                   onChangeText={nextValue => onChange(nextValue)}
                   caption={generateCaption(errors.username as FieldError)}
                   textStyle={textStyle}
-                  disabled={isLoginLoading || isLoading}
+                  disabled={reqLogin.isLoading || reqCreateAccount.isLoading}
                 />
               )}
               defaultValue=""
@@ -238,7 +238,7 @@ const SignUpScreen = ({ navigation }): React.ReactElement => {
                   onChangeText={nextValue => onChange(nextValue)}
                   caption={generateCaption(errors.username as FieldError)}
                   textStyle={textStyle}
-                  disabled={isLoginLoading || isLoading}
+                  disabled={reqLogin.isLoading || reqCreateAccount.isLoading}
                 />
               )}
               defaultValue=""
@@ -261,21 +261,21 @@ const SignUpScreen = ({ navigation }): React.ReactElement => {
                   onChangeText={nextValue => onChange(nextValue)}
                   caption={generateCaption(errors.password as FieldError)}
                   textStyle={textStyle}
-                  disabled={isLoginLoading || isLoading}
+                  disabled={reqLogin.isLoading || reqCreateAccount.isLoading}
                 />
               )}
               defaultValue=""
             />
             <Space my={2} />
             <Button
-              disabled={isLoginLoading || isLoading}
+              disabled={reqLogin.isLoading || reqCreateAccount.isLoading}
               onPress={handleSubmit(submitLogin)}
             >
               {t('auth.create_action')}
             </Button>
             <Space my={1} />
             <TouchableOpacity
-              disabled={isLoginLoading || isLoading}
+              disabled={reqLogin.isLoading || reqCreateAccount.isLoading}
               onPress={() => {
                 navigation.goBack()
               }}

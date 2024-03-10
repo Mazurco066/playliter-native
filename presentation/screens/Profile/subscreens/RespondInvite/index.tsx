@@ -42,7 +42,7 @@ const RespondInviteScreen = ({ route, navigation }): React.ReactElement => {
   const { t } = useTranslation()
 
   // Http requests
-  const { isLoading, mutateAsync: respondInvite } = useMutation(
+  const reqRespondInvite = useMutation(
     (data: RespondInviteDto) => api.bands.respondInvitation(data)
   )
 
@@ -55,7 +55,7 @@ const RespondInviteScreen = ({ route, navigation }): React.ReactElement => {
   const respondInviteAction = async (response: 'accepted' | 'denied') => {
     const inviteId = currentInvite.id
     const requestBody = { inviteId, response }
-    const apiResponse = await respondInvite(requestBody)
+    const apiResponse = await reqRespondInvite.mutateAsync(requestBody)
     if ([200, 201].includes(apiResponse.status)) {
       navigation.goBack()
       showMessage({
@@ -127,7 +127,7 @@ const RespondInviteScreen = ({ route, navigation }): React.ReactElement => {
         status="success"
         size="small"
         accessoryLeft={getIcon('checkmark-outline')}
-        disabled={isLoading}
+        disabled={reqRespondInvite.isLoading}
         onPress={() => respondInviteAction('accepted')}
       >
         {t('profile.accept_action')}
@@ -137,7 +137,7 @@ const RespondInviteScreen = ({ route, navigation }): React.ReactElement => {
         status="danger"
         size="small"
         accessoryLeft={getIcon('close-outline')}
-        disabled={isLoading}
+        disabled={reqRespondInvite.isLoading}
         onPress={() => respondInviteAction('denied')}
       >
         {t('profile.deny_action')}

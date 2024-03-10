@@ -67,10 +67,7 @@ const ReorderConcert = ({ route }): React.ReactElement => {
   const { item } = route.params
 
   // Http requests
-  const {
-    isLoading: isReorderingSongs,
-    mutateAsync: reorderSongs
-  } = useMutation(
+  const reqReorder = useMutation(
     (data: { id: string, songs: string[] }) =>
       api.concerts.reorderConcert(data.id, data.songs)
   )
@@ -89,10 +86,10 @@ const ReorderConcert = ({ route }): React.ReactElement => {
         item={item}
         onLongPress={drag}
         isActive={isActive}
-        isLoading={isReorderingSongs}
+        isLoading={reqReorder.isLoading}
       />
     )
-  }, [isReorderingSongs])
+  }, [reqReorder.isLoading])
 
   const onDragBegin = useCallback(() => {
     setScrollEnabled(false)
@@ -106,7 +103,7 @@ const ReorderConcert = ({ route }): React.ReactElement => {
   // Actions
   const submitOrder = async () => {
     const songIds = songsData.map((s) => s.id)
-    const response = await reorderSongs({
+    const response = await reqReorder.mutateAsync({
       id: item.id,
       songs: songIds
     })
@@ -162,7 +159,7 @@ const ReorderConcert = ({ route }): React.ReactElement => {
           status="danger"
           size="small"
           onPress={() => goBack()}
-          disabled={isReorderingSongs}
+          disabled={reqReorder.isLoading}
           style={{ flex: 1 }}
           accessoryLeft={getIcon('close-outline')}
         >
@@ -172,7 +169,7 @@ const ReorderConcert = ({ route }): React.ReactElement => {
           status="primary"
           size="small"
           onPress={submitOrder}
-          disabled={isReorderingSongs}
+          disabled={reqReorder.isLoading}
           style={{ flex: 1 }}
           accessoryLeft={getIcon('checkmark-outline')}
         >
@@ -196,7 +193,7 @@ const ReorderConcert = ({ route }): React.ReactElement => {
           status="danger"
           size="small"
           onPress={() => goBack()}
-          disabled={isReorderingSongs}
+          disabled={reqReorder.isLoading}
           style={{ flex: 1 }}
           accessoryLeft={getIcon('close-outline')}
         >
@@ -206,7 +203,7 @@ const ReorderConcert = ({ route }): React.ReactElement => {
           status="primary"
           size="small"
           onPress={submitOrder}
-          disabled={isReorderingSongs}
+          disabled={reqReorder.isLoading}
           style={{ flex: 1 }}
           accessoryLeft={getIcon('checkmark-outline')}
         >

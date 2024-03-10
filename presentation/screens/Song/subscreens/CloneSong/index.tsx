@@ -37,35 +37,28 @@ const CloneSongScreen = ({ route }): React.ReactElement => {
   const { t } = useTranslation()
 
   // HTTP Requests
-  const {
-    data: bands,
-    isLoading: isBandsLoading,
-    refetch
-  } = useQuery(
+  const reqBands = useQuery(
     ['bands'],
     () => api.bands.getBands()
   )
 
-  const { isLoading: isCloneLoading, mutateAsync: cloneSong } = useMutation(
+  const reqClone = useMutation(
     (data: { song: AddSongDto, bandId: string }) => api.songs.addSong(data.bandId, data.song)
   )
 
-  const {
-    isLoading: isCategoriesLoading,
-    mutateAsync: fetchCategories
-  } = useMutation(
+  const reqCategories = useMutation(
     (bandId: string) => api.songs.getBandSongCategories(bandId)
   )
 
   // Refetch on focus
-  useRefreshOnFocus(refetch)
+  useRefreshOnFocus(reqBands.refetch)
 
   // Actions
   const confirmDialogActions = async (action: ConfirmActions) => {
     const bandId = action.id
 
     // Load band categories
-    const categoriesResponse = await fetchCategories(bandId)
+    const categoriesResponse = await reqCategories.mutateAsync(bandId)
     if (categoriesResponse.status < 400) {
 
       // Verifying if band has categories
@@ -83,7 +76,7 @@ const CloneSongScreen = ({ route }): React.ReactElement => {
         }
 
         // Clone request
-        const response = await(cloneSong({ song: songPayload, bandId }))
+        const response = await reqClone.mutateAsync({ song: songPayload, bandId })
 
         // Verify response
         if (response.status < 400) {
@@ -125,18 +118,28 @@ const CloneSongScreen = ({ route }): React.ReactElement => {
         setConfirmDialogState(true)
       }}
       item={item}
-      isLoading={isBandsLoading || isCloneLoading || isCategoriesLoading}
+      isLoading={
+        reqBands.isLoading ||
+        reqClone.isLoading ||
+        reqCategories.isLoading
+      }
     />
-  ), [setAction, setConfirmDialogState, isBandsLoading, isCloneLoading, isCategoriesLoading])
+  ), [
+    setAction,
+    setConfirmDialogState,
+    reqBands.isLoading,
+    reqClone.isLoading,
+    reqCategories.isLoading
+  ])
 
   // Render list empty component
   const renderListEmptyComponent = useCallback(() => (
-    isBandsLoading ? null : (
+    reqBands.isLoading ? null : (
       <Text category="s1">
         {t('song_screen.no_bands')}
       </Text>
     )
-  ), [isBandsLoading, t])
+  ), [reqBands.isLoading, t])
 
   // TSX
   return (
@@ -156,7 +159,7 @@ const CloneSongScreen = ({ route }): React.ReactElement => {
         keyExtractor={(item) => item.id}
         showsHorizontalScrollIndicator={false}
         scrollEnabled={false}
-        data={bands?.data?.data || []}
+        data={reqBands.data?.data?.data || []}
         renderItem={renderListItem}
       />
       <ConfirmDialog

@@ -52,67 +52,49 @@ const BandScreen = ({ route }): React.ReactElement => {
   const [ action, setAction ] = useState<ConfirmActions>({ name: 'delete_band' })
 
   // Http requests
-  const {
-    data: updatedItem,
-    isLoading: isFetching,
-    refetch: refetchItem
-  } = useQuery(
+  const reqBand = useQuery(
     [`get-band-${itemId}`],
     () => api.bands.getBand(itemId)
   )
 
-  const {
-    data: bandConcerts,
-    isLoading: isFetchingConcerts,
-    refetch: refetchConcerts
-  } = useQuery(
+  const reqConcerts = useQuery(
     [`get-band-concerts-${itemId}`],
     () => api.concerts.getConcerts(itemId, { limit: 1, offset: 0 })
   )
 
-  const {
-    data: bandSongs,
-    isLoading: isFetchingSongs,
-    refetch: refetchSongs
-  } = useQuery(
+  const reqSongs = useQuery(
     [`get-band-songs-${itemId}`],
     () => api.songs.getBandSongs(itemId, { limit: 1, offset: 0 })
   )
 
-  const {
-    data: bandCategories,
-    isLoading: isFetchingCategories,
-    refetch: refetchCategories
-  } = useQuery(
+  const reqCategories = useQuery(
     [`get-band-categories-${itemId}`],
     () => api.songs.getBandSongCategories(itemId, { limit: 1, offset: 0 })
   )
 
-  const { isLoading: isPromoteLoading, mutateAsync: promoteIntegrant } = useMutation(
+  const reqPromoteIntegrant = useMutation(
     (data: { id: string, bandId: string }) => api.bands.promoteIntegrant(data.bandId, data.id)
   )
 
-  const { isLoading: isTransferLoading, mutateAsync: transferOwnership } = useMutation(
+  const reqTransferOwnership = useMutation(
     (data: { id: string, bandId: string }) => api.bands.transferOwnership(data.bandId, data.id)
   )
 
-  const { isLoading: isDemoteLoading, mutateAsync: demoteIntegrant } = useMutation(
+  const reqDemoteIntegrant = useMutation(
     (data: { id: string, bandId: string }) => api.bands.demoteIntegrant(data.bandId, data.id)
   )
 
-  const { isLoading: isRemoveIntegrantLoading, mutateAsync: removeIntegrant } = useMutation(
+  const reqRemoveIntegrant = useMutation(
     (data: { id: string, bandId: string }) => api.bands.removeIntegrant(data.bandId, data.id)
   )
 
-  const { isLoading: isRemoveBandLoading, mutateAsync: removeBand } = useMutation(
-    (id: string) => api.bands.deleteBand(id)
-  )
+  const reqRemoveBand = useMutation((id: string) => api.bands.deleteBand(id))
 
   // Refetch on focus
-  useRefreshOnFocus(refetchItem)
-  useRefreshOnFocus(refetchConcerts)
-  useRefreshOnFocus(refetchSongs)
-  useRefreshOnFocus(refetchCategories)
+  useRefreshOnFocus(reqBand.refetch)
+  useRefreshOnFocus(reqConcerts.refetch)
+  useRefreshOnFocus(reqSongs.refetch)
+  useRefreshOnFocus(reqCategories.refetch)
 
   // Effects
   useEffect(() => {
@@ -120,16 +102,16 @@ const BandScreen = ({ route }): React.ReactElement => {
   }, [])
 
   useEffect(() => {
-    if (updatedItem && updatedItem.data) {
-      const { data } = updatedItem.data
+    if (reqBand.data && reqBand.data.data) {
+      const { data } = reqBand.data.data
       if (data) setBand(data as IBand)
     }
-  }, [updatedItem])
+  }, [reqBand.data])
 
   // Numbers and data
-  const categoryAmount = bandCategories?.data?.data?.total || 0
-  const concertAmount = bandConcerts?.data?.data?.total || 0
-  const songAmount = bandSongs?.data?.data?.total || 0
+  const categoryAmount = reqCategories.data?.data?.data?.total || 0
+  const concertAmount = reqConcerts.data?.data?.data?.total || 0
+  const songAmount = reqSongs.data?.data?.data?.total || 0
   const integrants = band?.members || []
 
   // Render functions
@@ -146,29 +128,39 @@ const BandScreen = ({ route }): React.ReactElement => {
         setAction({ name: 'remove_integrant', id: item.id })
         setConfirmDialogState(true)
       }}
-      isLoading={isFetching || isPromoteLoading || isDemoteLoading || isRemoveIntegrantLoading || isRemoveBandLoading || isTransferLoading}
+      isLoading={
+        reqBand.isLoading ||
+        reqPromoteIntegrant.isLoading ||
+        reqDemoteIntegrant.isLoading ||
+        reqRemoveIntegrant.isLoading ||
+        reqRemoveBand.isLoading ||
+        reqTransferOwnership.isLoading
+      }
     />
   ), [
-    isFetching,
-    isPromoteLoading,
-    isDemoteLoading,
-    isRemoveIntegrantLoading,
-    isRemoveBandLoading,
-    isTransferLoading,
+    reqBand.isLoading,
+    reqPromoteIntegrant.isLoading,
+    reqDemoteIntegrant.isLoading,
+    reqRemoveIntegrant.isLoading,
+    reqRemoveBand.isLoading,
+    reqTransferOwnership.isLoading,
     setAction,
     setConfirmDialogState
   ])
 
   // Actions
   const demoteIntegrantAction = async (id: string) => {
-    const response = await demoteIntegrant({ id, bandId: band.id })
+    const response = await reqDemoteIntegrant.mutateAsync({
+      id,
+      bandId: band.id
+    })
     if ([200, 201].includes(response.status)) {
       showMessage({
         message: t('success_msgs.demote_msg'),
         type: 'success',
         duration: 2000
       })
-      refetchItem()
+      reqBand.refetch()
     } else if ([401, 403].includes(response.status)) {
       showMessage({
         message: t('error_msgs.demote_denied_msg'),
@@ -185,14 +177,17 @@ const BandScreen = ({ route }): React.ReactElement => {
   }
 
   const promoteIntegrantAction = async (id: string) => {
-    const response = await promoteIntegrant({ id, bandId: band.id })
+    const response = await reqPromoteIntegrant.mutateAsync({
+      id,
+      bandId: band.id
+    })
     if ([200, 201].includes(response.status)) {
       showMessage({
         message: t('success_msgs.promote_msg'),
         type: 'success',
         duration: 2000
       })
-      refetchItem()
+      reqBand.refetch()
     } else if ([401, 403].includes(response.status)) {
       showMessage({
         message: t('error_msgs.promote_denied_msg'),
@@ -211,7 +206,7 @@ const BandScreen = ({ route }): React.ReactElement => {
   const confirmDialogActions = async (action: ConfirmActions) => {
     switch (action.name) {
       case 'delete_band':
-        const removeBandResponse = await removeBand(action.id)
+        const removeBandResponse = await reqRemoveBand.mutateAsync(action.id)
         if ([200, 201].includes(removeBandResponse.status)) {
           showMessage({
             message: t('success_msgs.band_remove_msg'),
@@ -234,7 +229,7 @@ const BandScreen = ({ route }): React.ReactElement => {
         }
         break
       case 'remove_integrant':
-        const removeIntegrantResponse = await removeIntegrant({
+        const removeIntegrantResponse = await reqRemoveIntegrant.mutateAsync({
           id: action.id,
           bandId: band.id
         })
@@ -244,7 +239,7 @@ const BandScreen = ({ route }): React.ReactElement => {
             type: 'success',
             duration: 2000
           })
-          refetchItem()
+          reqBand.refetch()
         } else if ([401, 403].includes(removeIntegrantResponse.status)) {
           showMessage({
             message: t('error_msgs.remove_member_denied_msg'),
@@ -260,7 +255,7 @@ const BandScreen = ({ route }): React.ReactElement => {
         }
         break
       case 'transfer_ownership':
-        const transferOwnershipResponse = await transferOwnership({
+        const transferOwnershipResponse = await reqTransferOwnership.mutateAsync({
           id: action.id,
           bandId: band.id
         })
@@ -270,7 +265,7 @@ const BandScreen = ({ route }): React.ReactElement => {
             type: 'success',
             duration: 2000
           })
-          refetchItem()
+          reqBand.refetch()
         } else if ([401, 403].includes(transferOwnershipResponse.status)) {
           showMessage({
             message: t('error_msgs.owner_transfer_denied_msg'),
@@ -295,7 +290,10 @@ const BandScreen = ({ route }): React.ReactElement => {
       showFloatingButton
       floatingIcon="person-add-outline"
       onFloatingButtonPress={() => navigate("InviteIntegrants", { item: band, itemId: band.id })}
-      isFloatingButtonDisabled={isRemoveBandLoading || isFetching}
+      isFloatingButtonDisabled={
+        reqRemoveBand.isLoading ||
+        reqBand.isLoading
+      }
     >
       {
         band ? (
@@ -307,24 +305,27 @@ const BandScreen = ({ route }): React.ReactElement => {
                 setConfirmDialogState(true)
               }}
               onEditPress={() => navigate('SaveBand', { item: band })}
-              isLoading={isRemoveBandLoading || isFetching}
+              isLoading={
+                reqRemoveBand.isLoading ||
+                reqBand.isLoading
+              }
             />
             <Space my={2} />
             <BandFeatureContainer>
               <BandFeature
-                isLoading={isFetchingSongs}
+                isLoading={reqSongs.isLoading}
                 amount={songAmount}
                 title={t('band_screen.songs_title')}
                 onPress={() => navigate('BandSongs', { item: band, itemId: band.id })}
               />
               <BandFeature
-                isLoading={isFetchingCategories}
+                isLoading={reqCategories.isLoading}
                 amount={categoryAmount}
                 title={t('band_screen.categories_title')}
                 onPress={() => navigate('BandCategories', { item: band, itemId: band.id })}
               />
               <BandFeature
-                isLoading={isFetchingConcerts}
+                isLoading={reqConcerts.isLoading}
                 amount={concertAmount}
                 title={t('band_screen.concerts_title')}
                 onPress={() => navigate('BandConcerts', { item: band, itemId: band.id })}
@@ -345,7 +346,7 @@ const BandScreen = ({ route }): React.ReactElement => {
               renderItem={renderListItem}
             />
           </>
-        ) : isFetching ? (
+        ) : reqBand.isLoading ? (
           <LoadingContainer>
             <Spinner size="large" />
           </LoadingContainer>

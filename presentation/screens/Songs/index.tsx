@@ -74,15 +74,7 @@ const SongsScreen = (): React.ReactElement => {
   }
 
   // Infinite scroll api request
-  const {
-    data,
-    isFetchingNextPage,
-    isLoading,
-    isRefetching,
-    fetchNextPage,
-    hasNextPage,
-    refetch
-  } = useInfiniteQuery(
+  const reqSongs = useInfiniteQuery(
     ['public_songs'],
     fetchPublicSongs, {
       getNextPageParam: (lastPage) => {
@@ -93,58 +85,75 @@ const SongsScreen = (): React.ReactElement => {
   )
 
   // Refetch on focus
-  useRefreshOnFocus(refetch)
+  useRefreshOnFocus(reqSongs.refetch)
 
   // All pages data
-  const allPagesData = data?.pages.flatMap((value) => value.data.data) || []
+  const allPagesData = reqSongs.data?.pages.flatMap((value) => value.data.data) || []
 
   // Auxiliar Render functions
   const renderSearchButton = useCallback((props: any): React.ReactElement => (
     <Icon
       {...props}
       name={
-        isLoading || isFetchingNextPage || isRefetching
+        reqSongs.isLoading ||
+        reqSongs.isFetchingNextPage ||
+        reqSongs.isRefetching
           ? 'loader-outline'
           : 'search-outline'
       }
     />
-  ), [isLoading, isFetchingNextPage, isRefetching])
+  ), [
+    reqSongs.isLoading,
+    reqSongs.isFetchingNextPage, 
+    reqSongs.isRefetching
+  ])
 
   const renderResetButton = useCallback((props: any): React.ReactElement => (
     <Icon
       {...props}
       name={
-        isLoading || isFetchingNextPage || isRefetching
+        reqSongs.isLoading || 
+        reqSongs.isFetchingNextPage || 
+        reqSongs.isRefetching
           ? 'loader-outline'
           : 'sync-outline'
       }
     />
-  ), [isLoading, isFetchingNextPage, isRefetching])
+  ), [
+    reqSongs.isLoading, 
+    reqSongs.isFetchingNextPage, 
+    reqSongs.isRefetching
+  ])
 
   // Render list view item function
   const renderListItem = useCallback(({ item }: ListRenderItemInfo<ISong>) => (
     <SongListItem
       item={item}
-      isLoading={isFetchingNextPage || isRefetching}
+      isLoading={reqSongs.isFetchingNextPage || reqSongs.isRefetching}
       onPress={() => navigate('Song', { item, itemId: item.id })}
     />
-  ), [isFetchingNextPage, isRefetching])
+  ), [reqSongs.isFetchingNextPage, reqSongs.isRefetching])
 
   // Render empty component
   const renderEmptyListComponent = useCallback(() => (
-    isLoading ? null : (
+    reqSongs.isLoading ? null : (
       <Text category="s1">
         {t('songs_screen.no_public_songs')}
       </Text>
     )
-  ), [isLoading, t])
+  ), [reqSongs.isLoading, t])
 
   //TSX
   return (
     <BaseContent
       onEndReached={() => {
-        if (!isFetchingNextPage &&!isLoading && !isRefetching && hasNextPage) {
-          fetchNextPage()
+        if (
+          !reqSongs.isFetchingNextPage &&
+          !reqSongs.isLoading && 
+          !reqSongs.isRefetching && 
+          reqSongs.hasNextPage
+        ) {
+          reqSongs.fetchNextPage()
         }
       }}
     >
@@ -163,7 +172,10 @@ const SongsScreen = (): React.ReactElement => {
           size="small"
           value={filterSearch}
           onChangeText={nextValue => setFilterSearch(nextValue)}
-          disabled={isLoading || isFetchingNextPage || isRefetching}
+          disabled={
+            reqSongs.isLoading ||
+            reqSongs.isFetchingNextPage ||
+            reqSongs.isRefetching}
           style={{
             backgroundColor: theme['color-basic-700']
           }}
@@ -173,11 +185,19 @@ const SongsScreen = (): React.ReactElement => {
             status="info"
             size="small"
             accessoryLeft={renderResetButton}
-            disabled={isLoading || isFetchingNextPage || isRefetching}
+            disabled={
+              reqSongs.isLoading || 
+              reqSongs.isFetchingNextPage || 
+              reqSongs.isRefetching
+            }
             onPress={() => {
-              if (!isLoading && !isFetchingNextPage && !isRefetching) {
+              if (
+                !reqSongs.isLoading && 
+                !reqSongs.isFetchingNextPage && 
+                !reqSongs.isRefetching
+              ) {
                 setFilterSearch('')
-                setTimeout(() => refetch(), 150)
+                setTimeout(() => reqSongs.refetch(), 150)
               }
             }}
           >
@@ -187,10 +207,17 @@ const SongsScreen = (): React.ReactElement => {
             status="primary"
             size="small"
             accessoryLeft={renderSearchButton}
-            disabled={isLoading || isFetchingNextPage || isRefetching}
+            disabled={
+              reqSongs.isLoading || 
+              reqSongs.isFetchingNextPage || 
+              reqSongs.isRefetching}
             onPress={() => {
-              if (!isLoading && !isFetchingNextPage && !isRefetching) {
-                refetch()
+              if (
+                !reqSongs.isLoading && 
+                !reqSongs.isFetchingNextPage && 
+                !reqSongs.isRefetching
+              ) {
+                reqSongs.refetch()
               }
             }}
           >
@@ -206,7 +233,7 @@ const SongsScreen = (): React.ReactElement => {
         renderItem={renderListItem}
         ListEmptyComponent={renderEmptyListComponent}
         ListHeaderComponent={() => <Space my={2} />}
-        ListFooterComponent={() => isFetchingNextPage
+        ListFooterComponent={() => reqSongs.isFetchingNextPage
           ? (
             <LoadingContainer>
               <Spinner size="large" />

@@ -33,10 +33,7 @@ const CloneConcertScreen = ({ route }): React.ReactElement => {
   const { t } = useTranslation()
 
   // Http requests
-  const {
-    isLoading,
-    mutateAsync: cloneConcert
-  } = useMutation(
+  const reqCloneConcert = useMutation(
     (data: { concertId: string, date: string }) =>
       api.concerts.cloneConcert(data.concertId, data.date)
   )
@@ -56,7 +53,10 @@ const CloneConcertScreen = ({ route }): React.ReactElement => {
     }
 
     // Clone concert
-    const result = await cloneConcert({ concertId, date: date.toISOString().split('T')[0] })
+    const result = await reqCloneConcert.mutateAsync({
+      concertId,
+      date: date.toISOString().split('T')[0] 
+    })
     if ([200, 201].includes(result.status)) {
       showMessage({
         message: t('success_msgs.clone_concert_msg'),
@@ -104,7 +104,7 @@ const CloneConcertScreen = ({ route }): React.ReactElement => {
       />
       <Space my={2} />
       <Button
-        disabled={isLoading}
+        disabled={reqCloneConcert.isLoading}
         onPress={() => cloneConcertAction(date)}
         size='small'
       >
@@ -112,7 +112,7 @@ const CloneConcertScreen = ({ route }): React.ReactElement => {
       </Button>
       <Space my={1} />
       <Button
-        disabled={isLoading}
+        disabled={reqCloneConcert.isLoading}
         onPress={() => goBack()}
         size="small"
         status="danger"

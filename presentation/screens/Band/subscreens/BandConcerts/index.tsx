@@ -78,15 +78,7 @@ const BandConcerts = ({ route }): React.ReactElement => {
   }
 
   // Infinite scroll api request
-  const {
-    data,
-    isFetchingNextPage,
-    isLoading,
-    isRefetching,
-    fetchNextPage,
-    hasNextPage,
-    refetch
-  } = useInfiniteQuery(
+  const reqConcerts = useInfiniteQuery(
     [`band_concerts_${item.id}`],
     fetchBandConcerts, {
       getNextPageParam: (lastPage) => {
@@ -96,60 +88,80 @@ const BandConcerts = ({ route }): React.ReactElement => {
     }
   )
 
-  useRefreshOnFocus(refetch)
+  useRefreshOnFocus(reqConcerts.refetch)
 
   // All pages data
-  const allPagesData = data?.pages.flatMap((value) => value.data.data) || []
+  const allPagesData = reqConcerts.data?.pages.flatMap((value) => value.data.data) || []
 
   // Auxiliar Render functions
   const renderSearchButton = useCallback((props: any): React.ReactElement => (
     <Icon
       {...props}
       name={
-        isLoading || isFetchingNextPage || isRefetching
+        reqConcerts.isLoading ||
+        reqConcerts.isFetchingNextPage ||
+        reqConcerts.isRefetching
           ? 'loader-outline'
           : 'search-outline'
       }
     />
-  ), [isLoading, isFetchingNextPage, isRefetching])
+  ), [
+    reqConcerts.isLoading,
+    reqConcerts.isFetchingNextPage,
+    reqConcerts.isRefetching
+  ])
 
   const renderResetButton = useCallback((props: any): React.ReactElement => (
     <Icon
       {...props}
       name={
-        isLoading || isFetchingNextPage || isRefetching
+        reqConcerts.isLoading ||
+        reqConcerts.isFetchingNextPage ||
+        reqConcerts.isRefetching
           ? 'loader-outline'
           : 'sync-outline'
       }
     />
-  ), [isLoading, isFetchingNextPage, isRefetching])
+  ), [
+    reqConcerts.isLoading,
+    reqConcerts.isFetchingNextPage,
+    reqConcerts.isRefetching
+  ])
 
   // Render list view item function
   const renderListItem = useCallback(({ item }: ListRenderItemInfo<IConcert>) => (
     <ConcertListItem
       item={item}
-      isLoading={isFetchingNextPage || isRefetching}
+      isLoading={reqConcerts.isFetchingNextPage || reqConcerts.isRefetching}
       onPress={() => navigate('Concert', { item, itemId: item.id })}
       onIconPress={() => navigate('Concert', { item, itemId: item.id })}
     />
-  ), [isFetchingNextPage, isRefetching])
+  ), [
+    reqConcerts.isFetchingNextPage,
+    reqConcerts.isRefetching
+  ])
 
   // Render list empty component
   const renderListEmptyComponent = useCallback(() => (
-    isLoading ? null : (
+    reqConcerts.isLoading ? null : (
       <Text category="s1">
         {t('band_screen.no_concerts')}
       </Text>
     )
-  ), [isLoading, t])
+  ), [reqConcerts.isLoading, t])
 
   //TSX
   return (
     <BaseContent
       hideCardsNavigation
       onEndReached={() => {
-        if (!isFetchingNextPage &&!isLoading && !isRefetching && hasNextPage) {
-          fetchNextPage()
+        if (
+          !reqConcerts.isFetchingNextPage &&
+          !reqConcerts.isLoading &&
+          !reqConcerts.isRefetching &&
+          reqConcerts.hasNextPage
+        ) {
+          reqConcerts.fetchNextPage()
         }
       }}
       showFloatingButton
@@ -170,7 +182,10 @@ const BandConcerts = ({ route }): React.ReactElement => {
           size="small"
           value={filterSearch}
           onChangeText={nextValue => setFilterSearch(nextValue)}
-          disabled={isLoading || isFetchingNextPage || isRefetching}
+          disabled={
+            reqConcerts.isLoading ||
+            reqConcerts.isFetchingNextPage ||
+            reqConcerts.isRefetching}
           style={{
             backgroundColor: theme['color-basic-700']
           }}
@@ -180,11 +195,19 @@ const BandConcerts = ({ route }): React.ReactElement => {
             status="info"
             size="small"
             accessoryLeft={renderResetButton}
-            disabled={isLoading || isFetchingNextPage || isRefetching}
+            disabled={
+              reqConcerts.isLoading ||
+              reqConcerts.isFetchingNextPage ||
+              reqConcerts.isRefetching
+            }
             onPress={() => {
-              if (!isLoading && !isFetchingNextPage && !isRefetching) {
+              if (
+                !reqConcerts.isLoading &&
+                !reqConcerts.isFetchingNextPage &&
+                !reqConcerts.isRefetching
+              ) {
                 setFilterSearch('')
-                setTimeout(() => refetch(), 150)
+                setTimeout(() => reqConcerts.refetch(), 150)
               }
             }}
           >
@@ -194,10 +217,18 @@ const BandConcerts = ({ route }): React.ReactElement => {
             status="primary"
             size="small"
             accessoryLeft={renderSearchButton}
-            disabled={isLoading || isFetchingNextPage || isRefetching}
+            disabled={
+              reqConcerts.isLoading ||
+              reqConcerts.isFetchingNextPage ||
+              reqConcerts.isRefetching
+            }
             onPress={() => {
-              if (!isLoading && !isFetchingNextPage && !isRefetching) {
-                refetch()
+              if (
+                !reqConcerts.isLoading &&
+                !reqConcerts.isFetchingNextPage &&
+                !reqConcerts.isRefetching
+              ) {
+                reqConcerts.refetch()
               }
             }}
           >
@@ -213,7 +244,7 @@ const BandConcerts = ({ route }): React.ReactElement => {
         renderItem={renderListItem}
         ListEmptyComponent={renderListEmptyComponent}
         ListHeaderComponent={() => <Space my={2} />}
-        ListFooterComponent={() => isFetchingNextPage
+        ListFooterComponent={() => reqConcerts.isFetchingNextPage
           ? (
             <LoadingContainer>
               <Spinner size="large" />

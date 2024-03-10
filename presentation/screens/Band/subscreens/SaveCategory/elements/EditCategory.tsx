@@ -84,7 +84,7 @@ const EditCategory = ({
   }, [item])
 
   // Http requests
-  const { isLoading: isSavingCategory, mutateAsync: saveCategoryRequest } = useMutation(
+  const reqSaveCategory = useMutation(
     (data: { id?: string, title: string, description: string, bandId: string }) =>
       data.id
         ? api.songs.updateCategory(data.id, data.title, data.description)
@@ -94,7 +94,7 @@ const EditCategory = ({
   // Actions
   const submitCategory = async ({ title, description }: { title: string, description: string }) => {
     const id = item?.id || null
-    const response = await saveCategoryRequest({
+    const response = await reqSaveCategory.mutateAsync({
       id,
       title: title,
       description: description,
@@ -150,7 +150,7 @@ const EditCategory = ({
               onChangeText={nextValue => onChange(nextValue)}
               caption={generateCaption(errors.title as FieldError)}
               textStyle={textStyle}
-              disabled={isLoading || isSavingCategory}
+              disabled={isLoading || reqSaveCategory.isLoading}
             />
           )}
           defaultValue=""
@@ -172,7 +172,7 @@ const EditCategory = ({
               onChangeText={nextValue => onChange(nextValue)}
               caption={generateCaption(errors.content as FieldError)}
               textStyle={textStyle}
-              disabled={isLoading || isSavingCategory}
+              disabled={isLoading || reqSaveCategory.isLoading}
             />
           )}
           defaultValue=""
@@ -183,14 +183,14 @@ const EditCategory = ({
             status="danger"
             onPress={item ? onCancel : onGoBack}
             style={{ flex: 1 }}
-            disabled={isLoading || isSavingCategory}
+            disabled={isLoading || reqSaveCategory.isLoading}
           >
             {t('band_screen.cancel_button')}
           </Button>
           <Button
             style={{ flex: 1 }}
             onPress={handleSubmit(submitCategory)}
-            disabled={isLoading || isSavingCategory}
+            disabled={isLoading || reqSaveCategory.isLoading}
           >
             {t('band_screen.save_button')}
           </Button>
