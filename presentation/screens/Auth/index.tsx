@@ -81,7 +81,7 @@ const AuthScreen = ({ navigation }): React.ReactElement => {
   const { t } = useTranslation()
 
   // Mutations
-  const { isLoading, mutateAsync } = useMutation(
+  const reqLogin = useMutation(
     (data: { username: string, password: string }) => {
       return api.auth.login({
         username: data.username,
@@ -96,7 +96,7 @@ const AuthScreen = ({ navigation }): React.ReactElement => {
   }
 
   const submitLogin = async (data: { username: string, password: string }) => {
-    const response = await mutateAsync({
+    const response = await reqLogin.mutateAsync({
       username: data.username,
       password: data.password
     })
@@ -169,7 +169,7 @@ const AuthScreen = ({ navigation }): React.ReactElement => {
                   onChangeText={nextValue => onChange(nextValue)}
                   caption={generateCaption(errors.username as FieldError)}
                   textStyle={textStyle}
-                  disabled={isLoading}
+                  disabled={reqLogin.isLoading}
                 />
               )}
               defaultValue=""
@@ -192,7 +192,7 @@ const AuthScreen = ({ navigation }): React.ReactElement => {
                   onChangeText={nextValue => onChange(nextValue)}
                   caption={generateCaption(errors.password as FieldError)}
                   textStyle={textStyle}
-                  disabled={isLoading}
+                  disabled={reqLogin.isLoading}
                 />
               )}
               defaultValue=""
@@ -213,7 +213,7 @@ const AuthScreen = ({ navigation }): React.ReactElement => {
             </TouchableOpacity>
             <Space my={2} />
             <Button
-              disabled={isLoading}
+              disabled={reqLogin.isLoading}
               onPress={handleSubmit(submitLogin)}
             >
               {t('auth.login_action')}

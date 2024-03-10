@@ -68,42 +68,39 @@ const ProfileScreen = ({ navigation }) => {
   const { t } = useTranslation()
 
   // HTTP Requests
-  const {
-    data: accountData,
-    refetch: refetchAccount
-  } = useQuery(
+  const reqAccountData = useQuery(
     ['get-current-account'],
     () => api.accounts.getCurrentAccount()
   )
-  const {
-    data: pendingInvites,
-    isLoading: isLoadingInvites,
-    refetch: refetchInvites
-  } = useQuery(
+  const reqInvites = useQuery(
     ['band_invites'],
     () => api.bands.getPendingInvitations()
   )
-  const { isLoading: isLoadingEmail, mutateAsync: resendEmail } = useMutation(
+  const reqSendEmail = useMutation(
     () => api.accounts.resendValidationEmail()
   )
-  const { isLoading: isDeletingAccount, mutateAsync: deleteAccount } = useMutation(
+  const reqDeleteAccount = useMutation(
     () => api.accounts.deleteAccountData()
   )
 
   // Refetch data
-  useRefreshOnFocus(refetchAccount)
-  useRefreshOnFocus(refetchInvites)
+  useRefreshOnFocus(reqAccountData.refetch)
+  useRefreshOnFocus(reqInvites.refetch)
 
   // Effects
   useEffect(() => {
-    if (accountData && accountData.data && accountData.data.data) {
-      hydrateAuthData(accountData.data.data)
+    if (
+      reqAccountData.data &&
+      reqAccountData.data.data &&
+      reqAccountData.data.data.data
+    ) {
+      hydrateAuthData(reqAccountData.data.data.data)
     }
-  }, [accountData])
+  }, [reqAccountData.data])
 
   // Handlers
   const deleteAccountHandler = async () => {
-    const response = await deleteAccount()
+    const response = await reqDeleteAccount.mutateAsync()
     if (response.status < 400) {
       showMessage({
         message: t('success_msgs.wipe_msg'),
@@ -130,10 +127,10 @@ const ProfileScreen = ({ navigation }) => {
       <InviteListItem
         onPress={() => navigate("RespondInvite", { item })}
         item={item}
-        isLoading={isLoadingInvites}
+        isLoading={reqInvites.isLoading}
       />
     )
-  , [isLoadingInvites])
+  , [reqInvites.isLoading])
 
   // TSX
   return (
@@ -183,11 +180,11 @@ const ProfileScreen = ({ navigation }) => {
       <Space my={1} />
       <Button
         accessoryLeft={getIcon("log-out")}
-        disabled={isDeletingAccount}
+        disabled={reqDeleteAccount.isLoading}
         size="small"
         status="info"
         onPress={() => {
-          if (!isDeletingAccount) {
+          if (!reqDeleteAccount.isLoading) {
             logoff()
             navigation.replace('Auth')
           }
@@ -226,8 +223,8 @@ const ProfileScreen = ({ navigation }) => {
               size="small"
               appearance="outline"
               status="warning"
-              disabled={isLoadingEmail || isDeletingAccount}
-              onPress={() => resendEmail()}
+              disabled={reqSendEmail.isLoading || reqDeleteAccount.isLoading}
+              onPress={() => reqSendEmail.mutateAsync()}
               style={{
                 width: '100%'
               }}
@@ -239,7 +236,7 @@ const ProfileScreen = ({ navigation }) => {
               size="small"
               appearance="outline"
               status="info"
-              disabled={isLoadingEmail || isDeletingAccount}
+              disabled={reqSendEmail.isLoading || reqDeleteAccount.isLoading}
               onPress={() => navigation.navigate("InsertCode")}
               style={{
                 width: '100%'
@@ -254,12 +251,12 @@ const ProfileScreen = ({ navigation }) => {
         {t('profile.notifications_heading')}
       </Text>
       {
-        isLoadingInvites ? (
+        reqInvites.isLoading ? (
           <LoadingContainer>
             <Space my={2} />
             <Spinner size="large" />
           </LoadingContainer>
-        ) : !isLoadingInvites && pendingInvites?.data?.data?.length > 0 ? (
+        ) : !reqInvites.isLoading && reqInvites.data?.data?.data?.length > 0 ? (
           <FlatList
             ItemSeparatorComponent={() => <Space my={1} />}
             ListHeaderComponent={() => <Space my={2} />}
@@ -267,7 +264,7 @@ const ProfileScreen = ({ navigation }) => {
             keyExtractor={(item) => item.id}
             showsHorizontalScrollIndicator={false}
             scrollEnabled={false}
-            data={pendingInvites?.data?.data || []}
+            data={reqInvites.data?.data?.data || []}
             renderItem={renderInviteListItem}
           />
         ) : (

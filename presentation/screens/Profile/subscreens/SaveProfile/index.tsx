@@ -64,11 +64,11 @@ const SaveProfileScreen = ({ navigation }) => {
   } = useForm()
 
   // Http requests
-  const { isLoading, mutateAsync: saveAccountRequest } = useMutation(
+  const reqSaveAccount = useMutation(
     (data: { id: string, dto: UpdateAccountDTO }) =>
       api.accounts.updateAccount(data.id, data.dto)
   )
-  const { isLoading: isUploadingImage, mutateAsync: cloudinaryUpload } = useMutation(
+  const reqUploadImage = useMutation(
     (data: FormData) => api.helpers.uploadImage(data)
   )
 
@@ -102,7 +102,7 @@ const SaveProfileScreen = ({ navigation }) => {
         name: avatarUri.split('/').pop()
       }
       imageData.append('file', fileContent)
-      const response = await cloudinaryUpload(imageData)
+      const response = await reqUploadImage.mutateAsync(imageData)
 
       // Verify upload response
       if ([200, 201].includes(response.status)) {
@@ -113,7 +113,7 @@ const SaveProfileScreen = ({ navigation }) => {
     }
 
     // 2. Update account section
-    const response = await saveAccountRequest({
+    const response = await reqSaveAccount.mutateAsync({
       id: currentAccount.id,
       dto: { name, email, avatar: avatarUri }
     })
@@ -170,7 +170,7 @@ const SaveProfileScreen = ({ navigation }) => {
         >
           <PhoneImagePicker
             uri={imageUri}
-            isLoading={isLoading || isUploadingImage}
+            isLoading={reqSaveAccount.isLoading || reqUploadImage.isLoading}
             onImageSelect={result => {
               setImageUri(result.assets[0].uri)
               setValue('avatar', result.assets[0].uri, {
@@ -195,7 +195,7 @@ const SaveProfileScreen = ({ navigation }) => {
                 onChangeText={nextValue => onChange(nextValue)}
                 caption={generateCaption(errors.name as FieldError)}
                 textStyle={textStyle}
-                disabled={isLoading || isUploadingImage}
+                disabled={reqSaveAccount.isLoading || reqUploadImage.isLoading}
               />
             )}
             defaultValue=""
@@ -217,14 +217,14 @@ const SaveProfileScreen = ({ navigation }) => {
                 onChangeText={nextValue => onChange(nextValue)}
                 caption={generateCaption(errors.email as FieldError)}
                 textStyle={textStyle}
-                disabled={isLoading || isUploadingImage}
+                disabled={reqSaveAccount.isLoading || reqUploadImage.isLoading}
               />
             )}
             defaultValue=""
           />
           <Space my={2} />
           <Button
-            disabled={isLoading || isUploadingImage}
+            disabled={reqSaveAccount.isLoading || reqUploadImage.isLoading}
             onPress={handleSubmit(submitProfile)}
             style={{ width: '100%' }}
           >

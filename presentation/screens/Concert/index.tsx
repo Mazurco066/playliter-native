@@ -45,35 +45,25 @@ const ConcertScreen = ({ route }): React.ReactElement => {
   const { t } = useTranslation()
 
   // Http requests
-  const {
-    data: updatedItem,
-    isLoading: isFetching,
-    refetch: refetchItem
-  } = useQuery(
+  const reqConcert = useQuery(
     [`get-concert-${itemId}`],
     () => api.concerts.getConcert(itemId)
   )
 
-  const {
-    isLoading: isDeletingConcert,
-    mutateAsync: deleteConcert
-  } = useMutation(
+  const reqDeleteConcert = useMutation(
     (id: string) => api.concerts.deleteConcert(id)
   )
 
-  const {
-    isLoading: isUnlinkingSong,
-    mutateAsync: unlinkSong
-  } = useMutation(
+  const reqUnlinkSong = useMutation(
     (data: { id: string, songId: string }) =>
       api.concerts.unlinkSong(data.id, data.songId)
   )
 
   // Refetch on focus
-  useRefreshOnFocus(refetchItem)
+  useRefreshOnFocus(reqConcert.refetch)
 
   // General api loading
-  const isApiLoading = isUnlinkingSong || isDeletingConcert
+  const isApiLoading = reqUnlinkSong.isLoading || reqDeleteConcert.isLoading
 
   // Effects
   useEffect(() => {
@@ -81,17 +71,17 @@ const ConcertScreen = ({ route }): React.ReactElement => {
   }, [])
 
   useEffect(() => {
-    if (updatedItem && updatedItem.data) {
-      const { data } = updatedItem.data
+    if (reqConcert.data && reqConcert.data.data) {
+      const { data } = reqConcert.data.data
       if (data) setConcert(data as IConcert)
     }
-  }, [updatedItem])
+  }, [reqConcert.data])
 
   // Actions
   const confirmDialogActions = async (action: ConfirmActions) => {
     switch (action.name) {
       case 'delete_concert':
-        const deleteResponse = await deleteConcert(action.id)
+        const deleteResponse = await reqDeleteConcert.mutateAsync(action.id)
         if ([200, 201].includes(deleteResponse.status)) {
           showMessage({
             message: t('success_msgs.delete_concert_msg'),
@@ -114,7 +104,7 @@ const ConcertScreen = ({ route }): React.ReactElement => {
         }
         break
       case 'remove_song':
-        const unlinkResponse = await unlinkSong({
+        const unlinkResponse = await reqUnlinkSong.mutateAsync({
           id: concert.id,
           songId: action.id
         })
@@ -124,7 +114,7 @@ const ConcertScreen = ({ route }): React.ReactElement => {
             type: 'success',
             duration: 2000
           })
-          refetchItem()
+          reqConcert.refetch()
         } else if ([401, 403].includes(unlinkResponse.status)) {
           showMessage({
             message: t('error_msgs.delete_concert_song_denied_msg'),
@@ -158,24 +148,24 @@ const ConcertScreen = ({ route }): React.ReactElement => {
 
   const renderEmptyListComponent = useCallback(
     () => (
-      isFetching ? null : (
+      reqConcert.isLoading ? null : (
         <Text category="s1">
           {t('concert_screen.no_songs')}
         </Text>
       )
     ),
-    [isFetching, t]
+    [reqConcert.isLoading, t]
   )
 
   const renderListFooter = useCallback(
     () => (
-      isFetching ? (
+      reqConcert.isLoading ? (
         <LoadingContainer>
           <Spinner size="large" />
         </LoadingContainer>
       ) : <Space my={4} />
     ),
-    [isFetching]
+    [reqConcert.isLoading]
   )
 
   // TSX
@@ -220,7 +210,7 @@ const ConcertScreen = ({ route }): React.ReactElement => {
               renderItem={renderItem}
             />
           </>
-        ) : isFetching ? (
+        ) : reqConcert.isLoading ? (
           <LoadingContainer>
             <Spinner size="large" />
           </LoadingContainer>

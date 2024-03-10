@@ -43,27 +43,19 @@ const SongListScreen = ({ route }): React.ReactElement => {
   const { t } = useTranslation()
 
   // Http requests
-  const {
-    data: updatedItem,
-    isLoading: isFetching,
-    refetch: refetchItem
-  } = useQuery(
+  const reqConcert = useQuery(
     [`get-concert-${itemId}`],
     () => api.concerts.getConcert(itemId)
   )
 
-  const {
-    data: colorData,
-    isLoading: isColorLoading,
-    refetch: refetchColor
-  } = useQuery(
+  const reqColors = useQuery(
     [`get-liturgy-${itemId}`],
     () => api.helpers.getLiturgyColor(itemId)
   )
 
   // Refetch on focus
-  useRefreshOnFocus(refetchItem)
-  useRefreshOnFocus(refetchColor)
+  useRefreshOnFocus(reqConcert.refetch)
+  useRefreshOnFocus(reqColors.refetch)
 
   // Effects
   useEffect(() => {
@@ -71,11 +63,11 @@ const SongListScreen = ({ route }): React.ReactElement => {
   }, [])
 
   useEffect(() => {
-    if (updatedItem && updatedItem.data) {
-      const { data } = updatedItem.data
+    if (reqConcert.data && reqConcert.data.data) {
+      const { data } = reqConcert.data.data
       if (data) setConcert(data as IConcert)
     }
-  }, [updatedItem])
+  }, [reqConcert.data])
 
   // Direct data
   const { songs } = concert
@@ -162,7 +154,7 @@ const SongListScreen = ({ route }): React.ReactElement => {
           accessoryLeft={getIcon('rewind-left-outline')}
           size="tiny"
           appearance="outline"
-          disabled={isFetching}
+          disabled={reqConcert.isLoading}
           onPress={onPrevPress}
         >
           {t('concert_screen.previous_action')}
@@ -170,9 +162,9 @@ const SongListScreen = ({ route }): React.ReactElement => {
         <Button
           accessoryLeft={getIcon('printer-outline')}
           size="tiny"
-          disabled={isFetching || isColorLoading}
+          disabled={reqConcert.isLoading || reqColors.isLoading}
           onPress={async () => {
-            const liturgyColor = colorData?.data?.data?.color || 'purple'
+            const liturgyColor = reqColors.data?.data?.data?.color || 'purple'
             try {
               if (Platform.OS === 'ios') {
                 await selectPrinter(liturgyColor)
@@ -190,7 +182,7 @@ const SongListScreen = ({ route }): React.ReactElement => {
           accessoryLeft={getIcon('rewind-right-outline')}
           size="tiny"
           appearance="outline"
-          disabled={isFetching}
+          disabled={reqConcert.isLoading}
           onPress={onNextPress}
         >
           {t('concert_screen.next_action')}

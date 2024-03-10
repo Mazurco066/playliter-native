@@ -52,52 +52,58 @@ const InviteIntegrants = ({ route }): React.ReactElement => {
   const { t } = useTranslation()
 
   // Http requests
-  const {
-    data: bandIntegrants,
-    isLoading: isFetching,
-    refetch: refetchIntegrants,
-    isRefetching
-  } = useQuery(
+  const reqAppUsers = useQuery(
     [`band-integrants-${itemId}`],
     () => api.accounts.getRegisteredAccounts()
   )
 
-  const { isLoading, mutateAsync: inviteIntegrant } = useMutation(
+  const reqInviteUser = useMutation(
     (data: { id: string, bandId: string }) =>
       api.bands.inviteIntegrant(data.bandId, data.id)
   )
 
   // Refetch on focus
-  useRefreshOnFocus(refetchIntegrants)
+  useRefreshOnFocus(reqAppUsers.refetch)
 
   // Render list view item function
   const renderListItem = useCallback(({ item }: ListRenderItemInfo<UserAccount>) => (
     <IntegrantItem
       item={item}
-      isLoading={isFetching || isRefetching || isLoading}
+      isLoading={
+        reqAppUsers.isFetching ||
+        reqAppUsers.isRefetching ||
+        reqInviteUser.isLoading
+      }
       onPress={() => submitInvitation(item.id)}
     />
-  ), [isFetching, isRefetching, isLoading])
+  ), [
+    reqAppUsers.isFetching,
+    reqAppUsers.isRefetching,
+    reqInviteUser.isLoading
+  ])
 
-  const renderListFooter = useCallback(() => isFetching
+  const renderListFooter = useCallback(() => reqAppUsers.isFetching
     ? (
       <LoadingContainer>
         <Spinner size="large" />
       </LoadingContainer>
-    ) : <Space my={2} />, [isFetching]
+    ) : <Space my={2} />, [reqAppUsers.isFetching]
   )
 
   const renderListEmptyComponent = useCallback(() => (
-    isFetching ? null : (
+    reqAppUsers.isFetching ? null : (
       <Text category="s1">
         {t('band_screen.no_members')}
       </Text>
     )
-  ), [isFetching, t])
+  ), [reqAppUsers.isFetching, t])
 
   // Actions
   const submitInvitation = async (itemId: string) => {
-    const response = await inviteIntegrant({ id: itemId, bandId: band.id })
+    const response = await reqInviteUser.mutateAsync({
+      id: itemId,
+      bandId: band.id
+    })
     if ([200, 201].includes(response.status)) {
       showMessage({
         message: t('success_msgs.invite_msg'),
@@ -126,7 +132,7 @@ const InviteIntegrants = ({ route }): React.ReactElement => {
   }
 
   // Computed props
-  const integrantsData: UserAccount[] = bandIntegrants?.data?.data || []
+  const integrantsData: UserAccount[] = reqAppUsers.data?.data?.data || []
   const unafiliadedData: UserAccount[] = integrantsData.filter((i: UserAccount) => getBandRole(i.id, band) === 'Sem afiliação')
   const filteredData = unafiliadedData.filter((i: UserAccount) => i.name.toLowerCase().includes(searchFilter.toLowerCase()))
 
