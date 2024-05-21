@@ -8,7 +8,10 @@ const MainStack = createNativeStackNavigator()
 const RootStack = createNativeStackNavigator()
 
 // Screens
-import { TopNavigation } from '../../presentation/layouts'
+import {
+  AuthTopNavigation,
+  TopNavigation
+} from '../../presentation/layouts'
 import {
   AboutScreen,
   AddPublicConcertSongs,
@@ -30,6 +33,8 @@ import {
   MainScreen,
   Middleware,
   ProfileScreen,
+  PublicSongScreen,
+  PublicSongsScreen,
   ReorderConcert,
   RespondInviteScreen,
   SaveCategory,
@@ -46,13 +51,37 @@ import {
 // Auth navigator screens
 const AuthNavigator = () => (
   <AuthStack.Navigator
-    initialRouteName="Login"
+    initialRouteName="PublicSongs"
     screenOptions={() => ({
       gestureEnabled: false,
       animation: 'slide_from_left',
       header: () => null
     })}
   >
+    <AuthStack.Screen
+      name="PublicSongs"
+      component={PublicSongsScreen}
+      options={{
+        animation: 'slide_from_right',
+        header: ({ navigation }) => (
+          <AuthTopNavigation
+            navigation={navigation}
+          />
+        )
+      }}
+    />
+    <AuthStack.Screen
+      name="PublicSong"
+      component={PublicSongScreen}
+      options={{
+        animation: 'slide_from_right',
+        header: ({ navigation }) => (
+          <AuthTopNavigation
+            navigation={navigation}
+          />
+        )
+      }}
+    />
     <AuthStack.Screen
       name="Login"
       component={AuthScreen}
