@@ -228,7 +228,7 @@ const PublicSongsScreen = (): React.ReactElement => {
       </SearchContainer>
       <Space my={1} />
       <FlashList
-        estimatedItemSize={80}
+        estimatedItemSize={64}
         scrollEnabled={false}
         data={allPagesData}
         renderItem={renderListItem}

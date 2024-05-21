@@ -1,6 +1,5 @@
 // Dependencies
 import React from 'react'
-import { useTranslation } from 'react-i18next'
 import styled from 'styled-components'
 import { color } from 'styled-system'
 
@@ -8,13 +7,14 @@ import { color } from 'styled-system'
 import { ISong } from '../../../../domain'
 
 // Components
+import { LinearGradient } from 'expo-linear-gradient'
 import { TouchableOpacity, View } from 'react-native'
 import { Layout, Text, useTheme } from '@ui-kitten/components'
 
 // Styles components
 const Wrapper = styled(TouchableOpacity)`
   width: 100%;
-  height: 72px;
+  height: 64px;
   border-radius: 8px;
   overflow: hidden;
   margin-bottom: 8px;
@@ -29,11 +29,20 @@ const ItemLayout = styled(Layout)`
   ${color}
 `
 
+const ItemGradient = styled(LinearGradient)`
+  flex: 0 0 auto;
+  width: 16px;
+  height: 100%;
+  position: relative;
+  flex-direction: row;
+  align-items: center;
+`
+
 const ItemData = styled(View)`
   flex: 1;
   align-items: flex-start;
   justify-content: center;
-  padding: 8px 12px 8px 20px;
+  padding: 8px 12px 8px 0px;
   ${color}
 `
 
@@ -57,7 +66,6 @@ const SongListItem = ({
 }: IConcertListItem): React.ReactElement => {
   // Hooks
   const theme = useTheme()
-  const { t } = useTranslation()
 
   // TSX
   return (
@@ -70,6 +78,9 @@ const SongListItem = ({
           backgroundColor: theme['color-basic-700']
         }}
       >
+        <ItemGradient
+          colors={[theme['color-primary-500'], theme['color-secondary-500']]}
+        />
         <ItemData>
           <SongTextInfo
             category="label"
