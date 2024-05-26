@@ -73,7 +73,7 @@ const ForgotPasswordScreen = ({ navigation }): React.ReactElement => {
   const { t } = useTranslation()
 
   // Mutations
-  const { isLoading, mutateAsync } = useMutation(
+  const reqForgotPassword = useMutation(
     (email: string) => {
       return api.auth.forgotPassword(email)
     }
@@ -81,7 +81,7 @@ const ForgotPasswordScreen = ({ navigation }): React.ReactElement => {
 
   // Actions
   const submitPasswordRecovery = async (data: { email: string }) => {
-    const response = await mutateAsync(data.email)
+    const response = await reqForgotPassword.mutateAsync(data.email)
     if ([200, 201].includes(response.status)) {
       showMessage({
         message: t('success_msgs.confirmation_mail_msg'),
@@ -146,14 +146,14 @@ const ForgotPasswordScreen = ({ navigation }): React.ReactElement => {
                   onChangeText={nextValue => onChange(nextValue)}
                   caption={generateCaption(errors.username as FieldError)}
                   textStyle={textStyle}
-                  disabled={isLoading}
+                  disabled={reqForgotPassword.isLoading}
                 />
               )}
               defaultValue=""
             />
             <Space my={2} />
             <Button
-              disabled={isLoading}
+              disabled={reqForgotPassword.isLoading}
               onPress={handleSubmit(submitPasswordRecovery)}
             >
               {t('auth.send_email_action')}

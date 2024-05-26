@@ -60,20 +60,12 @@ const SaveCategory = ({ route }): React.ReactElement => {
   }
 
   // Http requests
-  const { isLoading: isRemovingCategory, mutateAsync: removeCategoryRequest } = useMutation(
+  const reqRemoveCategory = useMutation(
     (id: string) => api.songs.removeCategory(id)
   )
 
   // Infinite scroll api request
-  const {
-    data,
-    isFetchingNextPage,
-    isLoading: isLoadingSongs,
-    isRefetching,
-    fetchNextPage,
-    hasNextPage,
-    refetch
-  } = useInfiniteQuery(
+  const reqCategorySongs = useInfiniteQuery(
     [`band_category_songs_${item?.id}`],
     fetchBandSongs, {
       getNextPageParam: (lastPage) => {
@@ -85,34 +77,36 @@ const SaveCategory = ({ route }): React.ReactElement => {
   )
 
   // Refetch data
-  useRefreshOnFocus(refetch)
+  useRefreshOnFocus(reqCategorySongs.refetch)
 
   // Loading state and data
-  const isLoading = isRemovingCategory
-  const allPagesData = data?.pages.flatMap((value) => value.data.data) || []
+  const allPagesData = reqCategorySongs.data?.pages.flatMap((value) => value.data.data) || []
 
   // Render list view item function
   const renderListItem = useCallback(({ item }: ListRenderItemInfo<ISong>) => (
     <SongListItem
       item={item}
-      isLoading={isFetchingNextPage || isRefetching}
+      isLoading={reqCategorySongs.isFetchingNextPage || reqCategorySongs.isRefetching}
       onPress={() => navigate('Song', { item, itemId: item.id })}
       onIconPress={() => navigate('Song', { item, itemId: item.id })}
     />
-  ), [isFetchingNextPage, isRefetching])
+  ), [
+    reqCategorySongs.isFetchingNextPage,
+    reqCategorySongs.isRefetching
+  ])
 
   const renderEmptyListComponent = useCallback(() => (
-    isLoadingSongs ? null : (
+    reqCategorySongs.isLoading ? null : (
       <Text category="s1">
         {t('band_screen.no_songs_category')}
       </Text>
     )
-  ), [isLoadingSongs, t])
+  ), [reqCategorySongs.isLoading, t])
 
   // Actions
   const removeCategory = async () => {
     const id = item.id
-    const response = await removeCategoryRequest(id)
+    const response = await reqRemoveCategory.mutateAsync(id)
     if ([200, 201].includes(response.status)) {
       showMessage({
         message: t('success_msgs.remove_category_msg'),
@@ -140,8 +134,12 @@ const SaveCategory = ({ route }): React.ReactElement => {
     <BaseContent
       hideCardsNavigation
       onEndReached={() => {
-        if (!isFetchingNextPage &&!isLoading && !isRefetching && hasNextPage) {
-          fetchNextPage()
+        if (
+          !reqCategorySongs.isFetchingNextPage &&
+          !reqRemoveCategory.isLoading &&
+          !reqCategorySongs.isRefetching && 
+          reqCategorySongs.hasNextPage) {
+            reqCategorySongs.fetchNextPage()
         }
       }}
     >
@@ -160,7 +158,10 @@ const SaveCategory = ({ route }): React.ReactElement => {
                 })
                 setConfirmDialogState(true)
               }}
-              isLoading={isLoading || isLoadingSongs}
+              isLoading={
+                reqRemoveCategory.isLoading ||
+                reqCategorySongs.isLoading
+              }
             />
             <Space my={2} />
             <Text category="h5">
@@ -173,8 +174,10 @@ const SaveCategory = ({ route }): React.ReactElement => {
               renderItem={renderListItem}
               ListEmptyComponent={renderEmptyListComponent}
               ListHeaderComponent={() => <Space my={2} />}
-              ListFooterComponent={() => isLoadingSongs || isFetchingNextPage
-                ? (
+              ListFooterComponent={() => (
+                reqCategorySongs.isLoading || 
+                reqCategorySongs.isFetchingNextPage 
+              ) ? (
                   <LoadingContainer>
                     <Spinner size="large" />
                   </LoadingContainer>
@@ -187,7 +190,7 @@ const SaveCategory = ({ route }): React.ReactElement => {
             item={item}
             onCancel={() => setEditableState(false)}
             onGoBack={() => goBack()}
-            isLoading={isLoading}
+            isLoading={reqRemoveCategory.isLoading}
           />
         )
       }

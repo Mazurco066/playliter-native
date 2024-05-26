@@ -39,44 +39,43 @@ const BandCategories = ({ route }): React.ReactElement => {
   const { t } = useTranslation()
 
   // Http requests
-  const {
-    data: bandCategories,
-    isLoading: isFetching,
-    refetch: refetchCategories,
-    isRefetching
-  } = useQuery(
+  const reqCategories = useQuery(
     [`band-categories-${itemId}`],
     () => api.songs.getBandSongCategories(itemId)
   )
 
   // Refetch on focus
-  useRefreshOnFocus(refetchCategories)
+  useRefreshOnFocus(reqCategories.refetch)
 
   // Render list view item function
   const renderListItem = useCallback(({ item }: ListRenderItemInfo<ISongCategory>) => (
     <CategoryListItem
       item={item}
-      isLoading={isFetching || isRefetching}
+      isLoading={reqCategories.isLoading || reqCategories.isRefetching}
       onPress={() => navigate("SaveCategory", { bandId: itemId, item })}
       onIconPress={() => navigate("SaveCategory", { bandId: itemId, item })}
     />
-  ), [isFetching, isRefetching])
+  ), [
+    reqCategories.isLoading,
+    reqCategories.isRefetching
+  ])
 
-  const renderListFooter = useCallback(() => isFetching
+  const renderListFooter = useCallback(() => reqCategories.isLoading
     ? (
       <LoadingContainer>
         <Spinner size="large" />
       </LoadingContainer>
-    ) : <Space my={4} />, [isFetching]
+    ) : <Space my={4} />,
+    [reqCategories.isLoading]
   )
 
   const renderListEmptyComponent = useCallback(() => (
-    isFetching ? null : (
+    reqCategories.isLoading ? null : (
       <Text category="s1">
         {t('band_screen.no_categories')}
       </Text>
     )
-  ), [isFetching, t])
+  ), [reqCategories.isLoading, t])
 
   // TSX
   return (
@@ -89,14 +88,14 @@ const BandCategories = ({ route }): React.ReactElement => {
         {t('band_screen.category_heading')}
       </Text>
       <Space my={1} />
-      {bandCategories?.data?.data?.data.length >= 1 ? (
+      {reqCategories.data?.data?.data?.data.length >= 1 ? (
         <Text category="s1">
           {t('band_screen.category_placeholder')}
         </Text>
       ) : null}
       <FlatList
         scrollEnabled={false}
-        data={bandCategories?.data?.data?.data || []}
+        data={reqCategories.data?.data?.data?.data || []}
         keyExtractor={(item) => item.id}
         renderItem={renderListItem}
         ListHeaderComponent={() => <Space my={2} />}

@@ -69,13 +69,14 @@ const SaveBandScreen = ({ route }) : React.ReactElement => {
   } = useForm()
 
   // Http requests
-  const { isLoading, mutateAsync: saveBandRequest } = useMutation(
+  const reqSaveBand= useMutation(
     (data: { id?: string, dto: SaveBandDto }) =>
       data.id
         ? api.bands.updateBand(data.id, data.dto)
         : api.bands.createBand(data.dto)
   )
-  const { isLoading: isUploadingImage, mutateAsync: cloudinaryUpload } = useMutation(
+  
+  const reqUploadImage = useMutation(
     (data: FormData) => api.helpers.uploadImage(data)
   )
 
@@ -116,7 +117,7 @@ const SaveBandScreen = ({ route }) : React.ReactElement => {
         name: logoUri.split('/').pop()
       }
       imageData.append('file', fileContent)
-      const response = await cloudinaryUpload(imageData)
+      const response = await reqUploadImage.mutateAsync(imageData)
 
       // Verify upload response
       if ([200, 201].includes(response.status)) {
@@ -127,7 +128,7 @@ const SaveBandScreen = ({ route }) : React.ReactElement => {
     }
 
     // 2. Update band section
-    const response = await saveBandRequest({
+    const response = await reqSaveBand.mutateAsync({
       id: (item && item.id) ? item.id : null,
       dto: { title, description, logo: logoUri }
     })
@@ -187,7 +188,7 @@ const SaveBandScreen = ({ route }) : React.ReactElement => {
         >
           <PhoneImagePicker
             uri={imageUri}
-            isLoading={isLoading || isUploadingImage}
+            isLoading={reqSaveBand.isLoading || reqUploadImage.isLoading}
             onImageSelect={result => {
               setImageUri(result.assets[0].uri)
               setValue('logo', result.assets[0].uri, {
@@ -212,7 +213,7 @@ const SaveBandScreen = ({ route }) : React.ReactElement => {
                 onChangeText={nextValue => onChange(nextValue)}
                 caption={generateCaption(errors.title as FieldError)}
                 textStyle={textStyle}
-                disabled={isLoading || isUploadingImage}
+                disabled={reqSaveBand.isLoading || reqUploadImage.isLoading}
               />
             )}
             defaultValue=""
@@ -234,14 +235,14 @@ const SaveBandScreen = ({ route }) : React.ReactElement => {
                 onChangeText={nextValue => onChange(nextValue)}
                 caption={generateCaption(errors.description as FieldError)}
                 textStyle={textStyle}
-                disabled={isLoading || isUploadingImage}
+                disabled={reqSaveBand.isLoading || reqUploadImage.isLoading}
               />
             )}
             defaultValue=""
           />
           <Space my={2} />
           <Button
-            disabled={isLoading || isUploadingImage}
+            disabled={reqSaveBand.isLoading || reqUploadImage.isLoading}
             onPress={handleSubmit(submitBand)}
             style={{ width: '100%' }}
           >

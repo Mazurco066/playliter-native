@@ -64,17 +64,17 @@ const InsertCodeScreen = ({ navigation }): React.ReactElement => {
   const { t } = useTranslation()
 
   // Http requests
-  const { isLoading, mutateAsync: verifyAccount } = useMutation(
+  const reqVerifyAccount = useMutation(
     (data: string) => api.accounts.verifyAccount(data)
   )
-  const {isLoading: isLoadingEmail, mutateAsync: resendEmail } = useMutation(
+  const reqSendEmail = useMutation(
     () => api.accounts.resendValidationEmail()
   )
 
   // Effects
   useEffect(() => {
     const persistCode = async (code: string) => {
-      const r = await verifyAccount(code)
+      const r = await reqVerifyAccount.mutateAsync(code)
       if ([200, 201].includes(r.status)) {
         showMessage({
           message: t('success_msgs.email_validation_msg'),
@@ -100,7 +100,11 @@ const InsertCodeScreen = ({ navigation }): React.ReactElement => {
     if (value.length === 4) {
       persistCode(value)
     }
-  }, [value, verifyAccount, setValue])
+  }, [
+    value,
+    reqVerifyAccount.mutateAsync,
+    setValue
+  ])
 
   // TSX
   return (
@@ -138,7 +142,7 @@ const InsertCodeScreen = ({ navigation }): React.ReactElement => {
           <CodeField
             ref={ref}
             {...props}
-            editable={!isLoading}
+            editable={!reqVerifyAccount.isLoading}
             value={value}
             onChangeText={setValue}
             cellCount={CELL_COUNT}
@@ -158,8 +162,8 @@ const InsertCodeScreen = ({ navigation }): React.ReactElement => {
       <Space my={2} />
       <Button
         size="small"
-        disabled={isLoadingEmail || isLoading}
-        onPress={() => resendEmail()}
+        disabled={reqSendEmail.isLoading || reqVerifyAccount.isLoading}
+        onPress={() => reqSendEmail.mutateAsync()}
       >
         {t('profile.resend_email')}     
       </Button>

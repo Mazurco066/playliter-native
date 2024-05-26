@@ -54,7 +54,7 @@ const SearchButton = styled(Button)`
 const PAGE_SIZE = 32
 
 // Main component
-const SongsScreen = (): React.ReactElement => {
+const PublicSongsScreen = (): React.ReactElement => {
   // Hooks
   const theme = useTheme()
   const [ filterSearch, setFilterSearch ] = useState<string>('')
@@ -130,7 +130,7 @@ const SongsScreen = (): React.ReactElement => {
     <SongListItem
       item={item}
       isLoading={reqSongs.isFetchingNextPage || reqSongs.isRefetching}
-      onPress={() => navigate('Song', { item, itemId: item.id })}
+      onPress={() => navigate('PublicSong', { item, itemId: item.id })}
     />
   ), [reqSongs.isFetchingNextPage, reqSongs.isRefetching])
 
@@ -146,6 +146,7 @@ const SongsScreen = (): React.ReactElement => {
   //TSX
   return (
     <BaseContent
+      hideCardsNavigation
       onEndReached={() => {
         if (
           !reqSongs.isFetchingNextPage &&
@@ -227,7 +228,7 @@ const SongsScreen = (): React.ReactElement => {
       </SearchContainer>
       <Space my={1} />
       <FlashList
-        estimatedItemSize={80}
+        estimatedItemSize={64}
         scrollEnabled={false}
         data={allPagesData}
         renderItem={renderListItem}
@@ -246,4 +247,4 @@ const SongsScreen = (): React.ReactElement => {
 }
 
 // Exporting page
-export default SongsScreen
+export default PublicSongsScreen

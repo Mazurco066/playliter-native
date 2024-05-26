@@ -64,7 +64,7 @@ const SaveConcert = ({ route }): React.ReactElement => {
   } = useForm()
 
   // Http requests
-  const { isLoading, mutateAsync: saveConcertRequest } = useMutation(
+  const reqSaveConcert = useMutation(
     (data: { id?: string, dto: SaveConcertDto }) =>
       data.id
         ? api.concerts.updateConcert(data.id, data.dto)
@@ -92,7 +92,7 @@ const SaveConcert = ({ route }): React.ReactElement => {
     description: string,
     date: Date
   }) => {
-    const response = await saveConcertRequest({
+    const response = await reqSaveConcert.mutateAsync({
       id: (item && item.id) ? item.id : null,
       dto: {
         band: bandId,
@@ -169,7 +169,7 @@ const SaveConcert = ({ route }): React.ReactElement => {
                 caption={generateCaption(errors.date as FieldError)}
                 style={{ width: '100%' }}
                 accessoryLeft={props => <Icon {...props} name="calendar-outline" />}
-                disabled={isLoading}
+                disabled={reqSaveConcert.isLoading}
               />
             )}
             defaultValue=""
@@ -190,7 +190,7 @@ const SaveConcert = ({ route }): React.ReactElement => {
                 onChangeText={nextValue => onChange(nextValue)}
                 caption={generateCaption(errors.title as FieldError)}
                 textStyle={textStyle}
-                disabled={isLoading}
+                disabled={reqSaveConcert.isLoading}
               />
             )}
             defaultValue=""
@@ -212,14 +212,14 @@ const SaveConcert = ({ route }): React.ReactElement => {
                 onChangeText={nextValue => onChange(nextValue)}
                 caption={generateCaption(errors.description as FieldError)}
                 textStyle={textStyle}
-                disabled={isLoading}
+                disabled={reqSaveConcert.isLoading}
               />
             )}
             defaultValue=""
           />
           <Space my={2} />
           <Button
-            disabled={isLoading}
+            disabled={reqSaveConcert.isLoading}
             onPress={handleSubmit(submitConcert)}
             style={{ width: '100%' }}
           >

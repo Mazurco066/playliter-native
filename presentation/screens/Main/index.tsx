@@ -38,19 +38,12 @@ const MainScreen = (): React.ReactElement => {
   const { t } = useTranslation()
 
   // HTTP Requests
-  const {
-    data: futureConcerts,
-    isLoading: isFutureConcertsLoading,
-    refetch: refetchFutureConcerts
-  } = useQuery(
+  const reqFutureConcerts = useQuery(
     ['shows_home'],
     () => api.concerts.getPendingConcerts()
   )
-  const {
-    data: bands,
-    isLoading: isBandsLoading,
-    refetch: refetchBands
-  } = useQuery(
+
+  const reqBands = useQuery(
     ['bands_home'],
     () => api.bands.getBands({
       limit: 5,
@@ -59,8 +52,8 @@ const MainScreen = (): React.ReactElement => {
   )
 
   // Refetch
-  useRefreshOnFocus(refetchFutureConcerts)
-  useRefreshOnFocus(refetchBands)
+  useRefreshOnFocus(reqFutureConcerts.refetch)
+  useRefreshOnFocus(reqBands.refetch)
 
   // Rernder band list item component
   const renderBandListItem = useCallback(({ item }: ListRenderItemInfo<IBand>) => (
@@ -86,17 +79,20 @@ const MainScreen = (): React.ReactElement => {
       </Text>
       <Space my={1} />
       {
-        isFutureConcertsLoading ? (
+        reqFutureConcerts.isLoading ? (
           <LoadingContainer>
             <Spinner size="large" />
           </LoadingContainer>
         ) : (
           <>
             {
-              futureConcerts?.data?.data.length > 0 ? (
+              reqFutureConcerts.data?.data?.data.length > 0 ? (
                 <>
                   <Text category="s1">
-                    { t('main_screen.pending_concerts', { count: futureConcerts?.data?.data.length }) }
+                    { t('main_screen.pending_concerts', {
+                      count: reqFutureConcerts.data?.data?.data.length
+                      })
+                    }
                   </Text>
                   <Space my={2} />
                   <FlatList
@@ -104,7 +100,7 @@ const MainScreen = (): React.ReactElement => {
                     ItemSeparatorComponent={() => <Space mx={1} />}
                     keyExtractor={(item) => item.id}
                     showsHorizontalScrollIndicator={false}
-                    data={futureConcerts?.data?.data || []}
+                    data={reqFutureConcerts.data?.data?.data || []}
                     renderItem={renderConcertListItem}
                   />
                 </>
@@ -122,14 +118,14 @@ const MainScreen = (): React.ReactElement => {
         {t('main_screen.band_title')}
       </Text>
       {
-        isBandsLoading ? (
+        reqBands.isLoading ? (
           <LoadingContainer>
             <Spinner size="large" />
           </LoadingContainer>
         ) : (
           <>
           {
-            bands?.data?.data.length > 0 ? (
+            reqBands.data?.data?.data.length > 0 ? (
               <>
                 <FlatList
                   ItemSeparatorComponent={() => <Space my={1} />}
@@ -138,7 +134,7 @@ const MainScreen = (): React.ReactElement => {
                   keyExtractor={(item) => item.id}
                   showsHorizontalScrollIndicator={false}
                   scrollEnabled={false}
-                  data={bands?.data?.data || []}
+                  data={reqBands.data?.data?.data || []}
                   renderItem={renderBandListItem}
                 />
               </>

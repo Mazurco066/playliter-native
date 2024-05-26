@@ -44,32 +44,25 @@ const SongScreen = ({ route }): React.ReactElement => {
   const { t } = useTranslation()
 
   // Http requests
-  const {
-    data: updatedItem,
-    isLoading: isFetching,
-    refetch: refetchItem
-  } = useQuery(
+  const reqSong = useQuery(
     [`get-song-${itemId}`],
     () => api.songs.getSong(itemId)
   )
 
-  const {
-    isLoading: isDeletingSong,
-    mutateAsync: deleteSong
-  } = useMutation(
+  const reqDeleteSong = useMutation(
     (id: string) => api.songs.deleteSong(id)
   )
 
   // Effects
   useEffect(() => {
-    if (updatedItem && updatedItem.data) {
-      const { data } = updatedItem.data
+    if (reqSong.data && reqSong.data.data) {
+      const { data } = reqSong.data.data
       if (data) setSong(data as ISong)
     }
-  }, [updatedItem])
+  }, [reqSong.data])
 
   // Refresh on focus
-  useRefreshOnFocus(refetchItem)
+  useRefreshOnFocus(reqSong.refetch)
 
   // Actions
   const onItemSelect = (_: IndexPath): void => {
@@ -77,7 +70,7 @@ const SongScreen = ({ route }): React.ReactElement => {
   }
 
   const deleteSongAction = async () => {
-    const response = await deleteSong(song.id)
+    const response = await reqDeleteSong.mutateAsync(song.id)
     if (response.status < 400) {
       showMessage({
         message: t('success_msgs.delete_song_msg'),
@@ -126,7 +119,7 @@ const SongScreen = ({ route }): React.ReactElement => {
             song={song}
             showCharts
             showControlHeaders
-            onToneUpdateSuccess={refetchItem}
+            onToneUpdateSuccess={reqSong.refetch}
             canUpdateBaseTone
           >
             <OverflowMenu
@@ -138,27 +131,27 @@ const SongScreen = ({ route }): React.ReactElement => {
               <MenuItem
                 title={t('song_screen.duplicate_action')}
                 accessoryLeft={getIcon('file-add-outline')}
-                disabled={isFetching || isDeletingSong}
+                disabled={reqSong.isLoading || reqDeleteSong.isLoading}
                 onPress={() => navigate("CloneSong", { item: song })}
                 style={{ backgroundColor: theme['color-basic-700'] }}
               />
               <MenuItem
                 title={t('song_screen.edit_action')}
                 accessoryLeft={getIcon('edit-2-outline')}
-                disabled={isFetching || isDeletingSong}
+                disabled={reqSong.isLoading || reqDeleteSong.isLoading}
                 onPress={() => navigate("SaveSong", { item: song, bandId: song.band.id })}
                 style={{ backgroundColor: theme['color-basic-700'] }}
               />
               <MenuItem
                 title={t('song_screen.delete_action')}
                 accessoryLeft={getIcon('trash-2-outline')}
-                disabled={isFetching || isDeletingSong}
+                disabled={reqSong.isLoading || reqDeleteSong.isLoading}
                 onPress={() => setConfirmDialogState(true)}
                 style={{ backgroundColor: theme['color-basic-700'] }}
               />
             </OverflowMenu>
           </Songsheet>
-        ) : isFetching ? (
+        ) : reqSong.isLoading ? (
           <LoadingContainer>
             <Spinner size="large" />
           </LoadingContainer>

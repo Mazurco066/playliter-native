@@ -90,34 +90,24 @@ const EditSongScreen = ({ route }): React.ReactElement => {
   const { t } = useTranslation()
 
   // Http requests
-  const {
-    data: bandCategories,
-    isLoading: isFetchingCategories,
-    refetch: refetchCategories
-  } = useQuery(
+  const reqCategories = useQuery(
     [`band-categories-${bandId}`],
     () => api.songs.getBandSongCategories(bandId)
   )
   
-  const {
-    isLoading: isSaveLoading,
-    mutateAsync: saveSongAction
-  } = useMutation(
+  const reqSaveSong = useMutation(
     (data: { id?: string, dto: AddSongDto | UpdateSongDto }) =>
       data.id
         ? api.songs.updateSong(data.id, data.dto)
         : api.songs.addSong(bandId, data.dto as AddSongDto)
   )
 
-  const {
-    isLoading: isScrapLoading,
-    mutateAsync: scrapSongAction
-  } = useMutation(
+  const reqScrapSong = useMutation(
     (url: string) => api.helpers.scrapSongs(url)
   )
 
   // Refething
-  useRefreshOnFocus(refetchCategories)
+  useRefreshOnFocus(reqCategories.refetch)
 
   // Effects
   useEffect(() => {
@@ -158,19 +148,19 @@ const EditSongScreen = ({ route }): React.ReactElement => {
   }, [song])
 
   useEffect(() => {
-    if (bandCategories && bandCategories?.data?.data?.data) {
-      const array: ISongCategory[] = bandCategories?.data?.data?.data || []
+    if (reqCategories.data && reqCategories.data?.data?.data?.data) {
+      const array: ISongCategory[] = reqCategories.data?.data?.data?.data || []
       if (song) {
         const categoryId = song.category.id
         const index = array.findIndex(c => c.id === categoryId)
         setSelectedCategoryIndex(new IndexPath(index))
       }
     }
-  }, [bandCategories, song])
+  }, [reqCategories.data, song])
 
   // Global loader status and computed array
-  const isLoading = isFetchingCategories || isSaveLoading || isScrapLoading
-  const categoryArray = bandCategories?.data?.data?.data || []
+  const isLoading = reqCategories.isLoading || reqSaveSong.isLoading || reqScrapSong.isLoading
+  const categoryArray = reqCategories.data?.data?.data?.data || []
   
   // Actions
   const submitSong = async (data: {
@@ -210,7 +200,7 @@ const EditSongScreen = ({ route }): React.ReactElement => {
     }
 
     // Saving song
-    const response = await saveSongAction({
+    const response = await reqSaveSong.mutateAsync({
       dto: songPayload,
       id: (item && item.id) ? item.id : null
     })
@@ -271,7 +261,7 @@ const EditSongScreen = ({ route }): React.ReactElement => {
     }
 
     // Request song data on cifraclub or cifras.com
-    const response = await scrapSongAction(songUrl)
+    const response = await reqScrapSong.mutateAsync(songUrl)
     if ([200, 201].includes(response.status)) {
 
       // Destruct song data
@@ -468,7 +458,7 @@ const EditSongScreen = ({ route }): React.ReactElement => {
           </Select>
           <Space my={2} />
           {
-            !isFetchingCategories ? (
+            !reqCategories.isLoading ? (
               <>
                 <Select
                   label={t('song_screen.category_label')}

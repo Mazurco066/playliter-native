@@ -8,6 +8,7 @@ import ForgotPasswordScreen from './ForgotPassword'
 import MainScreen from './Main'
 import Middleware from './Middleware'
 import ProfileScreen from './Profile'
+import PublicSongsScreen from './PublicSongs'
 import SignUpScreen from './SignUp'
 import SongScreen from './Song'
 import SongsScreen from './Songs'
@@ -16,6 +17,7 @@ import SongsScreen from './Songs'
 export * from './Band/subscreens'
 export * from './Concert/subscreens'
 export * from './Profile/subscreens'
+export * from './PublicSongs/subscreens'
 export * from './Song/subscreens'
 
 // Unifying exports
@@ -29,6 +31,7 @@ export {
   MainScreen,
   Middleware,
   ProfileScreen,
+  PublicSongsScreen,
   SignUpScreen,
   SongScreen,
   SongsScreen

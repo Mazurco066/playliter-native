@@ -68,7 +68,8 @@
     "print_generated": "PDF gerado pelo app ",
     "print_by": "Por: ",
     "print_pitch": "Tom: ",
-    "print_at": " em"
+    "print_at": " em",
+    "login_action": "Acessar"
   },
   "song_screen": {
     "duplicate_action": "Duplicar",

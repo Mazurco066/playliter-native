@@ -144,7 +144,7 @@ const Songsheet = ({
   }[]>([])
 
   // Http requests
-  const { isLoading: isMutateLoading, mutateAsync } = useMutation(
+  const reqChangeTone = useMutation(
     (data: SongPayloadDto) => api.songs.updateSong(data.id, { ...data })
   )
 
@@ -217,7 +217,7 @@ const Songsheet = ({
     }
 
     // Request api
-    const response = await mutateAsync(payload)
+    const response = await reqChangeTone.mutateAsync(payload)
 
     // Verify if request was successfull
     if ([200, 201].includes(response.status)) {
@@ -344,7 +344,7 @@ const Songsheet = ({
                         <UpdateToneBtn
                           size="tiny"
                           onPress={onUpdateTone}
-                          disabled={isMutateLoading || isLoading}
+                          disabled={reqChangeTone.isLoading || isLoading}
                         >
                           {t('components.update_tone_action')}
                         </UpdateToneBtn>

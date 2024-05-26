@@ -8,7 +8,7 @@ export const getColorSchema = (color: string) => {
     case 'red':
       return {
         primary: '#BE3144',
-        secondary: '#8257e5'
+        secondary: '#BE3144'
       }
     case 'pink':
       return {

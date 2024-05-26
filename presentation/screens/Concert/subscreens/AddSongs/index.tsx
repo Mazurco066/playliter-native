@@ -77,24 +77,13 @@ const AddConcertSongs = ({ route }): React.ReactElement => {
     return response.data
   }
 
-  const {
-    isLoading: islinkingSong,
-    mutateAsync: linkSong
-  } = useMutation(
+  const reqLinkSong = useMutation(
     (data: { id: string, songId: string }) =>
       api.concerts.linkSong(data.id, data.songId)
   )
 
   // Infinite scroll api request
-  const {
-    data,
-    isFetchingNextPage,
-    isLoading,
-    isRefetching,
-    fetchNextPage,
-    hasNextPage,
-    refetch
-  } = useInfiniteQuery(
+  const reqSongs = useInfiniteQuery(
     [`add_concert_songs_${item.id}`],
     fetchBandSongs, {
       getNextPageParam: (lastPage) => {
@@ -105,11 +94,14 @@ const AddConcertSongs = ({ route }): React.ReactElement => {
   )
 
   // All pages data
-  const allPagesData = data?.pages.flatMap((value) => value.data.data) || []
+  const allPagesData = reqSongs.data?.pages.flatMap((value) => value.data.data) || []
 
   // Link song method
   const submitSong = async (songId: string) => {
-    const response = await linkSong({ id: item.id, songId })
+    const response = await reqLinkSong.mutateAsync({
+      id: item.id,
+      songId 
+    })
     if ([200, 201].includes(response.status)) {
       showMessage({
         message: t('success_msgs.add_concert_song_msg'),
@@ -142,41 +134,53 @@ const AddConcertSongs = ({ route }): React.ReactElement => {
     <Icon
       {...props}
       name={
-        isFetchingNextPage || isRefetching
+        reqSongs.isFetchingNextPage || reqSongs.isRefetching
           ? 'loader-outline'
           : 'search-outline'
       }
     />
-  ), [isFetchingNextPage, isRefetching])
+  ), [reqSongs.isFetchingNextPage, reqSongs.isRefetching])
 
   const renderResetButton = useCallback((props: any): React.ReactElement => (
     <Icon
       {...props}
       name={
-        isFetchingNextPage || isRefetching
+        reqSongs.isFetchingNextPage || reqSongs.isRefetching
           ? 'loader-outline'
           : 'sync-outline'
       }
     />
-  ), [isFetchingNextPage, isRefetching])
+  ), [reqSongs.isFetchingNextPage, reqSongs.isRefetching])
 
   // Render list view item function
   const renderListItem = useCallback(({ item }: ListRenderItemInfo<ISong>) => (
     <SongListItem
       item={item}
-      isLoading={isFetchingNextPage || isRefetching || islinkingSong}
+      isLoading={
+        reqSongs.isFetchingNextPage ||
+        reqSongs.isRefetching ||
+        reqLinkSong.isLoading}
       onPress={() => navigate('Song', { item, itemId: item.id })}
       onAddPress={() => submitSong(item.id)}
     />
-  ), [isFetchingNextPage, isRefetching, islinkingSong])
+  ), [
+    reqSongs.isFetchingNextPage,
+    reqSongs.isRefetching,
+    reqLinkSong.isLoading
+  ])
 
   //TSX
   return (
     <BaseContent
       hideCardsNavigation
       onEndReached={() => {
-        if (!isFetchingNextPage &&!isLoading && !isRefetching && hasNextPage) {
-          fetchNextPage()
+        if (
+          !reqSongs.isFetchingNextPage &&
+          !reqSongs.isLoading && 
+          !reqSongs.isRefetching && 
+          reqSongs.hasNextPage
+        ) {
+          reqSongs.fetchNextPage()
         }
       }}
     >
@@ -195,7 +199,7 @@ const AddConcertSongs = ({ route }): React.ReactElement => {
           size="small"
           value={filterSearch}
           onChangeText={nextValue => setFilterSearch(nextValue)}
-          disabled={isFetchingNextPage || isRefetching}
+          disabled={reqSongs.isFetchingNextPage || reqSongs.isRefetching}
           style={{
             backgroundColor: theme['color-basic-700']
           }}
@@ -205,11 +209,11 @@ const AddConcertSongs = ({ route }): React.ReactElement => {
             status="info"
             size="small"
             accessoryLeft={renderResetButton}
-            disabled={isFetchingNextPage || isRefetching}
+            disabled={reqSongs.isFetchingNextPage || reqSongs.isRefetching}
             onPress={() => {
-              if (!isLoading) {
+              if (!reqSongs.isLoading) {
                 setFilterSearch('')
-                setTimeout(() => refetch(), 150)
+                setTimeout(() => reqSongs.refetch(), 150)
               }
             }}
           >
@@ -219,10 +223,10 @@ const AddConcertSongs = ({ route }): React.ReactElement => {
             status="primary"
             size="small"
             accessoryLeft={renderSearchButton}
-            disabled={isFetchingNextPage || isRefetching}
+            disabled={reqSongs.isFetchingNextPage || reqSongs.isRefetching}
             onPress={() => {
-              if (!isLoading) {
-                refetch()
+              if (!reqSongs.isLoading) {
+                reqSongs.refetch()
               }
             }}
           >
@@ -237,7 +241,7 @@ const AddConcertSongs = ({ route }): React.ReactElement => {
         data={allPagesData}
         renderItem={renderListItem}
         ListHeaderComponent={() => <Space my={2} />}
-        ListFooterComponent={() => isFetchingNextPage
+        ListFooterComponent={() => reqSongs.isFetchingNextPage
           ? (
             <LoadingContainer>
               <Spinner size="large" />

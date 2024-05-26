@@ -23,7 +23,7 @@ const SaveNote = ({ route }): React.ReactElement => {
   const { concertId, item } = route.params
 
   // Http requests
-  const { isLoading: isRemovingNote, mutateAsync: removeNoteRequest } = useMutation(
+  const reqDeleteNote = useMutation(
     (id: string) => api.concerts.removeConcertObservation(concertId, id)
   )
 
@@ -35,12 +35,12 @@ const SaveNote = ({ route }): React.ReactElement => {
   const { t } = useTranslation()
 
   // Loading state
-  const isLoading = isRemovingNote
+  const isLoading = reqDeleteNote.isLoading
 
   // Actions
   const removeNote = async () => {
     const id = item.id
-    const response = await removeNoteRequest(id)
+    const response = await reqDeleteNote.mutateAsync(id)
     if ([200, 201].includes(response.status)) {
       showMessage({
         message: t('success_msgs.save_note_msg'),
