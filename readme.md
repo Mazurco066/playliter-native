@@ -17,11 +17,11 @@ The folders included in ```src``` follows the clean architecture.
 
 ```sh
 # Install node dependencies
-$ npm i 
+$ yarn install 
 
 # Run app on your android or ios system
-$ npm run android
-$ npm run ios
+$ yarn android
+$ yarn ios
 ```
 
 ## Deployment setup
