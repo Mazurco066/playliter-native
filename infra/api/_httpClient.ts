@@ -10,7 +10,10 @@ import { navigationService } from '../../main/services'
 export const BASE_URL = 'https://grossly-dominant-rhino.ngrok-free.app/api'
 
 // Base HTTP Client
-const httpClient = axios.create({ baseURL: BASE_URL })
+const httpClient = axios.create({
+  baseURL: BASE_URL,
+  timeout: 30000 // 30s
+})
 
 // Token Injection
 httpClient.interceptors.request.use(
@@ -38,7 +41,13 @@ httpClient.interceptors.response.use(
   },
   (error: AxiosError) => {
     const token = store.getState().getToken()
-    if (token && [401].includes(error.response.status)) {
+
+    if (error.code === 'ECONNABORTED') {
+      // Timeout error
+      store.getState().logoff()
+      navigationService.replace('Auth')
+    }
+    else if (token && [401].includes(error.response.status)) {
       store.getState().logoff()
       navigationService.replace('Auth')
     }
