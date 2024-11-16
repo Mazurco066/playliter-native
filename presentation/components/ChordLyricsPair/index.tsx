@@ -39,6 +39,7 @@ type IChordLyricsPair = {
     }[]
   }
   item: {
+    chords?: string;
     lyrics: string
     transposed: string
   }
@@ -50,6 +51,7 @@ const ChordLyricsPair =
   chordsData,
   displayCharts = false,
   item: {
+    chords,
     transposed,
     lyrics
   }
@@ -110,7 +112,7 @@ const ChordLyricsPair =
                 {transposed.replace(/\s/g, '')}
               </ChordText> 
               {
-                displayCharts && positions ? (
+                displayCharts && positions && positions.length ? (
                   <ChordChart
                     chord={positions}
                     color="#ffffff"
@@ -120,6 +122,15 @@ const ChordLyricsPair =
               }
             </ChartContainer>
           </Popover>
+        ) : chords ? (
+          <ChordText
+            category="p1"
+            style={{
+              color: theme['color-secondary-500']
+            }}
+          >
+            {chords}
+          </ChordText> 
         ) : null
       }
       <LyricsText

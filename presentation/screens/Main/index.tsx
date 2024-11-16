@@ -86,7 +86,7 @@ const MainScreen = (): React.ReactElement => {
         ) : (
           <>
             {
-              reqFutureConcerts.data?.data?.data.length > 0 ? (
+              reqFutureConcerts.data?.data?.data?.length > 0 ? (
                 <>
                   <Text category="s1">
                     { t('main_screen.pending_concerts', {
@@ -125,7 +125,7 @@ const MainScreen = (): React.ReactElement => {
         ) : (
           <>
           {
-            reqBands.data?.data?.data.length > 0 ? (
+            reqBands.data?.data?.data?.length > 0 ? (
               <>
                 <FlatList
                   ItemSeparatorComponent={() => <Space my={1} />}
