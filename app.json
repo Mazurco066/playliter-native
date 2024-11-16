@@ -2,7 +2,7 @@
   "expo": {
     "name": "Playliter",
     "slug": "playliter-native",
-    "version": "1.3.1",
+    "version": "1.3.2",
     "orientation": "portrait",
     "icon": "./assets/icon.png",
     "userInterfaceStyle": "light",
@@ -23,7 +23,7 @@
         "backgroundColor": "#633FC4"
       },
       "package": "io.mazurco066.playliter",
-      "versionCode": 7
+      "versionCode": 8
     },
     "web": {
       "favicon": "./assets/favicon.png",
