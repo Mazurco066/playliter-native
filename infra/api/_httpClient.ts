@@ -41,12 +41,13 @@ httpClient.interceptors.response.use(
   },
   (error: AxiosError) => {
     const token = store.getState().getToken()
-
+    // Remote server connection lost
     if (error.code === 'ECONNABORTED') {
       // Timeout error
       store.getState().logoff()
       navigationService.replace('Auth')
     }
+    // Unauthorized by token expiration
     else if (token && [401].includes(error.response.status)) {
       store.getState().logoff()
       navigationService.replace('Auth')

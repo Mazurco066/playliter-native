@@ -194,7 +194,6 @@ const Songsheet = ({
     const transposeIndex = Number(selectedIndex.toString()) - 1
     const cs = getTransposedSong(song.body || '', transposeIndex)
     const uc = getUniqueChords(song.body || '', transposeIndex)
-    console.log('[parsed chordsheet]', JSON.stringify(cs, null, 2))
     setChordsheet(cs)
     setUniqueChords(uc)
   }, [song, selectedIndex])
