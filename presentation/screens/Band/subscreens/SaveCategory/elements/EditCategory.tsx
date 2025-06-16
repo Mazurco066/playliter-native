@@ -14,7 +14,7 @@ import { ISongCategory } from '../../../../../../domain'
 
 // Components
 import { showMessage } from 'react-native-flash-message'
-import { Button, Icon, Input, useTheme } from '@ui-kitten/components'
+import { Button, Icon, Input, Text, useTheme } from '@ui-kitten/components'
 import { View } from 'react-native'
 import { CustomKeyboardAvoidingView, Space } from '../../../../../components'
 import { generateCaption } from '../../../../../utils'
@@ -60,8 +60,8 @@ type IEditCategory = {
 const EditCategory = ({
   isLoading = false,
   item,
-  onCancel = () => {},
-  onGoBack = () => {},
+  onCancel = () => { },
+  onGoBack = () => { },
 }: IEditCategory): React.ReactElement => {
   // Hooks
   const theme = useTheme()
@@ -94,6 +94,7 @@ const EditCategory = ({
   // Actions
   const submitCategory = async ({ title, description }: { title: string, description: string }) => {
     const id = item?.id || null
+
     const response = await reqSaveCategory.mutateAsync({
       id,
       title: title,
@@ -138,7 +139,7 @@ const EditCategory = ({
         <Controller
           control={control}
           name="title"
-          rules={{ required: true, minLength: 2 }}
+          rules={{ required: true, minLength: 1 }}
           render={({ field: { onBlur, onChange, value } }) => (
             <Input
               label={t('band_screen.input_category_title_label')}
@@ -159,7 +160,7 @@ const EditCategory = ({
         <Controller
           control={control}
           name="description"
-          rules={{ required: true, minLength: 8 }}
+          rules={{ required: true, minLength: 2 }}
           render={({ field: { onBlur, onChange, value } }) => (
             <Input
               multiline
@@ -170,7 +171,7 @@ const EditCategory = ({
               value={value}
               onBlur={onBlur}
               onChangeText={nextValue => onChange(nextValue)}
-              caption={generateCaption(errors.content as FieldError)}
+              caption={generateCaption(errors.description as FieldError)}
               textStyle={textStyle}
               disabled={isLoading || reqSaveCategory.isLoading}
             />
@@ -181,8 +182,8 @@ const EditCategory = ({
         <ButtonGroup>
           <Button
             status="danger"
-            onPress={item ? onCancel : onGoBack}
             style={{ flex: 1 }}
+            onPress={item ? onCancel : onGoBack}
             disabled={isLoading || reqSaveCategory.isLoading}
           >
             {t('band_screen.cancel_button')}
